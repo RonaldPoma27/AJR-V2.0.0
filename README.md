@@ -156,3 +156,5 @@ Frontend: `cd frontend && npm run build` (incluye `tsc -b`).
 - El límite de envíos por IP vive **en memoria del proceso**: sirve con una sola instancia. Si se escala a varias, hay que moverlo a Redis.
 - El login todavía no tiene límite de intentos por IP; conviene sumarlo si el panel queda expuesto a mucho tráfico.
 - La subida de CV como archivo no está implementada (el disco de Render es efímero): por ahora se pega un link de Drive/Dropbox. `models/job_application.py` deja el lugar preparado.
+
+- xd
