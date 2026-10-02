@@ -25,6 +25,7 @@ class OrderStatus(str, enum.Enum):
     NUEVO = "nuevo"
     EN_REVISION = "en_revision"
     CONTACTADO = "contactado"
+    FINALIZADO = "finalizado"
     DESCARTADO = "descartado"
 
 
@@ -33,6 +34,22 @@ class ProjectStatus(str, enum.Enum):
 
     TERMINADO = "terminado"
     EN_PROGRESO = "en_progreso"
+
+
+class SupportTicketStatus(str, enum.Enum):
+    """Estado de un chat de soporte (lo mantiene el backend según quién escribió último)."""
+
+    ABIERTO = "abierto"  # el cliente escribió y espera respuesta
+    RESPONDIDO = "respondido"  # el equipo respondió
+    CERRADO = "cerrado"  # solo lectura
+
+
+class MediaType(str, enum.Enum):
+    """Tipo de archivo de la galería del portfolio."""
+
+    IMAGE = "image"
+    VIDEO = "video"
+    FILE = "file"
 
 
 class ApplicationStatus(str, enum.Enum):

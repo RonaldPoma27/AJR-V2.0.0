@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 
-from app.api.deps import DBSession, require_admin
+from app.api.deps import DBSession, require_admin, require_technician_or_admin
 from app.crud import cms as crud_cms
 from app.crud.base import CRUDBase
 from app.schemas.cms import (
@@ -16,6 +16,8 @@ from app.schemas.cms import (
 
 # Lecturas públicas; escrituras solo ADMIN.
 admin_only = [Depends(require_admin)]
+# El TECHNICIAN actúa como "Editor": puede crear y editar portfolio, pero no borrarlo.
+staff_only = [Depends(require_technician_or_admin)]
 
 Skip = Annotated[int, Query(ge=0)]
 Limit = Annotated[int, Query(ge=1, le=100)]
@@ -77,14 +79,14 @@ async def get_portfolio_item(item_id: int, db: DBSession):
 
 
 @portfolio_router.post(
-    "", response_model=PortfolioItemRead, status_code=201, dependencies=admin_only
+    "", response_model=PortfolioItemRead, status_code=201, dependencies=staff_only
 )
 async def create_portfolio_item(payload: PortfolioItemCreate, db: DBSession):
     return await crud_cms.portfolio_items.create(db, payload)
 
 
 @portfolio_router.put(
-    "/{item_id}", response_model=PortfolioItemRead, dependencies=admin_only
+    "/{item_id}", response_model=PortfolioItemRead, dependencies=staff_only
 )
 async def update_portfolio_item(item_id: int, payload: PortfolioItemCreate, db: DBSession):
     obj = await _get_or_404(crud_cms.portfolio_items, db, item_id)

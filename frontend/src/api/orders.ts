@@ -2,7 +2,10 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 import { apiClient } from "./client";
 import { PAGE_SIZE, type Paginated, type PageResult } from "./types";
 
-export type OrderStatus = "nuevo" | "en_revision" | "contactado" | "descartado";
+export type OrderStatus = "nuevo" | "en_revision" | "contactado" | "finalizado" | "descartado";
+
+/** Camino "feliz" de un pedido (lo dibuja el Stepper). `descartado` queda fuera: es un desvío. */
+export const ORDER_FLOW: OrderStatus[] = ["nuevo", "en_revision", "contactado", "finalizado"];
 
 export interface ClientOrderCreate {
   company_name: string;
@@ -19,6 +22,8 @@ export interface ClientOrderCreate {
 
 export interface ClientOrder {
   id: number;
+  /** null = pedido anterior a la v2.1 (se enviaba sin cuenta). */
+  user_id: number | null;
   company_name: string;
   contact_name: string;
   contact_email: string;
@@ -30,7 +35,7 @@ export interface ClientOrder {
   updated_at: string;
 }
 
-/** Público: usado por el formulario de contacto. */
+/** Requiere sesión: el pedido queda asociado al cliente logueado. */
 export function useCreateOrder() {
   return useMutation({
     mutationFn: async (payload: ClientOrderCreate) => {
@@ -64,6 +69,31 @@ export function useUpdateOrderStatus() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+  });
+}
+
+/** "Mis pedidos": solo los del usuario logueado. */
+export function useMyOrders() {
+  return useQuery({
+    queryKey: ["orders", "mine"],
+    queryFn: async () => {
+      const { data } = await apiClient.get<ClientOrder[]>("/orders/mine");
+      return data;
+    },
+  });
+}
+
+/** Solo ADMIN: enviar a la papelera (borrado lógico). */
+export function useTrashOrder() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      await apiClient.delete(`/orders/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["trash"] });
     },
   });
 }

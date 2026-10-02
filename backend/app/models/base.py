@@ -33,3 +33,13 @@ class TimestampMixin(CreatedAtMixin):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utcnow, onupdate=utcnow, server_default=func.now()
     )
+
+
+class SoftDeleteMixin:
+    """Borrado lógico: `deleted_at` con fecha = está en la papelera.
+
+    Un job periódico (app/core/scheduler.py) elimina de verdad lo que lleva más de
+    TRASH_RETENTION_DAYS (30 por defecto) en la papelera.
+    """
+
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), index=True)

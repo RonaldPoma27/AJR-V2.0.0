@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { isAxiosError } from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import { loginRequest } from "@/api/auth";
+import { fetchMe, getToken, isStaff, loginRequest, type UserRole } from "@/api/auth";
+import { TextField } from "@/components/forms/Fields";
 
 function getLoginErrorMessage(error: unknown): string {
   if (isAxiosError(error)) {
@@ -20,14 +21,24 @@ function getLoginErrorMessage(error: unknown): string {
   return "Ocurrió un error inesperado. Probá de nuevo.";
 }
 
+/** A dónde mandar a la persona después de entrar: a donde iba, o a su pantalla de inicio. */
+export function landingFor(role: UserRole, from?: string): string {
+  const safe = from && from.startsWith("/") && !from.startsWith("//") ? from : undefined;
+  if (safe && !(safe.startsWith("/admin") && !isStaff(role))) return safe;
+  return isStaff(role) ? "/admin/pedidos" : "/cuenta";
+}
+
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
+  const from = (location.state as { from?: string } | null)?.from;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  if (getToken() && !loading) return <Navigate to={from ?? "/cuenta"} replace />;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -37,8 +48,9 @@ export default function Login() {
     try {
       await loginRequest(email.trim(), password);
       queryClient.clear(); // que no queden datos de otra sesión
-      const from = (location.state as { from?: string } | null)?.from;
-      navigate(from && from.startsWith("/admin") ? from : "/admin/pedidos", { replace: true });
+      const me = await fetchMe();
+      queryClient.setQueryData(["me"], me);
+      navigate(landingFor(me.role, from), { replace: true });
     } catch (err) {
       setError(getLoginErrorMessage(err));
       setLoading(false);
@@ -46,40 +58,14 @@ export default function Login() {
   }
 
   return (
-    <div className="mx-auto max-w-sm px-6 py-24">
-      <h1 className="text-2xl font-bold text-gray-900">Acceso equipo</h1>
-      <p className="mt-1 text-sm text-gray-500">Ingresá para ver pedidos y postulaciones.</p>
+    <div className="mx-auto max-w-sm px-6 py-16 sm:py-24">
+      <h1 className="text-2xl font-bold text-fg">Iniciar sesión</h1>
+      <p className="mt-1 text-sm text-fg-subtle">Ingresá para seguir tus pedidos y escribirnos por soporte.</p>
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-        <div>
-          <label htmlFor="login-email" className="block text-sm font-medium text-gray-700">
-            Email
-          </label>
-          <input
-            id="login-email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            autoComplete="username"
-            className="mt-1 w-full rounded-md border px-3 py-2 focus:border-brand focus:outline-none"
-          />
-        </div>
-        <div>
-          <label htmlFor="login-password" className="block text-sm font-medium text-gray-700">
-            Contraseña
-          </label>
-          <input
-            id="login-password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            autoComplete="current-password"
-            className="mt-1 w-full rounded-md border px-3 py-2 focus:border-brand focus:outline-none"
-          />
-        </div>
+        <TextField label="Email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="username" />
+        <TextField label="Contraseña" name="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
         {error && (
-          <p role="alert" className="text-sm text-red-600">
+          <p role="alert" className="text-sm text-red-600 dark:text-red-400">
             {error}
           </p>
         )}
@@ -91,6 +77,12 @@ export default function Login() {
           {loading ? "Ingresando..." : "Ingresar"}
         </button>
       </form>
+      <p className="mt-6 text-center text-sm text-fg-subtle">
+        ¿No tenés cuenta?{" "}
+        <Link to="/registro" state={{ from }} className="font-medium text-accent hover:underline">
+          Registrate
+        </Link>
+      </p>
     </div>
   );
 }

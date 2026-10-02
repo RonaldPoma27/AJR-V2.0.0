@@ -33,6 +33,9 @@ async def create_admin() -> None:
         logger.warning("ADMIN_PASSWORD debe tener entre 8 y 72 bytes: no se crea el admin.")
         return
 
+    # ADMIN_FULL_NAME ("Ana María Pérez") se reparte: primera palabra = nombre, resto = apellido.
+    first_name, _, last_name = (settings.ADMIN_FULL_NAME or "").strip().partition(" ")
+
     async with AsyncSessionLocal() as session:
         existing = await crud_user.get_by_email(session, email)
         if existing is not None:
@@ -47,7 +50,8 @@ async def create_admin() -> None:
                 email=email,
                 password=password,
                 role=UserRole.ADMIN,
-                full_name=settings.ADMIN_FULL_NAME,
+                first_name=first_name,
+                last_name=last_name,
             )
         except IntegrityError:  # otra instancia lo creó en paralelo
             await session.rollback()

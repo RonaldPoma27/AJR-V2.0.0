@@ -90,3 +90,17 @@ export function useUpdateApplicationStatus() {
     },
   });
 }
+
+/** Solo ADMIN: enviar a la papelera (borrado lógico). */
+export function useTrashApplication() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      await apiClient.delete(`/applications/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["applications"] });
+      queryClient.invalidateQueries({ queryKey: ["trash"] });
+    },
+  });
+}

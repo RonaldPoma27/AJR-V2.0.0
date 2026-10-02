@@ -1,13 +1,14 @@
 from typing import Annotated
 
-from fastapi import APIRouter, BackgroundTasks, Query, Request
+from fastapi import APIRouter, BackgroundTasks, Query, Request, Response
 
-from app.api.deps import AdminUser, DBSession
+from app.api.deps import AdminUser, DBSession, StaffUser
 from app.core.email import send_application_emails
 from app.core.exceptions import AppError
 from app.core.rate_limit import client_ip, enforce_rate_limit
 from app.core.turnstile import verify_turnstile
 from app.crud import job_application as crud_application
+from app.crud import trash as crud_trash
 from app.models import ApplicationStatus
 from app.schemas.common import Page, Receipt
 from app.schemas.job_application import (
@@ -38,20 +39,30 @@ async def create_application(
 @router.get("", response_model=Page[JobApplicationRead])
 async def list_applications(
     db: DBSession,
-    _: AdminUser,
+    _: StaffUser,
     status_filter: Annotated[ApplicationStatus | None, Query(alias="status")] = None,
     skip: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(ge=1, le=100)] = 20,
 ):
-    """Solo ADMIN (son datos personales de candidatos)."""
+    """TECHNICIAN y ADMIN. No incluye lo que está en la papelera."""
     return await crud_application.list_applications(db, status=status_filter, skip=skip, limit=limit)
 
 
 @router.patch("/{application_id}", response_model=JobApplicationRead)
 async def update_application(
-    application_id: int, payload: JobApplicationUpdate, db: DBSession, _: AdminUser
+    application_id: int, payload: JobApplicationUpdate, db: DBSession, _: StaffUser
 ):
     application = await crud_application.get(db, application_id)
     if application is None:
         raise AppError(404, "Postulación no encontrada")
     return await crud_application.set_status(db, application, payload.status)
+
+
+@router.delete("/{application_id}", status_code=204)
+async def trash_application(application_id: int, db: DBSession, _: AdminUser):
+    """Solo ADMIN: envía la postulación a la papelera."""
+    application = await crud_application.get(db, application_id)
+    if application is None:
+        raise AppError(404, "Postulación no encontrada")
+    await crud_trash.soft_delete(db, application)
+    return Response(status_code=204)

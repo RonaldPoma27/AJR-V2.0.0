@@ -32,10 +32,10 @@ export default function StatusChips({
               "rounded-full border px-3 py-1 text-sm",
               selected
                 ? "border-brand bg-brand text-white"
-                : "bg-white text-gray-700 hover:border-brand hover:text-brand"
+                : "bg-surface text-fg-muted hover:border-brand hover:text-accent"
             )}
           >
-            {chip.label} <span className={cn("font-semibold", !selected && "text-brand")}>{chip.count}</span>
+            {chip.label} <span className={cn("font-semibold", !selected && "text-accent")}>{chip.count}</span>
           </button>
         );
       })}

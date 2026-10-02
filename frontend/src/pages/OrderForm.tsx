@@ -1,4 +1,6 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { getToken, useMe } from "@/api/auth";
 import { useCreateOrder } from "@/api/orders";
 import Turnstile, { turnstileEnabled, type TurnstileHandle } from "@/components/Turnstile";
 import { Honeypot, TextAreaField, TextField } from "@/components/forms/Fields";
@@ -38,6 +40,8 @@ function validate(form: FormState): Errors {
 }
 
 export default function OrderForm() {
+  const location = useLocation();
+  const { data: me } = useMe();
   const createOrder = useCreateOrder();
   const turnstileRef = useRef<TurnstileHandle>(null);
   const [form, setForm] = useState<FormState>(initialForm);
@@ -45,6 +49,16 @@ export default function OrderForm() {
   const [token, setToken] = useState<string | null>(null);
   const [errors, setErrors] = useState<Errors>({});
   const [submitted, setSubmitted] = useState(false);
+
+  // Con la sesión iniciada, precargamos nombre y email (se pueden editar).
+  useEffect(() => {
+    if (!me) return;
+    setForm((f) => ({
+      ...f,
+      contact_name: f.contact_name || me.full_name || "",
+      contact_email: f.contact_email || me.email,
+    }));
+  }, [me]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = e.target;
@@ -81,25 +95,45 @@ export default function OrderForm() {
 
   function sendAnother() {
     createOrder.reset();
-    setForm(initialForm);
+    setForm({ ...initialForm, contact_name: me?.full_name ?? "", contact_email: me?.email ?? "" });
     setHoneypot("");
     setToken(null);
     setErrors({});
     setSubmitted(false);
   }
 
+  // El pedido queda asociado a la cuenta del cliente: hace falta iniciar sesión.
+  if (!getToken()) {
+    return (
+      <div className="mx-auto max-w-xl px-6 py-20 text-center">
+        <h1 className="text-2xl font-bold text-fg">Iniciá sesión para solicitar un proyecto</h1>
+        <p className="mt-2 text-fg-muted">
+          Con tu cuenta podés seguir el avance de tu pedido y escribirnos por soporte.
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <Link to="/login" state={{ from: location.pathname }} className="rounded-md bg-brand px-6 py-2.5 font-medium text-white hover:bg-brand-dark">
+            Iniciar sesión
+          </Link>
+          <Link to="/registro" state={{ from: location.pathname }} className="rounded-md border px-6 py-2.5 font-medium text-fg hover:bg-surface-2">
+            Crear cuenta
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   if (createOrder.isSuccess) {
     return (
       <div className="mx-auto max-w-xl px-6 py-24 text-center">
-        <h1 className="text-2xl font-bold text-gray-900">¡Gracias!</h1>
-        <p className="mt-2 text-gray-600">
+        <h1 className="text-2xl font-bold text-fg">¡Gracias!</h1>
+        <p className="mt-2 text-fg-muted">
           Recibimos tu pedido. Te mandamos un mail de confirmación y te vamos a contactar a la
-          brevedad.
+          brevedad. Podés seguir su avance en <Link to="/cuenta/pedidos" className="font-medium text-accent hover:underline">Mis pedidos</Link>.
         </p>
         <button
           type="button"
           onClick={sendAnother}
-          className="mt-8 rounded-md border border-brand px-6 py-2 font-medium text-brand hover:bg-brand hover:text-white"
+          className="mt-8 rounded-md border border-brand px-6 py-2 font-medium text-accent hover:bg-brand hover:text-white"
         >
           Enviar otro pedido
         </button>
@@ -109,8 +143,8 @@ export default function OrderForm() {
 
   return (
     <div className="mx-auto max-w-xl px-6 py-16">
-      <h1 className="text-3xl font-bold text-gray-900">Contacto — Solicitar proyecto</h1>
-      <p className="mt-2 text-gray-600">Contanos el problema de tu negocio y lo vemos juntos.</p>
+      <h1 className="text-3xl font-bold text-fg">Contacto — Solicitar proyecto</h1>
+      <p className="mt-2 text-fg-muted">Contanos el problema de tu negocio y lo vemos juntos.</p>
 
       <form onSubmit={handleSubmit} noValidate className="relative mt-8 space-y-4">
         <TextField label="Nombre de la PyME" name="company_name" value={form.company_name} onChange={handleChange} required maxLength={200} error={errors.company_name} />
@@ -125,7 +159,7 @@ export default function OrderForm() {
         <div>
           <Turnstile ref={turnstileRef} onToken={setToken} />
           {errors.turnstile && (
-            <p role="alert" className="mt-1 text-sm text-red-600">
+            <p role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">
               {errors.turnstile}
             </p>
           )}
@@ -140,7 +174,7 @@ export default function OrderForm() {
         </button>
 
         {createOrder.isError && (
-          <p role="alert" className="text-sm text-red-600">
+          <p role="alert" className="text-sm text-red-600 dark:text-red-400">
             {getFormErrorMessage(createOrder.error, "pedido")}
           </p>
         )}

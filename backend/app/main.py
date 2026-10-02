@@ -7,11 +7,29 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 
+import logging
+
+# uvicorn solo configura sus propios loggers: sin esto, los INFO de la app (mail "console",
+# scheduler, purga de la papelera) no se ven en ningún lado.
+logging.basicConfig(level=logging.INFO, format="%(levelname)s [%(name)s] %(message)s")
+
 from app.api.deps import DBSession
-from app.api.routers import applications, auth, cms, orders, partners, tickets, users
+from app.api.routers import (
+    applications,
+    auth,
+    cms,
+    orders,
+    partners,
+    support,
+    team,
+    tickets,
+    trash,
+    users,
+)
 from app.core.config import settings
 from app.core.database import engine
 from app.core.exceptions import AppError
+from app.core.scheduler import start_scheduler, stop_scheduler
 
 # Carpeta con el frontend compilado (el Dockerfile copia `dist/` acá). Se resuelve desde
 # este archivo, no desde el directorio de trabajo.
@@ -20,13 +38,15 @@ STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    start_scheduler()  # limpieza periódica de la papelera (APScheduler)
     yield
+    stop_scheduler()
     await engine.dispose()
 
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    version="2.0.0",
+    version="2.1.0",
     lifespan=lifespan,
     docs_url="/api/docs",
     redoc_url=None,
@@ -57,6 +77,9 @@ api.include_router(orders.router)
 api.include_router(applications.router)
 api.include_router(partners.router)
 api.include_router(tickets.router)
+api.include_router(support.router)
+api.include_router(team.router)
+api.include_router(trash.router)
 api.include_router(cms.services_router)
 api.include_router(cms.portfolio_router)
 api.include_router(cms.blog_router)

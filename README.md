@@ -1,4 +1,4 @@
-# AJR Data 2.0
+# AJR Data 2.1
 
 Sitio y panel de **AJR Data**, consultora tecnológica para PyMEs.
 
@@ -15,13 +15,41 @@ Sitio y panel de **AJR Data**, consultora tecnológica para PyMEs.
 └── backend/              # FastAPI (prestart.sh: migra, crea admin, arranca)
 ```
 
+## Qué trae la 2.1
+
+- **Roles y equipo:** `USER` (cliente), `TECHNICIAN` (el "Editor") y `ADMIN`. El admin suma o quita técnicos por email desde **Equipo** (`/admin/equipo`); los técnicos ven la lista pero no la modifican. El técnico puede ver y cambiar el estado de pedidos, postulaciones y chats, y editar el portfolio; **solo el admin** envía a la papelera, restaura o borra portfolio. El rol se lee de la base en cada request: quitarlo rige al instante.
+- **Cuentas de cliente:** registro público (`/registro`, siempre rol `USER`) con nombre y apellido. `full_name` ahora se deriva de `first_name` + `last_name`.
+- **Layout empresarial:** con sesión, Sidebar a la izquierda (Mi cuenta · Mis pedidos · Soporte para clientes; Panel de Administración para el equipo). Sin sesión, la NavBar muestra *Iniciar sesión* / *Registrarse*. El link "Acceso equipo" del footer se eliminó.
+- **Modo oscuro** (sol/luna) con `darkMode: ["class"]` y tokens semánticos de color (`bg-surface`, `text-fg`, `border-line`… en `tailwind.config.js` / `index.css`): se recuerda la elección y respeta la preferencia del sistema.
+- **Pedidos ligados al usuario:** `/solicitar-proyecto` exige sesión y guarda `user_id`. Nuevo estado `FINALIZADO`. **Mis pedidos** muestra un *Stepper* (Nuevo → En revisión → Contactado → Finalizado).
+- **Papelera (soft delete)** de pedidos y postulaciones con `deleted_at`. Un job de **APScheduler** (dentro de FastAPI) elimina de verdad lo que lleva más de 30 días; la vista **Papelera** (`/admin/papelera`) muestra el tiempo restante y permite restaurar.
+- **Mail al cliente** cada vez que un ADMIN/TECHNICIAN cambia el estado de su pedido (en segundo plano).
+- **Portfolio multimedia:** cada proyecto tiene una galería (imágenes, videos, archivos) en la tabla `portfolio_media`, guardada como URLs (lista para Cloudinary). Hay editor en `/admin/portfolio` y vista pública con título → galería → descripción.
+- **Chat de soporte:** burbuja azul/celeste para clientes (título obligatorio, mensajes de hasta 2000 caracteres, **máximo 2 mensajes seguidos sin respuesta del equipo**, historial por título) y pestaña **Comentarios / Soporte** en el panel, con métricas de tiempo. La regla de los 2 mensajes y el límite de largo se validan en el backend (con bloqueo de fila para que no se salteen con requests simultáneos).
+
+### Novedades de configuración (todas opcionales)
+
+| Variable | Default | Para qué |
+|---|---|---|
+| `TRASH_RETENTION_DAYS` | `30` | Días en la papelera antes de eliminar definitivamente |
+| `TRASH_PURGE_INTERVAL_MINUTES` | `60` | Cada cuánto corre la limpieza |
+| `SCHEDULER_ENABLED` | `true` | `false` apaga las tareas periódicas |
+| `EMAIL_BACKEND` | `smtp` | `console` = mock que loguea el mail completo (desarrollo) |
+| `PUBLIC_BASE_URL` | — | URL del sitio, para el link "Mis pedidos" dentro de los mails |
+
+> **Migración:** `alembic upgrade head` (revisión `0003_support_trash_gallery`). Conserva los datos: parte el nombre actual en nombre/apellido (primera palabra / resto), copia la `image_url` de cada proyecto como primer archivo de su galería y deja los pedidos viejos con `user_id` vacío (el mail de estado de esos va al email que dejaron en el formulario). El downgrade revierte todo; el valor `finalizado` queda en el tipo de PostgreSQL (no se puede quitar de un ENUM) y esos pedidos vuelven a `contactado`.
+>
+> **Cloudinary:** cuando exista la cuenta, solo hay que guardar su `secure_url` en `portfolio_media.url` (y el `public_id` en su columna, que sirve para borrar el archivo allá). El editor hoy carga links; el modelo ya está listo.
+>
+> **Scheduler y escala:** corre dentro del proceso. Con varias instancias el job corre en cada una; es seguro (el DELETE es idempotente), solo repite trabajo.
+
 ## Qué trae la 2.0
 
 - **Menú "Nosotros"** (Contacto · Trabajá con nosotros), accesible por teclado y responsive.
 - **Formulario de contacto** mejorado (validación, contador, "Enviar otro pedido") y nueva página **Trabajá con nosotros** (postulaciones).
 - **Anti-spam en 3 capas:** honeypot + Cloudflare Turnstile + límite de envíos por IP.
 - **Mails automáticos** (aviso al equipo + respuesta al cliente/candidato) en segundo plano: si el mail falla, el formulario igual responde bien.
-- **Panel admin** (`/admin`): Pedidos, Postulaciones y Mi perfil, con contadores por estado, filtros, paginación y vista expandible.
+- **Panel admin** (`/admin`): Pedidos y Postulaciones, con contadores por estado, filtros, paginación y vista expandible.
 - **Auth:** login, rutas protegidas, cierre de sesión, cambio de contraseña, admin creado automáticamente.
 - Del backend nuevo se conservan tickets, servicios y blog (API lista; todavía sin pantallas).
 
@@ -116,7 +144,9 @@ Variables de la v1 que **ya no se usan**: `BACKEND_CORS_ORIGINS` (ahora `CORS_OR
 3. En desarrollo podés usar las claves de prueba (siempre aprueban): sitekey `1x00000000000000000000AA`, secret `1x0000000000000000000000000000000AA`. Sin secret y con `ENVIRONMENT=development` la validación se saltea; en `production` **rechaza** los envíos.
 
 ### Mails
-Con `SMTP_HOST` definido se mandan: *"Nuevo pedido de proyecto"* / *"Nueva postulación"* a `ADMIN_NOTIFY_EMAIL` (con `Reply-To` del cliente) y un auto-reply al cliente/candidato. Sin `SMTP_HOST` se omiten y se loguea.
+Desarrollo sin proveedor: `EMAIL_BACKEND=console` imprime cada mail en el log del servidor en vez de mandarlo.
+
+Con `SMTP_HOST` definido se mandan: *"Nuevo pedido de proyecto"* / *"Nueva postulación"* a `ADMIN_NOTIFY_EMAIL` (con `Reply-To` del cliente) y un auto-reply al cliente/candidato; además, *"Tu pedido está «…»"* al dueño del pedido cuando el equipo cambia su estado. Sin `SMTP_HOST` se omiten y se loguea.
 
 ⚠️ Algunos planes gratuitos de hosting bloquean los puertos SMTP salientes. Si en Render no salen mails, todo el envío está aislado en `backend/app/core/email.py` (`_deliver`): se cambia por la API HTTP de un proveedor (Resend, Brevo, etc.) sin tocar el resto.
 
@@ -146,7 +176,7 @@ alembic upgrade head
 python -m tests.smoke_test
 ```
 
-Cubre: admin idempotente, login, permisos (401/403), formularios públicos (honeypot, rate limit, Turnstile simulado, mails simulados, SMTP caído), paginación/contadores/orden, cambio de contraseña, partners/portfolio y el fallback del frontend.
+Cubre: admin idempotente, login, permisos por rol (401/403), promoción/remoción de técnicos, pedidos ligados al usuario, mails de estado, papelera + purga a 30 días + job de APScheduler, chat de soporte (regla de 2 mensajes, límite de 2000, privacidad y concurrencia), galería del portfolio, formularios públicos (honeypot, rate limit, Turnstile simulado, mails simulados, SMTP caído), paginación/contadores/orden, cambio de contraseña, partners/portfolio y el fallback del frontend.
 
 Frontend: `cd frontend && npm run build` (incluye `tsc -b`).
 

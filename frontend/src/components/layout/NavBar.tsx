@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ThemeToggle from "./ThemeToggle";
 
 const mainLinks = [
   { to: "/", label: "Inicio", end: true },
@@ -14,7 +15,7 @@ const nosotrosItems = [
 ];
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
-  cn("text-sm font-medium text-gray-600 hover:text-brand", isActive && "text-brand");
+  cn("text-sm font-medium text-gray-300 hover:text-white", isActive && "text-white");
 
 /**
  * Desplegable "Nosotros" (desktop).
@@ -125,8 +126,8 @@ function NosotrosMenu({ active }: { active: boolean }) {
         }}
         onKeyDown={handleButtonKeyDown}
         className={cn(
-          "flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-brand",
-          active && "text-brand"
+          "flex items-center gap-1 text-sm font-medium text-gray-300 hover:text-white",
+          active && "text-white"
         )}
       >
         Nosotros
@@ -140,7 +141,7 @@ function NosotrosMenu({ active }: { active: boolean }) {
             role="menu"
             aria-label="Nosotros"
             onKeyDown={handleMenuKeyDown}
-            className="w-52 rounded-md border bg-white py-1 shadow-lg"
+            className="w-52 rounded-md border bg-surface py-1 text-fg shadow-lg"
           >
             {nosotrosItems.map((item, index) => (
               <li key={item.to} role="none">
@@ -152,8 +153,8 @@ function NosotrosMenu({ active }: { active: boolean }) {
                   role="menuitem"
                   className={({ isActive }) =>
                     cn(
-                      "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-brand focus:bg-gray-50 focus:text-brand focus:outline-none",
-                      isActive && "font-semibold text-brand"
+                      "block px-4 py-2 text-sm text-fg-muted hover:bg-surface-2 hover:text-accent focus:bg-surface-2 focus:text-accent focus:outline-none",
+                      isActive && "font-semibold text-accent"
                     )
                   }
                 >
@@ -168,7 +169,37 @@ function NosotrosMenu({ active }: { active: boolean }) {
   );
 }
 
-export default function NavBar() {
+/**
+ * El logo es un PNG con fondo casi negro (sin transparencia). `mix-blend-lighten` hace que ese
+ * negro se funda con el color de la barra, y el recorte deja solo la marca (el PNG es cuadrado
+ * con mucho margen alrededor).
+ */
+function Logo() {
+  return (
+    <Link to="/" aria-label="AJR Data — ir al inicio" className="relative block h-12 w-28 shrink-0 overflow-hidden rounded-sm">
+      <img
+        src="/logo.png"
+        alt="AJR Data"
+        width={140}
+        height={140}
+        className="absolute left-1/2 top-1/2 max-w-none -translate-x-1/2 -translate-y-1/2 mix-blend-lighten"
+        style={{ width: 140, height: 140 }}
+      />
+    </Link>
+  );
+}
+
+const authButtonBase = "inline-flex items-center justify-center rounded-md px-3.5 py-2 text-sm font-medium";
+
+export default function NavBar({
+  hasSession,
+  sidebarOpen,
+  onToggleSidebar,
+}: {
+  hasSession: boolean;
+  sidebarOpen: boolean;
+  onToggleSidebar: () => void;
+}) {
   const { pathname } = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileNosotrosOpen, setMobileNosotrosOpen] = useState(false);
@@ -187,12 +218,13 @@ export default function NavBar() {
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [mobileOpen]);
 
+  const mobileLinkClass = ({ isActive }: { isActive: boolean }) =>
+    cn("block rounded-md px-2 py-2 text-sm font-medium text-gray-200 hover:bg-white/10", isActive && "text-white");
+
   return (
-    <header className="border-b bg-white">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4" aria-label="Principal">
-        <Link to="/" className="text-lg font-bold text-brand">
-          AJR Data
-        </Link>
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-ink text-white">
+      <nav className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:px-6" aria-label="Principal">
+        <Logo />
 
         {/* Desktop */}
         <div className="hidden items-center gap-6 md:flex">
@@ -204,32 +236,41 @@ export default function NavBar() {
           <NosotrosMenu active={nosotrosActive} />
         </div>
 
-        {/* Mobile: botón hamburguesa */}
-        <button
-          type="button"
-          className="rounded-md p-2 text-gray-600 hover:bg-gray-100 md:hidden"
-          aria-label={mobileOpen ? "Cerrar menú" : "Abrir menú"}
-          aria-expanded={mobileOpen}
-          aria-controls="menu-mobile"
-          onClick={() => setMobileOpen((v) => !v)}
-        >
-          {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        <div className="ml-auto flex items-center gap-2">
+          <ThemeToggle />
+
+          {!hasSession && (
+            <div className="hidden items-center gap-2 md:flex">
+              <Link to="/login" className={cn(authButtonBase, "border border-white/25 text-white hover:bg-white/10")}>
+                Iniciar sesión
+              </Link>
+              <Link to="/registro" className={cn(authButtonBase, "bg-brand text-white hover:bg-brand-dark")}>
+                Registrarse
+              </Link>
+            </div>
+          )}
+
+          {/* Mobile: con sesión abre el menú lateral de la cuenta; sin sesión, el menú público. */}
+          <button
+            type="button"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-gray-200 hover:bg-white/10 md:hidden"
+            aria-label={hasSession ? (sidebarOpen ? "Cerrar menú" : "Abrir menú") : mobileOpen ? "Cerrar menú" : "Abrir menú"}
+            aria-expanded={hasSession ? sidebarOpen : mobileOpen}
+            aria-controls={hasSession ? "sidebar-drawer" : "menu-mobile"}
+            onClick={() => (hasSession ? onToggleSidebar() : setMobileOpen((v) => !v))}
+          >
+            {(hasSession ? sidebarOpen : mobileOpen) ? <X className="h-6 w-6" aria-hidden /> : <Menu className="h-6 w-6" aria-hidden />}
+          </button>
+        </div>
       </nav>
 
-      {/* Mobile: panel */}
-      {mobileOpen && (
-        <div id="menu-mobile" className="border-t px-6 py-3 md:hidden">
+      {/* Mobile sin sesión: panel */}
+      {!hasSession && mobileOpen && (
+        <div id="menu-mobile" className="border-t border-white/10 px-4 py-3 md:hidden">
           <ul className="space-y-1">
             {mainLinks.map((link) => (
               <li key={link.to}>
-                <NavLink
-                  to={link.to}
-                  end={link.end}
-                  className={({ isActive }) =>
-                    cn("block rounded-md px-2 py-2 text-sm font-medium text-gray-700", isActive && "text-brand")
-                  }
-                >
+                <NavLink to={link.to} end={link.end} className={mobileLinkClass}>
                   {link.label}
                 </NavLink>
               </li>
@@ -240,27 +281,16 @@ export default function NavBar() {
                 aria-expanded={mobileNosotrosOpen}
                 aria-controls="menu-mobile-nosotros"
                 onClick={() => setMobileNosotrosOpen((v) => !v)}
-                className={cn(
-                  "flex w-full items-center justify-between rounded-md px-2 py-2 text-sm font-medium text-gray-700",
-                  nosotrosActive && "text-brand"
-                )}
+                className="flex w-full items-center justify-between rounded-md px-2 py-2 text-sm font-medium text-gray-200 hover:bg-white/10"
               >
                 Nosotros
-                <ChevronDown
-                  className={cn("h-4 w-4 transition-transform", mobileNosotrosOpen && "rotate-180")}
-                  aria-hidden
-                />
+                <ChevronDown className={cn("h-4 w-4 transition-transform", mobileNosotrosOpen && "rotate-180")} aria-hidden />
               </button>
               {mobileNosotrosOpen && (
-                <ul id="menu-mobile-nosotros" className="ml-3 space-y-1 border-l pl-3">
+                <ul id="menu-mobile-nosotros" className="ml-3 space-y-1 border-l border-white/15 pl-3">
                   {nosotrosItems.map((item) => (
                     <li key={item.to}>
-                      <NavLink
-                        to={item.to}
-                        className={({ isActive }) =>
-                          cn("block rounded-md px-2 py-2 text-sm text-gray-600", isActive && "font-semibold text-brand")
-                        }
-                      >
+                      <NavLink to={item.to} className={mobileLinkClass}>
                         {item.label}
                       </NavLink>
                     </li>
@@ -269,6 +299,14 @@ export default function NavBar() {
               )}
             </li>
           </ul>
+          <div className="mt-3 grid grid-cols-2 gap-2 border-t border-white/10 pt-3">
+            <Link to="/login" className={cn(authButtonBase, "border border-white/25 text-white hover:bg-white/10")}>
+              Iniciar sesión
+            </Link>
+            <Link to="/registro" className={cn(authButtonBase, "bg-brand text-white hover:bg-brand-dark")}>
+              Registrarse
+            </Link>
+          </div>
         </div>
       )}
     </header>

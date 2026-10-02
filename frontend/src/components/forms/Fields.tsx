@@ -2,7 +2,7 @@ import { useId } from "react";
 import { cn } from "@/lib/utils";
 
 const inputClass =
-  "mt-1 w-full rounded-md border px-3 py-2 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand";
+  "mt-1 w-full rounded-md border bg-surface px-3 py-2 text-fg focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand";
 
 function FieldShell({
   id,
@@ -21,17 +21,17 @@ function FieldShell({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+      <label htmlFor={id} className="block text-sm font-medium text-fg-muted">
         {label}
-        {required && <span className="text-red-500"> *</span>}
+        {required && <span className="text-red-500 dark:text-red-400"> *</span>}
       </label>
       {children}
       {error ? (
-        <p id={`${id}-error`} role="alert" className="mt-1 text-sm text-red-600">
+        <p id={`${id}-error`} role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">
           {error}
         </p>
       ) : (
-        hint && <p className="mt-1 text-xs text-gray-500">{hint}</p>
+        hint && <p className="mt-1 text-xs text-fg-subtle">{hint}</p>
       )}
     </div>
   );
@@ -123,7 +123,7 @@ export function TextAreaField({
         aria-describedby={error ? `${id}-error` : undefined}
         className={cn(inputClass, error && "border-red-400")}
       />
-      <p className="mt-1 text-right text-xs text-gray-400" aria-live="polite">
+      <p className="mt-1 text-right text-xs text-fg-subtle" aria-live="polite">
         {counter}
       </p>
     </FieldShell>
@@ -156,7 +156,7 @@ export function SelectField({
         onChange={onChange}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? `${id}-error` : undefined}
-        className={cn(inputClass, "bg-white", error && "border-red-400")}
+        className={cn(inputClass, "bg-surface", error && "border-red-400")}
       >
         <option value="">{placeholder}</option>
         {options.map((option) => (
@@ -185,7 +185,7 @@ export function CheckboxField({
   const id = useId();
   return (
     <div>
-      <label htmlFor={id} className="flex items-start gap-2 text-sm text-gray-700">
+      <label htmlFor={id} className="flex items-start gap-2 text-sm text-fg-muted">
         <input
           id={id}
           type="checkbox"
@@ -193,12 +193,12 @@ export function CheckboxField({
           checked={checked}
           onChange={onChange}
           aria-invalid={Boolean(error)}
-          className="mt-0.5 h-4 w-4 rounded border-gray-300 text-brand focus:ring-brand"
+          className="mt-0.5 h-4 w-4 rounded border-line text-accent focus:ring-brand"
         />
         <span>{children}</span>
       </label>
       {error && (
-        <p role="alert" className="mt-1 text-sm text-red-600">
+        <p role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">
           {error}
         </p>
       )}

@@ -48,7 +48,10 @@ from app.core.config import settings  # noqa: E402
 from app.core.database import AsyncSessionLocal, engine  # noqa: E402
 from app.core.rate_limit import limiter  # noqa: E402
 from app.main import app  # noqa: E402
-from app.models import ClientOrder, JobApplication  # noqa: E402
+from app.core import scheduler as scheduler_mod  # noqa: E402
+from app.crud import trash as crud_trash  # noqa: E402
+from app.models import ClientOrder, JobApplication, SupportMessage, SupportTicket, User  # noqa: E402
+from app.models.base import utcnow  # noqa: E402
 
 PASSED = 0
 FAILED: list[str] = []
@@ -96,7 +99,8 @@ async def main() -> None:
     async with engine.begin() as conn:
         await conn.execute(
             text(
-                "TRUNCATE users, client_orders, job_applications, partners, portfolio_items "
+                "TRUNCATE users, client_orders, job_applications, partners, portfolio_items, "
+                "portfolio_media, support_tickets, support_messages "
                 "RESTART IDENTITY CASCADE"
             )
         )
@@ -128,7 +132,9 @@ async def main() -> None:
         check("/auth/me devuelve rol ADMIN y full_name", me["role"] == "ADMIN" and me["full_name"] == "Admin de Prueba", me)
 
         limiter.reset()
-        await c.post("/api/auth/register", json={"email": "cliente@x.com", "password": "clave-cliente-1"})
+        r = await c.post("/api/auth/register", json={"email": "cliente@x.com", "password": "clave-cliente-1", "first_name": "  Lucía ", "last_name": "Pérez"})
+        check("registro crea USER con nombre/apellido (full_name derivado)", r.status_code == 201 and r.json()["role"] == "USER" and r.json()["first_name"] == "Lucía" and r.json()["full_name"] == "Lucía Pérez", r.text)
+        check("registro no acepta role (se ignora)", (await c.post("/api/auth/register", json={"email": "x2@x.com", "password": "clave-cliente-1", "role": "ADMIN"})).json()["role"] == "USER")
         user_tok = (await login(c, "cliente@x.com", "clave-cliente-1")).json()["access_token"]
         user = {"Authorization": f"Bearer {user_tok}"}
 
@@ -136,8 +142,9 @@ async def main() -> None:
         print("\n[pedidos]")
         limiter.reset()
         sent.clear()
-        r = await c.post("/api/orders", json=ORDER)
-        check("POST /orders público -> 201 Receipt", r.status_code == 201 and r.json() == {"ok": True}, r.text)
+        check("POST /orders sin sesión -> 401", (await c.post("/api/orders", json=ORDER)).status_code == 401)
+        r = await c.post("/api/orders", headers=user, json=ORDER)
+        check("POST /orders con sesión -> 201 Receipt", r.status_code == 201 and r.json() == {"ok": True}, r.text)
         check("se envían 2 mails (admin + auto-reply)", len(sent) == 2, len(sent))
         if len(sent) == 2:
             admin_mail, reply = sent
@@ -150,29 +157,29 @@ async def main() -> None:
             raise OSError("SMTP caído")
 
         email_mod._deliver = boom
-        r = await c.post("/api/orders", json={**ORDER, "company_name": "Con SMTP roto"})
+        r = await c.post("/api/orders", headers=user, json={**ORDER, "company_name": "Con SMTP roto"})
         check("si falla el SMTP la respuesta sigue siendo 201", r.status_code == 201, r.text)
         email_mod._deliver = lambda msg: sent.append(msg)
 
         # Inyección de headers en el nombre no rompe ni se cuela
         sent.clear()
-        r = await c.post("/api/orders", json={**ORDER, "contact_name": "Ana\r\nBcc: robo@x.com", "company_name": "Inyección"})
+        r = await c.post("/api/orders", headers=user, json={**ORDER, "contact_name": "Ana\r\nBcc: robo@x.com", "company_name": "Inyección"})
         check("nombre con \\r\\n aceptado y sanitizado", r.status_code == 201 and all("Bcc" not in m.keys() for m in sent), r.text)
 
         before = await count(ClientOrder)
-        r = await c.post("/api/orders", json={**ORDER, "website": "http://spam.com"})
+        r = await c.post("/api/orders", headers=user, json={**ORDER, "website": "http://spam.com"})
         check("honeypot lleno: 201 pero no guarda", r.status_code == 201 and await count(ClientOrder) == before)
-        r = await c.post("/api/orders", json={**ORDER, "contact_email": "no-es-email"})
+        r = await c.post("/api/orders", headers=user, json={**ORDER, "contact_email": "no-es-email"})
         check("email inválido -> 422", r.status_code == 422)
-        r = await c.post("/api/orders", json={**ORDER, "problem_description": "corto"})
+        r = await c.post("/api/orders", headers=user, json={**ORDER, "problem_description": "corto"})
         check("descripción muy corta -> 422", r.status_code == 422)
-        r = await c.post("/api/orders", json={**ORDER, "contact_phone": "abc"})
+        r = await c.post("/api/orders", headers=user, json={**ORDER, "contact_phone": "abc"})
         check("teléfono inválido -> 422", r.status_code == 422)
-        r = await c.post("/api/orders", json={**ORDER, "contact_phone": ""})
+        r = await c.post("/api/orders", headers=user, json={**ORDER, "contact_phone": ""})
         check("teléfono vacío se acepta (opcional)", r.status_code == 201, r.text)
 
         limiter.reset()
-        codes = [(await c.post("/api/orders", json=ORDER)).status_code for _ in range(7)]
+        codes = [(await c.post("/api/orders", headers=user, json=ORDER)).status_code for _ in range(7)]
         check("rate limit: 5 pasan y después 429", codes == [201] * 5 + [429] * 2, codes)
 
         # listado protegido
@@ -186,7 +193,7 @@ async def main() -> None:
         check("total = filas en la base", page["total"] == total_in_db, (page["total"], total_in_db))
         ids = [o["id"] for o in page["items"]]
         check("orden descendente (más nuevos primero)", ids == sorted(ids, reverse=True), ids)
-        check("counts incluye todos los estados", set(page["counts"]) == {"nuevo", "en_revision", "contactado", "descartado"}, page["counts"])
+        check("counts incluye todos los estados", set(page["counts"]) == {"nuevo", "en_revision", "contactado", "finalizado", "descartado"}, page["counts"])
         check("contadores suman el total", sum(page["counts"].values()) == total_in_db)
 
         oid = ids[0]
@@ -248,11 +255,11 @@ async def main() -> None:
         limiter.reset()
         settings.ENVIRONMENT = "production"
         settings.TURNSTILE_SECRET_KEY = None
-        r = await c.post("/api/orders", json=ORDER)
+        r = await c.post("/api/orders", headers=user, json=ORDER)
         check("producción sin secret -> falla cerrado (503)", r.status_code == 503, r.text)
 
         settings.TURNSTILE_SECRET_KEY = "secreto-de-prueba"
-        r = await c.post("/api/orders", json=ORDER)
+        r = await c.post("/api/orders", headers=user, json=ORDER)
         check("sin token de Turnstile -> 400", r.status_code == 400, r.text)
 
         cf_requests: list[str] = []
@@ -265,10 +272,10 @@ async def main() -> None:
 
         real_client = httpx.AsyncClient
         turnstile_mod.httpx.AsyncClient = lambda **kw: real_client(transport=httpx.MockTransport(fake_cloudflare(False)), **kw)
-        r = await c.post("/api/orders", json={**ORDER, "turnstile_token": "token-mal"})
+        r = await c.post("/api/orders", headers=user, json={**ORDER, "turnstile_token": "token-mal"})
         check("token rechazado por Cloudflare -> 400", r.status_code == 400, r.text)
         turnstile_mod.httpx.AsyncClient = lambda **kw: real_client(transport=httpx.MockTransport(fake_cloudflare(True)), **kw)
-        r = await c.post("/api/orders", json={**ORDER, "turnstile_token": "token-ok"})
+        r = await c.post("/api/orders", headers=user, json={**ORDER, "turnstile_token": "token-ok"})
         check("token válido -> 201", r.status_code == 201, r.text)
         check("se le manda a Cloudflare el secret, el token y la IP", "secret=secreto-de-prueba" in cf_requests[-1] and "response=token-ok" in cf_requests[-1] and "remoteip=" in cf_requests[-1], cf_requests[-1])
 
@@ -276,7 +283,7 @@ async def main() -> None:
             raise httpx.ConnectError("sin red")
 
         turnstile_mod.httpx.AsyncClient = lambda **kw: real_client(transport=httpx.MockTransport(cf_down), **kw)
-        r = await c.post("/api/orders", json={**ORDER, "turnstile_token": "x"})
+        r = await c.post("/api/orders", headers=user, json={**ORDER, "turnstile_token": "x"})
         check("Cloudflare caído -> falla cerrado (503)", r.status_code == 503, r.text)
         turnstile_mod.httpx.AsyncClient = real_client
         settings.ENVIRONMENT = "development"
@@ -303,6 +310,255 @@ async def main() -> None:
         check("portfolio: status inválido -> 422", (await c.post("/api/portfolio", json={"title": "x", "description": "y", "status": "hecho"}, headers=admin)).status_code == 422)
         check("servicios siguen funcionando", (await c.post("/api/services", json={"title": "IA", "description": "Chatbots"}, headers=admin)).status_code == 201)
         check("tickets siguen funcionando", (await c.post("/api/tickets", json={"title": "Problema", "description": "No anda"}, headers=user)).status_code == 201)
+
+
+        # ---------------------------------------------- v2.1: mis pedidos y mails de estado
+        print("\n[v2.1: pedidos ligados al usuario y mail de cambio de estado]")
+        async with AsyncSessionLocal() as s:
+            user_id = await s.scalar(select(User.id).where(User.email == "cliente@x.com"))
+            owned = await s.scalar(select(func.count()).select_from(ClientOrder).where(ClientOrder.user_id == user_id))
+        check("los pedidos nuevos quedan con user_id del cliente (del token)", owned and owned == await count(ClientOrder), owned)
+        mine = (await c.get("/api/orders/mine", headers=user)).json()
+        check("GET /orders/mine devuelve los pedidos del usuario", len(mine) == owned and all(o["user_id"] == user_id for o in mine))
+        check("GET /orders/mine sin token -> 401", (await c.get("/api/orders/mine")).status_code == 401)
+        await c.post("/api/auth/register", json={"email": "otro@x.com", "password": "clave-otro-123"})
+        other = {"Authorization": f"Bearer {(await login(c, 'otro@x.com', 'clave-otro-123')).json()['access_token']}"}
+        check("otro usuario no ve pedidos ajenos", (await c.get("/api/orders/mine", headers=other)).json() == [])
+
+        r = await c.get("/api/orders", headers=admin)
+        check("OrderStatus incluye finalizado", "finalizado" in r.json()["counts"])
+        oid2 = mine[0]["id"]
+        sent.clear()
+        r = await c.patch(f"/api/orders/{oid2}", json={"status": "finalizado"}, headers=admin)
+        check("PATCH a finalizado", r.status_code == 200 and r.json()["status"] == "finalizado", r.text)
+        check("cambio de estado manda 1 mail al dueño (no al contact_email del form)", len(sent) == 1 and sent[0]["To"] == "cliente@x.com" and "Finalizado" in sent[0]["Subject"], [dict(m) for m in sent])
+        sent.clear()
+        await c.patch(f"/api/orders/{oid2}", json={"status": "finalizado"}, headers=admin)
+        check("mismo estado otra vez: NO manda mail", len(sent) == 0)
+        email_mod._deliver = boom
+        r = await c.patch(f"/api/orders/{oid2}", json={"status": "en_revision"}, headers=admin)
+        check("SMTP caído: el PATCH igual responde 200", r.status_code == 200, r.text)
+        email_mod._deliver = lambda msg: sent.append(msg)
+
+        # ------------------------------------------------------ roles: técnicos (panel admin)
+        print("\n[roles: promover / quitar TECHNICIAN]")
+        T = "/api/team/technicians"
+        check("GET técnicos con USER -> 403", (await c.get(T, headers=user)).status_code == 403)
+        check("POST promover sin sesión -> 401", (await c.post(T, json={"email": "otro@x.com"})).status_code == 401)
+        check("POST promover con USER -> 403", (await c.post(T, json={"email": "otro@x.com"}, headers=user)).status_code == 403)
+        check("promover email inexistente -> 404", (await c.post(T, json={"email": "nadie@x.com"}, headers=admin)).status_code == 404)
+        await c.post("/api/auth/register", json={"email": "admin2@x.com", "password": "clave-admin2-1"})
+        async with AsyncSessionLocal() as s:
+            await s.execute(text("update users set role = 'ADMIN' where email = 'admin2@x.com'"))
+            await s.commit()
+        r = await c.post(T, json={"email": "admin2@x.com"}, headers=admin)
+        check("promover a un ADMIN -> 409", r.status_code == 409, (r.status_code, r.text))
+        r = await c.post(T, json={"email": " OTRO@x.com "}, headers=admin)
+        check("ADMIN promueve por email (case/espacios ok)", r.status_code == 201 and r.json()["role"] == "TECHNICIAN", r.text)
+        tech_id = r.json()["id"]
+        check("promover de nuevo -> 409", (await c.post(T, json={"email": "otro@x.com"}, headers=admin)).status_code == 409)
+        tech = other  # mismo token: el rol se lee de la DB en cada request
+        check("el token del usuario ya tiene rol TECHNICIAN (sin volver a loguear)", (await c.get("/api/auth/me", headers=tech)).json()["role"] == "TECHNICIAN")
+        r = await c.get(T, headers=tech)
+        check("TECHNICIAN puede VER la lista", r.status_code == 200 and [u["email"] for u in r.json()] == ["otro@x.com"], r.text)
+        check("TECHNICIAN NO puede promover", (await c.post(T, json={"email": "cliente@x.com"}, headers=tech)).status_code == 403)
+        check("TECHNICIAN NO puede quitar roles", (await c.delete(f"{T}/{tech_id}", headers=tech)).status_code == 403)
+
+        print("\n[permisos del TECHNICIAN]")
+        r = await c.get("/api/orders", headers=tech)
+        check("TECHNICIAN ve pedidos", r.status_code == 200)
+        check("TECHNICIAN cambia estado de pedido", (await c.patch(f"/api/orders/{oid2}", json={"status": "contactado"}, headers=tech)).status_code == 200)
+        check("TECHNICIAN ve postulaciones", (await c.get("/api/applications", headers=tech)).status_code == 200)
+        check("TECHNICIAN cambia estado de postulación", (await c.patch(f"/api/applications/{aid}", json={"status": "nueva"}, headers=tech)).status_code == 200)
+        check("TECHNICIAN NO puede enviar a papelera un pedido", (await c.delete(f"/api/orders/{oid2}", headers=tech)).status_code == 403)
+        check("TECHNICIAN NO puede enviar a papelera una postulación", (await c.delete(f"/api/applications/{aid}", headers=tech)).status_code == 403)
+        check("TECHNICIAN NO ve la papelera", (await c.get("/api/trash", headers=tech)).status_code == 403)
+        check("USER no puede enviar a papelera", (await c.delete(f"/api/orders/{oid2}", headers=user)).status_code == 403)
+
+        # ------------------------------------------------------------- papelera + purga
+        print("\n[papelera: soft delete, restaurar y purga a los 30 días]")
+        before = (await c.get("/api/orders", headers=admin)).json()
+        r = await c.delete(f"/api/orders/{oid2}", headers=admin)
+        check("ADMIN envía pedido a la papelera (204)", r.status_code == 204, r.text)
+        after = (await c.get("/api/orders", headers=admin)).json()
+        check("sale del listado y de los contadores", after["total"] == before["total"] - 1 and oid2 not in [o["id"] for o in after["items"]] and sum(after["counts"].values()) == sum(before["counts"].values()) - 1)
+        check("sale de 'Mis pedidos'", oid2 not in [o["id"] for o in (await c.get("/api/orders/mine", headers=user)).json()])
+        check("PATCH sobre uno en papelera -> 404", (await c.patch(f"/api/orders/{oid2}", json={"status": "nuevo"}, headers=admin)).status_code == 404)
+        check("borrarlo dos veces -> 404", (await c.delete(f"/api/orders/{oid2}", headers=admin)).status_code == 404)
+        r = await c.delete(f"/api/applications/{aid}", headers=admin)
+        check("ADMIN envía postulación a la papelera", r.status_code == 204)
+        check("postulación fuera del listado", aid not in [a["id"] for a in (await c.get("/api/applications", headers=admin)).json()["items"]])
+
+        r = await c.get("/api/trash", headers=admin)
+        t = r.json()
+        kinds = {(i["kind"], i["id"]) for i in t["items"]}
+        check("GET /trash lista ambos con retention_days=30", r.status_code == 200 and t["retention_days"] == 30 and kinds == {("order", oid2), ("application", aid)}, t)
+        it = next(i for i in t["items"] if i["kind"] == "order")
+        check("seconds_left ≈ 30 días", 29.9 * 86400 < it["seconds_left"] <= 30 * 86400, it["seconds_left"])
+        check("GET /trash con USER -> 403", (await c.get("/api/trash", headers=user)).status_code == 403)
+        check("restaurar con TECHNICIAN -> 403", (await c.post(f"/api/trash/order/{oid2}/restore", headers=tech)).status_code == 403)
+        r = await c.post(f"/api/trash/order/{oid2}/restore", headers=admin)
+        check("ADMIN restaura el pedido", r.status_code == 204)
+        check("vuelve al listado", oid2 in [o["id"] for o in (await c.get("/api/orders", headers=admin)).json()["items"]])
+        check("restaurar algo que no está en la papelera -> 404", (await c.post(f"/api/trash/order/{oid2}/restore", headers=admin)).status_code == 404)
+        check("kind inválido -> 422", (await c.post(f"/api/trash/foo/{oid2}/restore", headers=admin)).status_code == 422)
+
+        # Purga: la postulación sigue en la papelera. La envejecemos 31 días y mandamos otro pedido a
+        # la papelera hace 29 días: el primero debe borrarse, el segundo no.
+        await c.delete(f"/api/orders/{oid2}", headers=admin)
+        async with AsyncSessionLocal() as s:
+            await s.execute(text("update job_applications set deleted_at = now() - interval '31 days' where id = :i"), {"i": aid})
+            await s.execute(text("update client_orders set deleted_at = now() - interval '29 days' where id = :i"), {"i": oid2})
+            await s.commit()
+        async with AsyncSessionLocal() as s:
+            removed = await crud_trash.purge_expired(s)
+        check("purga: elimina lo de >30 días, conserva lo de 29", removed == 1 and kinds_after(await c.get("/api/trash", headers=admin)) == {("order", oid2)}, removed)
+        async with AsyncSessionLocal() as s:
+            gone = await s.get(JobApplication, aid)
+        check("la postulación vencida ya no existe en la DB", gone is None)
+        async with AsyncSessionLocal() as s:
+            await s.execute(text("update client_orders set deleted_at = null where id = :i"), {"i": oid2})
+            await s.commit()
+
+        print("\n[APScheduler]")
+        scheduler_mod.start_scheduler()
+        try:
+            job = scheduler_mod.scheduler.get_job(scheduler_mod.PURGE_JOB_ID)
+            check("el job de limpieza queda registrado", job is not None and scheduler_mod.scheduler.running)
+            check("intervalo = TRASH_PURGE_INTERVAL_MINUTES", job is not None and job.trigger.interval.total_seconds() == settings.TRASH_PURGE_INTERVAL_MINUTES * 60)
+            async with AsyncSessionLocal() as s:
+                await s.execute(text("update client_orders set deleted_at = now() - interval '40 days' where id = :i"), {"i": oid2})
+                await s.commit()
+            await scheduler_mod.purge_trash_job()  # lo que ejecuta el scheduler
+            async with AsyncSessionLocal() as s:
+                check("el job elimina de verdad lo vencido", await s.get(ClientOrder, oid2) is None)
+        finally:
+            scheduler_mod.stop_scheduler()
+
+        print("\n[quitar rol TECHNICIAN]")
+        r = await c.delete(f"{T}/{tech_id}", headers=admin)
+        check("ADMIN quita el rol (vuelve a USER)", r.status_code == 200 and r.json()["role"] == "USER", r.text)
+        check("la sesión abierta pierde permisos al instante", (await c.get("/api/orders", headers=tech)).status_code == 403)
+        check("quitar a quien no es TECHNICIAN -> 404", (await c.delete(f"{T}/{tech_id}", headers=admin)).status_code == 404)
+        check("la lista queda vacía", (await c.get(T, headers=admin)).json() == [])
+
+        # ----------------------------------------------------------------- perfil
+        print("\n[mi cuenta]")
+        r = await c.patch("/api/users/me", json={"first_name": " Ana ", "last_name": "Gómez"}, headers=user)
+        check("PATCH /users/me edita nombre", r.status_code == 200 and r.json()["full_name"] == "Ana Gómez", r.text)
+        check("PATCH /users/me no deja cambiar el rol", (await c.patch("/api/users/me", json={"first_name": "A", "last_name": "B", "role": "ADMIN"}, headers=user)).status_code == 422)
+        check("PATCH /users/me con nombre vacío -> 422", (await c.patch("/api/users/me", json={"first_name": " ", "last_name": "B"}, headers=user)).status_code == 422)
+
+        # ------------------------------------------------------------ chat de soporte
+        print("\n[chat de soporte]")
+        S = "/api/support/tickets"
+        limiter.reset()
+        check("crear chat sin sesión -> 401", (await c.post(S, json={"title": "Hola", "message": "x"})).status_code == 401)
+        check("crear chat sin título -> 422", (await c.post(S, json={"message": "hola"}, headers=user)).status_code == 422)
+        check("título muy corto -> 422", (await c.post(S, json={"title": "ab", "message": "hola"}, headers=user)).status_code == 422)
+        check("primer mensaje > 2000 -> 422", (await c.post(S, json={"title": "Problema", "message": "a" * 2001}, headers=user)).status_code == 422)
+        check("campo extra (user_id) -> 422", (await c.post(S, json={"title": "Problema", "message": "hola", "user_id": 1}, headers=user)).status_code == 422)
+        r = await c.post(S, json={"title": "No puedo entrar", "message": "a" * 2000}, headers=user)
+        d = r.json()
+        check("mensaje de exactamente 2000 caracteres se acepta", r.status_code == 201 and len(d["messages"][0]["content"]) == 2000, r.text[:200])
+        check("el chat arranca 'abierto' y el cliente puede escribir 1 más", d["status"] == "abierto" and d["can_send"] is True and d["block_reason"] is None)
+        tid = d["id"]
+        r = await c.post(f"{S}/{tid}/messages", json={"content": "Segundo mensaje"}, headers=user)
+        check("2.º mensaje seguido: OK pero queda bloqueado", r.status_code == 201 and r.json()["can_send"] is False and r.json()["block_reason"] == "awaiting_support", r.text[:200])
+        r = await c.post(f"{S}/{tid}/messages", json={"content": "Tercero"}, headers=user)
+        check("3.er mensaje seguido -> 409 (regla validada en el backend)", r.status_code == 409 and "2 mensajes seguidos" in r.json()["detail"], r.text)
+        n_msgs = await count(SupportMessage)
+        check("el 3.º no se guardó", n_msgs == 2, n_msgs)
+        check("mensaje vacío -> 422", (await c.post(f"{S}/{tid}/messages", json={"content": "   "}, headers=user)).status_code == 422)
+        check("mensaje > 2000 -> 422", (await c.post(f"{S}/{tid}/messages", json={"content": "x" * 2001}, headers=user)).status_code == 422)
+
+        # privacidad
+        stranger = {"Authorization": f"Bearer {(await login(c, 'cliente@x.com', 'clave-cliente-1')).json()['access_token']}"}  # mismo usuario
+        await c.post("/api/auth/register", json={"email": "ajeno@x.com", "password": "clave-ajeno-123"})
+        ajeno = {"Authorization": f"Bearer {(await login(c, 'ajeno@x.com', 'clave-ajeno-123')).json()['access_token']}"}
+        check("otro usuario no puede leer el chat (404)", (await c.get(f"{S}/{tid}", headers=ajeno)).status_code == 404)
+        check("otro usuario no puede escribir (404)", (await c.post(f"{S}/{tid}/messages", json={"content": "hola"}, headers=ajeno)).status_code == 404)
+        check("USER no puede listar todos los chats (403)", (await c.get(S, headers=user)).status_code == 403)
+        check("historial propio: lista por título", [t["title"] for t in (await c.get(f"{S}/mine", headers=stranger)).json()] == ["No puedo entrar"])
+        check("historial de otro usuario: vacío", (await c.get(f"{S}/mine", headers=ajeno)).json() == [])
+
+        # el equipo responde (admin y técnico)
+        r = await c.get(S, headers=admin)
+        p = r.json()
+        check("ADMIN lista chats con counts por estado", r.status_code == 200 and set(p["counts"]) == {"abierto", "respondido", "cerrado"} and p["counts"]["abierto"] == 1 and p["total"] == 1, p["counts"])
+        check("el chat trae owner y last_message_at", p["items"][0]["owner"]["email"] == "cliente@x.com" and p["items"][0]["first_response_at"] is None)
+        r = await c.post(f"{S}/{tid}/messages", json={"content": "Hola, ya lo miramos."}, headers=admin)
+        d = r.json()
+        check("el equipo responde: estado 'respondido' y first_response_at", r.status_code == 201 and d["status"] == "respondido" and d["first_response_at"] is not None, r.text[:200])
+        check("mensajes marcan from_customer correctamente", [m["from_customer"] for m in d["messages"]] == [True, True, False])
+        r = await c.get(f"{S}/{tid}", headers=user)
+        check("tras la respuesta del equipo el cliente puede escribir de nuevo", r.json()["can_send"] is True)
+        first = r.json()["first_response_at"]
+        for text_ in ("Gracias", "Sigue sin andar"):
+            r = await c.post(f"{S}/{tid}/messages", json={"content": text_}, headers=user)
+        check("ciclo: 2 más y se bloquea otra vez", r.status_code == 201 and r.json()["can_send"] is False and r.json()["status"] == "abierto")
+        r = await c.post(f"{S}/{tid}/messages", json={"content": "x"}, headers=user)
+        check("…y el siguiente es 409", r.status_code == 409)
+        r = await c.post(f"{S}/{tid}/messages", json={"content": "Más info"}, headers=admin)
+        r = await c.post(f"{S}/{tid}/messages", json={"content": "Otra respuesta"}, headers=admin)
+        check("el equipo puede mandar varios seguidos (sin límite)", r.status_code == 201)
+        check("first_response_at no se pisa", r.json()["first_response_at"] == first)
+
+        # carrera: 2 mensajes del cliente en paralelo cuando solo le queda 1 de cupo
+        await c.post(f"{S}/{tid}/messages", json={"content": "uno"}, headers=user)  # cupo 1/2 usado
+        results = await asyncio.gather(*[c.post(f"{S}/{tid}/messages", json={"content": f"carrera {i}"}, headers=user) for i in range(4)])
+        codes = sorted(r.status_code for r in results)
+        check("concurrencia: de 4 simultáneos solo 1 pasa (FOR UPDATE)", codes == [201, 409, 409, 409], codes)
+
+        r = await c.patch(f"{S}/{tid}", json={"status": "cerrado"}, headers=admin)
+        check("el equipo puede cerrar el chat", r.status_code == 200 and r.json()["status"] == "cerrado" and r.json()["block_reason"] == "closed")
+        check("PATCH de estado con USER -> 403", (await c.patch(f"{S}/{tid}", json={"status": "abierto"}, headers=user)).status_code == 403)
+        check("chat cerrado: el cliente no escribe (409)", (await c.post(f"{S}/{tid}/messages", json={"content": "hola"}, headers=user)).status_code == 409)
+        check("chat cerrado: ni el equipo (409)", (await c.post(f"{S}/{tid}/messages", json={"content": "hola"}, headers=admin)).status_code == 409)
+        check("reabrir", (await c.patch(f"{S}/{tid}", json={"status": "respondido"}, headers=admin)).json()["status"] == "respondido")
+        p = (await c.get(f"{S}?status=respondido", headers=admin)).json()
+        check("filtro por estado en soporte", p["total"] == 1 and p["counts"]["cerrado"] == 0)
+
+        async with AsyncSessionLocal() as s:
+            try:
+                await s.execute(text("insert into support_messages (ticket_id, sender_id, content) values (:t, :u, :c)"), {"t": tid, "u": user_id, "c": "x" * 2001})
+                await s.commit()
+                ck = False
+            except Exception:  # noqa: BLE001
+                ck = True
+        check("la DB también rechaza mensajes > 2000 (CHECK)", ck)
+
+        # ------------------------------------------------------ portfolio con galería
+        print("\n[portfolio: galería multimedia]")
+        gal = {"title": "Tienda online", "description": "Texto\ndescriptivo", "status": "terminado", "media": [
+            {"url": "https://res.cloudinary.com/x/a.jpg", "media_type": "image", "caption": "Home"},
+            {"url": "https://res.cloudinary.com/x/v.mp4", "media_type": "video"},
+            {"url": "https://x.com/informe.pdf", "media_type": "file", "caption": ""}]}
+        check("crear portfolio sin sesión -> 401", (await c.post("/api/portfolio", json=gal)).status_code == 401)
+        check("crear portfolio con USER -> 403", (await c.post("/api/portfolio", json=gal, headers=user)).status_code == 403)
+        r = await c.post("/api/portfolio", json=gal, headers=admin)
+        g = r.json()
+        check("crea item con 3 archivos, en orden y con position", r.status_code == 201 and [m["media_type"] for m in g["media"]] == ["image", "video", "file"] and [m["position"] for m in g["media"]] == [0, 1, 2], r.text[:300])
+        check("caption vacío -> null; image_url = portada derivada", g["media"][2]["caption"] is None and g["image_url"] == "https://res.cloudinary.com/x/a.jpg")
+        gid = g["id"]
+        check("GET público devuelve la galería", len((await c.get(f"/api/portfolio/{gid}")).json()["media"]) == 3)
+        r = await c.put(f"/api/portfolio/{gid}", json={**gal, "media": [gal["media"][2], gal["media"][0]]}, headers=admin)
+        check("PUT reemplaza y reordena la galería", r.status_code == 200 and [m["media_type"] for m in r.json()["media"]] == ["file", "image"], r.text[:200])
+        async with AsyncSessionLocal() as s:
+            n_media = await s.scalar(text("select count(*) from portfolio_media where item_id = :i"), {"i": gid})
+        check("los archivos quitados se borran de la tabla", n_media == 2, n_media)
+        check("URL inválida en la galería -> 422", (await c.post("/api/portfolio", json={**gal, "media": [{"url": "javascript:alert(1)"}]}, headers=admin)).status_code == 422)
+        check("tipo de archivo inválido -> 422", (await c.post("/api/portfolio", json={**gal, "media": [{"url": "https://x.com/a", "media_type": "exe"}]}, headers=admin)).status_code == 422)
+        check("más de 30 archivos -> 422", (await c.post("/api/portfolio", json={**gal, "media": [{"url": "https://x.com/a"}] * 31}, headers=admin)).status_code == 422)
+        r = await c.post("/api/portfolio", json={"title": "Legacy", "description": "d", "image_url": "https://x.com/old.png"}, headers=admin)
+        check("compatibilidad: image_url suelto pasa a ser el 1.er archivo", r.status_code == 201 and len(r.json()["media"]) == 1 and r.json()["image_url"] == "https://x.com/old.png", r.text[:200])
+        r = await c.post("/api/auth/register", json={"email": "ed@x.com", "password": "clave-editor-1"})
+        await c.post(T, json={"email": "ed@x.com"}, headers=admin)
+        editor = {"Authorization": f"Bearer {(await login(c, 'ed@x.com', 'clave-editor-1')).json()['access_token']}"}
+        check("TECHNICIAN (editor) puede crear portfolio", (await c.post("/api/portfolio", json=gal, headers=editor)).status_code == 201)
+        check("TECHNICIAN puede editar portfolio", (await c.put(f"/api/portfolio/{gid}", json=gal, headers=editor)).status_code == 200)
+        check("TECHNICIAN NO puede borrar portfolio", (await c.delete(f"/api/portfolio/{gid}", headers=editor)).status_code == 403)
+        check("ADMIN borra y se va la galería en cascada", (await c.delete(f"/api/portfolio/{gid}", headers=admin)).status_code == 204 and (await count_media(gid)) == 0)
 
         # ------------------------------------------------------------ cambio de clave
         print("\n[cambio de contraseña]")
@@ -337,6 +593,15 @@ async def main() -> None:
         check("/api/docs disponible", (await c.get("/api/docs")).status_code == 200)
 
     await engine.dispose()
+
+
+def kinds_after(resp) -> set:
+    return {(i["kind"], i["id"]) for i in resp.json()["items"]}
+
+
+async def count_media(item_id: int) -> int:
+    async with AsyncSessionLocal() as s:
+        return await s.scalar(text("select count(*) from portfolio_media where item_id = :i"), {"i": item_id}) or 0
 
 
 async def count(model) -> int:

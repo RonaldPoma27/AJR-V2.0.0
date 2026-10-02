@@ -23,7 +23,13 @@ async def register(payload: UserCreate, request: Request, db: DBSession):
     if await crud_user.get_by_email(db, payload.email) is not None:
         raise HTTPException(status_code=409, detail=EMAIL_TAKEN)
     try:
-        return await crud_user.create(db, email=payload.email, password=payload.password)
+        return await crud_user.create(
+            db,
+            email=payload.email,
+            password=payload.password,
+            first_name=payload.first_name,
+            last_name=payload.last_name,
+        )
     except IntegrityError:  # carrera entre dos registros simultáneos con el mismo email
         await db.rollback()
         raise HTTPException(status_code=409, detail=EMAIL_TAKEN) from None

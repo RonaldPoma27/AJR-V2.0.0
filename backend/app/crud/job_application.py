@@ -15,7 +15,8 @@ async def create(db: AsyncSession, data: dict[str, Any]) -> JobApplication:
 
 
 async def get(db: AsyncSession, application_id: int) -> JobApplication | None:
-    return await db.get(JobApplication, application_id)
+    application = await db.get(JobApplication, application_id)
+    return application if application is not None and application.deleted_at is None else None
 
 
 async def list_applications(

@@ -7,10 +7,10 @@ export default function Home() {
   return (
     <div className="mx-auto max-w-6xl px-6 py-16">
       <section className="text-center">
-        <h1 className="text-4xl font-bold text-gray-900">
+        <h1 className="text-4xl font-bold text-fg">
           Software a medida que hace más competitiva a tu PyME
         </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
+        <p className="mx-auto mt-4 max-w-2xl text-lg text-fg-muted">
           En AJR Data resolvemos falencias concretas de tu negocio con
           desarrollo a medida — incorporando chatbots, agentes de IA y
           funcionalidades modernas en vez de soluciones genéricas.
@@ -24,10 +24,10 @@ export default function Home() {
       </section>
 
       <section className="mt-20">
-        <h2 className="text-center text-2xl font-semibold text-gray-900">
+        <h2 className="text-center text-2xl font-semibold text-fg">
           Quiénes somos
         </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
+        <p className="mx-auto mt-3 max-w-2xl text-center text-fg-muted">
           Somos una consultora tecnológica enfocada en ayudar a PyMEs a
           resolver problemas puntuales de su negocio mediante software,
           diferenciándonos con ideas más modernas que la competencia de
@@ -37,12 +37,12 @@ export default function Home() {
 
       {partners && partners.length > 0 && (
         <section className="mt-20">
-          <h2 className="text-center text-2xl font-semibold text-gray-900">
+          <h2 className="text-center text-2xl font-semibold text-fg">
             Con quiénes trabajamos
           </h2>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-10">
             {partners.map((p) => (
-              <div key={p.id} className="text-center text-gray-500">
+              <div key={p.id} className="text-center text-fg-subtle">
                 {p.logo_url ? (
                   <img src={p.logo_url} alt={p.name} className="h-10" />
                 ) : (

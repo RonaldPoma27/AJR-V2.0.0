@@ -1,8 +1,14 @@
-"""Envío de mails por SMTP (stdlib). Pensado para correr en BackgroundTasks.
+"""Envío de mails (stdlib). Pensado para correr en BackgroundTasks.
 
 Regla de oro: un problema con el mail NUNCA rompe la respuesta HTTP; se loguea y listo.
-Si tu proveedor bloquea SMTP saliente (pasa en algunos planes gratuitos), reemplazá solo
-`_deliver()` por una llamada a la API HTTP del proveedor: el resto no cambia.
+
+Transportes (EMAIL_BACKEND):
+- "smtp":    envío real por SMTP.
+- "console": mock, no manda nada y loguea el mail completo (desarrollo / pruebas).
+
+Para un servicio externo (Resend, SendGrid, SES...) agregá otra función `_deliver_<nombre>(msg)`
+y sumala al despacho de `_deliver()`: las plantillas y los llamadores no cambian. Si tu hosting
+bloquea SMTP saliente (pasa en algunos planes gratuitos) es justo el caso para usarla.
 """
 import logging
 import re
@@ -16,7 +22,7 @@ from app.core.config import settings
 
 logger = logging.getLogger("email")
 
-BRAND = "#4f46e5"
+BRAND = "#1d6ae5"
 
 
 # ----------------------------------------------------------------------- transporte
@@ -25,7 +31,23 @@ def _clean_header(value: str) -> str:
     return re.sub(r"[\r\n]+", " ", value).strip()
 
 
+def _deliver_console(msg: EmailMessage) -> None:
+    body = msg.get_body(("plain",))
+    logger.info(
+        "[MAIL console] To: %s | Subject: %s\n%s",
+        msg["To"],
+        msg["Subject"],
+        body.get_content() if body else "",
+    )
+
+
 def _deliver(msg: EmailMessage) -> None:
+    if settings.EMAIL_BACKEND == "console":
+        return _deliver_console(msg)
+    return _deliver_smtp(msg)
+
+
+def _deliver_smtp(msg: EmailMessage) -> None:
     mode = settings.SMTP_TLS.strip().lower()
     host, port = settings.SMTP_HOST or "", settings.SMTP_PORT
     if mode == "ssl":
@@ -44,10 +66,11 @@ def send_email(
     to: str, subject: str, text: str, html: str | None = None, reply_to: str | None = None
 ) -> None:
     """Envía un mail. No lanza excepciones: loguea y sigue."""
-    if not settings.SMTP_HOST:
+    console = settings.EMAIL_BACKEND == "console"
+    if not console and not settings.SMTP_HOST:
         logger.info("SMTP no configurado: se omite el mail «%s».", _clean_header(subject))
         return
-    sender = settings.SMTP_FROM or settings.SMTP_USER
+    sender = settings.SMTP_FROM or settings.SMTP_USER or ("no-reply@ajrdata.local" if console else None)
     if not sender:
         logger.warning("Falta SMTP_FROM o SMTP_USER: se omite el mail «%s».", _clean_header(subject))
         return
@@ -164,4 +187,43 @@ def send_application_emails(application: dict[str, Any]) -> None:
         "Recibimos tu postulación en AJR Data",
         f"{intro}\n\n{outro}\n\n— El equipo de AJR Data",
         _html("¡Gracias por postularte!", intro, outro=outro),
+    )
+
+
+# ------------------------------------------------------ cambio de estado de un pedido
+ORDER_STATUS_LABELS = {
+    "nuevo": "Nuevo",
+    "en_revision": "En revisión",
+    "contactado": "Contactado",
+    "finalizado": "Finalizado",
+    "descartado": "Descartado",
+}
+
+_ORDER_STATUS_MESSAGES = {
+    "nuevo": "Tu pedido volvió al estado «Nuevo» y está en la cola para ser revisado.",
+    "en_revision": "Estamos revisando tu pedido. En breve te contamos los próximos pasos.",
+    "contactado": "Ya nos pusimos en contacto con vos por los datos que nos dejaste. "
+    "Si todavía no te llegó nada, revisá tu bandeja de spam o respondé este mail.",
+    "finalizado": "Tu pedido quedó finalizado. ¡Gracias por confiar en AJR Data!",
+    "descartado": "Cerramos tu pedido sin avanzar con el proyecto. Si creés que es un error "
+    "o querés retomarlo, respondé este mail y lo vemos.",
+}
+
+
+def send_order_status_email(
+    *, to: str, name: str, order_id: int, company_name: str, status: str
+) -> None:
+    """Avisa al dueño del pedido que cambió su estado (lo dispara un ADMIN o TECHNICIAN)."""
+    label = ORDER_STATUS_LABELS.get(status, status)
+    intro = f"¡Hola {_first_name(name)}! Tu pedido de {company_name} cambió de estado: {label}."
+    detail = _ORDER_STATUS_MESSAGES.get(status, "")
+    base = (settings.PUBLIC_BASE_URL or "").rstrip("/")
+    link = f"{base}/cuenta/pedidos" if base else ""
+    outro = detail + (f"\n\nPodés seguirlo en: {link}" if link else "")
+    rows = [("Pedido", f"#{order_id} · {company_name}"), ("Estado", label)]
+    send_email(
+        to,
+        f"Tu pedido #{order_id} está «{label}»",
+        f"{intro}\n\n{outro}\n\n— El equipo de AJR Data",
+        _html(f"Tu pedido está «{label}»", intro, rows, outro),
     )

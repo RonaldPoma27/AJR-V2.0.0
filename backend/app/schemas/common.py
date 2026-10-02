@@ -65,3 +65,6 @@ OptionalUrl = Annotated[
 OptionalPhone = Annotated[
     str | None, BeforeValidator(_empty_to_none), AfterValidator(_clean_phone)
 ]
+# Nombre / apellido de una persona (hasta 75 caracteres, "" cuenta como no cargado).
+PersonName = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=75)]
+OptionalPersonName = Annotated[PersonName | None, BeforeValidator(_empty_to_none)]

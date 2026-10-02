@@ -35,7 +35,10 @@ class Settings(BaseSettings):
     # Cloudflare Turnstile (anti-bots en formularios públicos)
     TURNSTILE_SECRET_KEY: str | None = None
 
-    # Email (SMTP). Si SMTP_HOST no está definido, los mails se omiten (se loguea).
+    # Email. EMAIL_BACKEND="smtp" (default) manda por SMTP; "console" es un mock que solo
+    # loguea el mail completo (útil en desarrollo y para probar sin proveedor).
+    # Con "smtp" y sin SMTP_HOST, los mails se omiten (se loguea).
+    EMAIL_BACKEND: str = "smtp"  # "smtp" | "console"
     SMTP_HOST: str | None = None
     SMTP_PORT: int = 587
     SMTP_USER: str | None = None
@@ -43,6 +46,14 @@ class Settings(BaseSettings):
     SMTP_FROM: str | None = None  # default: SMTP_USER
     SMTP_TLS: str = "starttls"  # "starttls" | "ssl" | "none"
     ADMIN_NOTIFY_EMAIL: str | None = None  # default: ADMIN_EMAIL
+
+    # URL pública del sitio (sin barra final). Se usa para los links dentro de los mails.
+    PUBLIC_BASE_URL: str | None = None
+
+    # Papelera: los pedidos/postulaciones borrados se eliminan de verdad pasados N días.
+    TRASH_RETENTION_DAYS: int = Field(default=30, gt=0)
+    TRASH_PURGE_INTERVAL_MINUTES: int = Field(default=60, gt=0)
+    SCHEDULER_ENABLED: bool = True  # False desactiva las tareas periódicas (APScheduler)
 
     # Límite de envíos por IP en los formularios públicos
     RATE_LIMIT_PER_HOUR: int = Field(default=5, gt=0)
@@ -72,6 +83,14 @@ class Settings(BaseSettings):
                 "(python -c \"import secrets; print(secrets.token_urlsafe(48))\")."
             )
         return self
+
+    @field_validator("EMAIL_BACKEND")
+    @classmethod
+    def _check_email_backend(cls, value: str) -> str:
+        value = value.strip().lower()
+        if value not in ("smtp", "console"):
+            raise ValueError('EMAIL_BACKEND debe ser "smtp" o "console"')
+        return value
 
     @property
     def cors_origins_list(self) -> list[str]:

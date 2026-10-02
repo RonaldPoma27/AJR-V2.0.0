@@ -92,7 +92,7 @@ const Turnstile = forwardRef<TurnstileHandle, Props>(function Turnstile({ onToke
 
   if (!SITE_KEY) {
     return import.meta.env.PROD ? (
-      <p className="text-sm text-red-600">
+      <p className="text-sm text-red-600 dark:text-red-400">
         Falta configurar la verificación anti-spam (VITE_TURNSTILE_SITE_KEY).
       </p>
     ) : null;

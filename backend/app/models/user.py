@@ -12,12 +12,19 @@ class User(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     hashed_password: Mapped[str] = mapped_column(String(255))
-    full_name: Mapped[str | None] = mapped_column(String(150))
+    first_name: Mapped[str | None] = mapped_column(String(75))
+    last_name: Mapped[str | None] = mapped_column(String(75))
     role: Mapped[UserRole] = mapped_column(
         SAEnum(UserRole, name="user_role"),
         default=UserRole.USER,
         server_default=UserRole.USER.name,
     )
+
+    @property
+    def full_name(self) -> str | None:
+        """Nombre y apellido concatenados (None si no cargó ninguno)."""
+        name = " ".join(part for part in (self.first_name, self.last_name) if part)
+        return name or None
 
     @property
     def is_staff(self) -> bool:

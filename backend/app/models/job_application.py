@@ -3,11 +3,11 @@ from datetime import datetime
 from sqlalchemy import Boolean, DateTime, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.models.base import Base, TimestampMixin
+from app.models.base import Base, SoftDeleteMixin, TimestampMixin
 from app.models.enums import ApplicationStatus, value_enum
 
 
-class JobApplication(TimestampMixin, Base):
+class JobApplication(SoftDeleteMixin, TimestampMixin, Base):
     """Postulación enviada desde "Trabajá con nosotros"."""
 
     __tablename__ = "job_applications"

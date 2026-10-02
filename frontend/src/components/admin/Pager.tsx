@@ -18,11 +18,11 @@ export default function Pager({
   const hasPrev = page > 0;
   const hasNext = to < total;
   const button =
-    "rounded-md border bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:text-gray-700";
+    "rounded-md border bg-surface px-3 py-1.5 text-sm font-medium text-fg-muted hover:border-brand hover:text-accent disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-line disabled:hover:text-fg-muted";
 
   return (
     <div className="flex items-center justify-between gap-3">
-      <p className="text-sm text-gray-500" aria-live="polite">
+      <p className="text-sm text-fg-subtle" aria-live="polite">
         Mostrando {from}–{to} de {total}
       </p>
       <div className="flex gap-2">

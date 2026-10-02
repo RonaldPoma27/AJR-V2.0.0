@@ -16,13 +16,15 @@ async def create(
     email: str,
     password: str,
     role: UserRole = UserRole.USER,
-    full_name: str | None = None,
+    first_name: str | None = None,
+    last_name: str | None = None,
 ) -> User:
     user = User(
         email=email.strip().lower(),
         hashed_password=await hash_password(password),
         role=role,
-        full_name=(full_name or "").strip() or None,
+        first_name=(first_name or "").strip() or None,
+        last_name=(last_name or "").strip() or None,
     )
     db.add(user)
     await db.commit()
@@ -48,3 +50,25 @@ async def change_password(
     user.hashed_password = await hash_password(new_password)
     await db.commit()
     return True
+
+
+async def update_name(db: AsyncSession, user: User, *, first_name: str, last_name: str) -> User:
+    user.first_name = first_name
+    user.last_name = last_name
+    await db.commit()
+    return user
+
+
+async def list_by_role(db: AsyncSession, role: UserRole) -> list[User]:
+    stmt = select(User).where(User.role == role).order_by(User.first_name, User.email)
+    return list((await db.scalars(stmt)).all())
+
+
+async def get(db: AsyncSession, user_id: int) -> User | None:
+    return await db.get(User, user_id)
+
+
+async def set_role(db: AsyncSession, user: User, role: UserRole) -> User:
+    user.role = role
+    await db.commit()
+    return user

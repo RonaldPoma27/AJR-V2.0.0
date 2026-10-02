@@ -7,7 +7,7 @@ from app.schemas.common import OptionalPhone, text
 
 
 class ClientOrderCreate(BaseModel):
-    """Lo que envía el visitante desde el formulario público (`OrderForm`)."""
+    """Lo que envía el cliente logueado desde `/solicitar-proyecto` (el user_id sale del token)."""
 
     company_name: text(1, 200)
     contact_name: text(1, 200)
@@ -33,6 +33,7 @@ class ClientOrderRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    user_id: int | None  # None = pedido anterior a la v2.1 (se enviaba sin cuenta)
     company_name: str
     contact_name: str
     contact_email: str

@@ -4,6 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AJR Data — Consultora Tech</title>
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <meta name="theme-color" content="#0a0f1a" />
+    <!-- Aplica el tema guardado (o el del sistema) antes de pintar: evita el "flash" blanco. -->
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem("ajrdata_theme");
+          var dark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+          if (dark) document.documentElement.classList.add("dark");
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

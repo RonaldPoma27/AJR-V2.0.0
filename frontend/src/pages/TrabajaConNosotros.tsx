@@ -151,10 +151,10 @@ export default function TrabajaConNosotros() {
   if (createApplication.isSuccess) {
     return (
       <div className="mx-auto max-w-xl px-6 py-24 text-center">
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-fg">
           ¡Gracias por querer sumarte a la familia AJR!
         </h1>
-        <p className="mt-3 text-gray-600">
+        <p className="mt-3 text-fg-muted">
           Recibimos tu postulación y te mandamos un mail de confirmación. La vamos a leer con
           atención y, si hay match, te escribimos para conocernos.
         </p>
@@ -165,16 +165,16 @@ export default function TrabajaConNosotros() {
   return (
     <div>
       {/* Hero */}
-      <section className="border-b bg-gray-50">
+      <section className="border-b bg-surface-2">
         <div className="mx-auto max-w-3xl px-6 py-16 text-center">
-          <h1 className="text-4xl font-bold text-gray-900">{HERO.title}</h1>
-          <p className="mt-5 text-lg text-gray-600">{HERO.intro}</p>
-          <p className="mt-4 text-gray-600">{HERO.outro}</p>
+          <h1 className="text-4xl font-bold text-fg">{HERO.title}</h1>
+          <p className="mt-5 text-lg text-fg-muted">{HERO.intro}</p>
+          <p className="mt-4 text-fg-muted">{HERO.outro}</p>
           <ul className="mt-10 grid gap-4 text-left sm:grid-cols-2">
             {HERO.perks.map((perk) => (
-              <li key={perk.title} className="rounded-lg border bg-white p-4">
-                <h2 className="font-semibold text-brand">{perk.title}</h2>
-                <p className="mt-1 text-sm text-gray-600">{perk.text}</p>
+              <li key={perk.title} className="rounded-lg border bg-surface p-4">
+                <h2 className="font-semibold text-accent">{perk.title}</h2>
+                <p className="mt-1 text-sm text-fg-muted">{perk.text}</p>
               </li>
             ))}
           </ul>
@@ -183,8 +183,8 @@ export default function TrabajaConNosotros() {
 
       {/* Formulario */}
       <section className="mx-auto max-w-xl px-6 py-14">
-        <h2 className="text-2xl font-bold text-gray-900">Postulate</h2>
-        <p className="mt-1 text-sm text-gray-500">Los campos con * son obligatorios.</p>
+        <h2 className="text-2xl font-bold text-fg">Postulate</h2>
+        <p className="mt-1 text-sm text-fg-subtle">Los campos con * son obligatorios.</p>
 
         <form onSubmit={handleSubmit} noValidate className="relative mt-8 space-y-4">
           <TextField label="Nombre y apellido" name="full_name" value={form.full_name} onChange={handleChange} required maxLength={150} autoComplete="name" error={errors.full_name} />
@@ -219,7 +219,7 @@ export default function TrabajaConNosotros() {
           <div>
             <Turnstile ref={turnstileRef} onToken={setToken} />
             {errors.turnstile && (
-              <p role="alert" className="mt-1 text-sm text-red-600">
+              <p role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">
                 {errors.turnstile}
               </p>
             )}
@@ -234,7 +234,7 @@ export default function TrabajaConNosotros() {
           </button>
 
           {createApplication.isError && (
-            <p role="alert" className="text-sm text-red-600">
+            <p role="alert" className="text-sm text-red-600 dark:text-red-400">
               {getFormErrorMessage(createApplication.error, "postulación")}
             </p>
           )}
