@@ -41,5 +41,46 @@
       "TECHNICIAN": "Technician",
       "ADMIN": "Administrator"
     }
+  },
+  "home": {
+    "hero_title": "Custom software that makes your SMB more competitive",
+    "hero_subtitle": "At AJR Data we solve specific flaws in your business with custom development — incorporating chatbots, AI agents, and modern features instead of generic solutions.",
+    "btn_request": "Request a project",
+    "about_title": "About us",
+    "about_desc": "We are a technology consulting firm focused on helping SMBs solve specific business problems through software, standing out with more modern ideas than our clients' competitors."
+  },
+  "team": {
+    "title": "Team",
+    "description": "Technicians can view and change the status of orders, applications, and chats, and edit the portfolio. Only the administrator can send to trash, restore, and manage this list.",
+    "add_title": "Add a technician",
+    "add_desc": "The person must be registered on the site. Enter the email they registered with.",
+    "email_label": "Email",
+    "btn_add": "Grant technician role",
+    "current_technicians": "Current technicians"
+  },
+  "account": {
+    "change_email_title": "Change email",
+    "current_email": "Current email",
+    "new_email": "New email",
+    "current_pwd": "Current password",
+    "pwd_confirm_msg": "We ask for this to confirm it's you.",
+    "btn_change_email": "Change email",
+    "change_pwd_title": "Change password",
+    "new_pwd": "New password",
+    "pwd_rules": {
+      "length": "8 characters or more",
+      "uppercase": "One uppercase letter",
+      "number": "One number",
+      "special": "One special character (! ? # $ %...)"
+    },
+    "repeat_new_pwd": "Repeat new password",
+    "btn_change_pwd": "Change password"
+  },
+  "status": {
+    "nuevo": "New",
+    "en_revision": "Under review",
+    "aprobado": "Approved",
+    "completado": "Completed",
+    "rechazado": "Rejected"
   }
 }
