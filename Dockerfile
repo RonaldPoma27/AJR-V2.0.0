@@ -7,7 +7,7 @@ FROM node:20-slim AS frontend-build
 WORKDIR /app/frontend
 
 COPY frontend/package.json frontend/package-lock.json ./
-RUN npm ci --no-audit --no-fund
+RUN npm install --no-audit --no-fund
 
 COPY frontend/ ./
 # Sitekey pública de Cloudflare Turnstile: se "hornea" en el build de Vite.
