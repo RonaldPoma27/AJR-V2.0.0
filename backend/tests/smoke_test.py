@@ -132,10 +132,10 @@ async def main() -> None:
         check("/auth/me devuelve rol ADMIN y full_name", me["role"] == "ADMIN" and me["full_name"] == "Admin de Prueba", me)
 
         limiter.reset()
-        r = await c.post("/api/auth/register", json={"email": "cliente@x.com", "password": "clave-cliente-1", "first_name": "  Lucía ", "last_name": "Pérez"})
+        r = await c.post("/api/auth/register", json={"email": "cliente@x.com", "password": "Clave-cliente-1!", "first_name": "  Lucía ", "last_name": "Pérez"})
         check("registro crea USER con nombre/apellido (full_name derivado)", r.status_code == 201 and r.json()["role"] == "USER" and r.json()["first_name"] == "Lucía" and r.json()["full_name"] == "Lucía Pérez", r.text)
-        check("registro no acepta role (se ignora)", (await c.post("/api/auth/register", json={"email": "x2@x.com", "password": "clave-cliente-1", "role": "ADMIN"})).json()["role"] == "USER")
-        user_tok = (await login(c, "cliente@x.com", "clave-cliente-1")).json()["access_token"]
+        check("registro no acepta role (se ignora)", (await c.post("/api/auth/register", json={"email": "x2@x.com", "password": "Clave-cliente-1!", "role": "ADMIN"})).json()["role"] == "USER")
+        user_tok = (await login(c, "cliente@x.com", "Clave-cliente-1!")).json()["access_token"]
         user = {"Authorization": f"Bearer {user_tok}"}
 
         # ---------------------------------------------------------------- pedidos
@@ -321,8 +321,8 @@ async def main() -> None:
         mine = (await c.get("/api/orders/mine", headers=user)).json()
         check("GET /orders/mine devuelve los pedidos del usuario", len(mine) == owned and all(o["user_id"] == user_id for o in mine))
         check("GET /orders/mine sin token -> 401", (await c.get("/api/orders/mine")).status_code == 401)
-        await c.post("/api/auth/register", json={"email": "otro@x.com", "password": "clave-otro-123"})
-        other = {"Authorization": f"Bearer {(await login(c, 'otro@x.com', 'clave-otro-123')).json()['access_token']}"}
+        await c.post("/api/auth/register", json={"email": "otro@x.com", "password": "Clave-otro-123!"})
+        other = {"Authorization": f"Bearer {(await login(c, 'otro@x.com', 'Clave-otro-123!')).json()['access_token']}"}
         check("otro usuario no ve pedidos ajenos", (await c.get("/api/orders/mine", headers=other)).json() == [])
 
         r = await c.get("/api/orders", headers=admin)
@@ -347,7 +347,7 @@ async def main() -> None:
         check("POST promover sin sesión -> 401", (await c.post(T, json={"email": "otro@x.com"})).status_code == 401)
         check("POST promover con USER -> 403", (await c.post(T, json={"email": "otro@x.com"}, headers=user)).status_code == 403)
         check("promover email inexistente -> 404", (await c.post(T, json={"email": "nadie@x.com"}, headers=admin)).status_code == 404)
-        await c.post("/api/auth/register", json={"email": "admin2@x.com", "password": "clave-admin2-1"})
+        await c.post("/api/auth/register", json={"email": "admin2@x.com", "password": "Clave-admin2-1!"})
         async with AsyncSessionLocal() as s:
             await s.execute(text("update users set role = 'ADMIN' where email = 'admin2@x.com'"))
             await s.commit()
@@ -473,9 +473,9 @@ async def main() -> None:
         check("mensaje > 2000 -> 422", (await c.post(f"{S}/{tid}/messages", json={"content": "x" * 2001}, headers=user)).status_code == 422)
 
         # privacidad
-        stranger = {"Authorization": f"Bearer {(await login(c, 'cliente@x.com', 'clave-cliente-1')).json()['access_token']}"}  # mismo usuario
-        await c.post("/api/auth/register", json={"email": "ajeno@x.com", "password": "clave-ajeno-123"})
-        ajeno = {"Authorization": f"Bearer {(await login(c, 'ajeno@x.com', 'clave-ajeno-123')).json()['access_token']}"}
+        stranger = {"Authorization": f"Bearer {(await login(c, 'cliente@x.com', 'Clave-cliente-1!')).json()['access_token']}"}  # mismo usuario
+        await c.post("/api/auth/register", json={"email": "ajeno@x.com", "password": "Clave-ajeno-123!"})
+        ajeno = {"Authorization": f"Bearer {(await login(c, 'ajeno@x.com', 'Clave-ajeno-123!')).json()['access_token']}"}
         check("otro usuario no puede leer el chat (404)", (await c.get(f"{S}/{tid}", headers=ajeno)).status_code == 404)
         check("otro usuario no puede escribir (404)", (await c.post(f"{S}/{tid}/messages", json={"content": "hola"}, headers=ajeno)).status_code == 404)
         check("USER no puede listar todos los chats (403)", (await c.get(S, headers=user)).status_code == 403)
@@ -552,9 +552,9 @@ async def main() -> None:
         check("más de 30 archivos -> 422", (await c.post("/api/portfolio", json={**gal, "media": [{"url": "https://x.com/a"}] * 31}, headers=admin)).status_code == 422)
         r = await c.post("/api/portfolio", json={"title": "Legacy", "description": "d", "image_url": "https://x.com/old.png"}, headers=admin)
         check("compatibilidad: image_url suelto pasa a ser el 1.er archivo", r.status_code == 201 and len(r.json()["media"]) == 1 and r.json()["image_url"] == "https://x.com/old.png", r.text[:200])
-        r = await c.post("/api/auth/register", json={"email": "ed@x.com", "password": "clave-editor-1"})
+        r = await c.post("/api/auth/register", json={"email": "ed@x.com", "password": "Clave-editor-1!"})
         await c.post(T, json={"email": "ed@x.com"}, headers=admin)
-        editor = {"Authorization": f"Bearer {(await login(c, 'ed@x.com', 'clave-editor-1')).json()['access_token']}"}
+        editor = {"Authorization": f"Bearer {(await login(c, 'ed@x.com', 'Clave-editor-1!')).json()['access_token']}"}
         check("TECHNICIAN (editor) puede crear portfolio", (await c.post("/api/portfolio", json=gal, headers=editor)).status_code == 201)
         check("TECHNICIAN puede editar portfolio", (await c.put(f"/api/portfolio/{gid}", json=gal, headers=editor)).status_code == 200)
         check("TECHNICIAN NO puede borrar portfolio", (await c.delete(f"/api/portfolio/{gid}", headers=editor)).status_code == 403)
@@ -563,19 +563,45 @@ async def main() -> None:
         # ------------------------------------------------------------ cambio de clave
         print("\n[cambio de contraseña]")
         url = "/api/users/me/password"
-        check("sin token -> 401", (await c.patch(url, json={"current_password": "a", "new_password": "nueva-clave-123"})).status_code == 401)
-        r = await c.patch(url, json={"current_password": "equivocada", "new_password": "nueva-clave-123"}, headers=admin)
+        check("sin token -> 401", (await c.patch(url, json={"current_password": "a", "new_password": "Nueva-clave-123!"})).status_code == 401)
+        r = await c.patch(url, json={"current_password": "equivocada", "new_password": "Nueva-clave-123!"}, headers=admin)
         check("clave actual incorrecta -> 400 (no 401)", r.status_code == 400 and "actual" in r.json()["detail"], r.text)
-        r = await c.patch(url, json={"current_password": "clave-inicial-123", "new_password": "clave-inicial-123"}, headers=admin)
-        check("nueva igual a la actual -> 400", r.status_code == 400, r.text)
+        for weak, why in (("clave-inicial-123", "sin mayúscula ni especial"), ("Clave-inicial", "sin número"), ("clave-inicial-1!", "sin mayúscula"), ("ClaveInicial123", "sin especial")):
+            r = await c.patch(url, json={"current_password": "clave-inicial-123", "new_password": weak}, headers=admin)
+            check(f"nueva débil ({why}) -> 422", r.status_code == 422, r.text)
         r = await c.patch(url, json={"current_password": "clave-inicial-123", "new_password": "corta"}, headers=admin)
         check("nueva muy corta -> 422", r.status_code == 422)
         r = await c.patch(url, json={"current_password": "clave-inicial-123", "new_password": "ñ" * 40}, headers=admin)
         check("nueva > 72 bytes (tildes) -> 422", r.status_code == 422)
-        r = await c.patch(url, json={"current_password": "clave-inicial-123", "new_password": "nueva-clave-123"}, headers=admin)
+        r = await c.patch(url, json={"current_password": "clave-inicial-123", "new_password": "Nueva-clave-123!"}, headers=admin)
         check("cambio exitoso -> 204", r.status_code == 204, r.text)
         check("la clave vieja ya no entra", (await login(c, "admin@ajr.test", "clave-inicial-123")).status_code == 401)
-        check("la clave nueva entra", (await login(c, "admin@ajr.test", "nueva-clave-123")).status_code == 200)
+        check("la clave nueva entra", (await login(c, "admin@ajr.test", "Nueva-clave-123!")).status_code == 200)
+        r = await c.patch(url, json={"current_password": "Nueva-clave-123!", "new_password": "Nueva-clave-123!"}, headers=admin)
+        check("nueva igual a la actual -> 400", r.status_code == 400, r.text)
+        r = await c.post("/api/auth/register", json={"email": "debil@x.com", "password": "sinmayuscula1!"})
+        check("registro con clave débil -> 422", r.status_code == 422, r.text)
+
+        # ------------------------------------------------------------ cambio de email
+        print("\n[cambio de email]")
+        url = "/api/users/me/email"
+        good = {"current_email": "admin@ajr.test", "new_email": "Admin.Nuevo@ajr.test", "current_password": "Nueva-clave-123!"}
+        check("sin token -> 401", (await c.patch(url, json=good)).status_code == 401)
+        r = await c.patch(url, json={**good, "current_email": "otro@ajr.test"}, headers=admin)
+        check("email actual que no coincide -> 400", r.status_code == 400, r.text)
+        r = await c.patch(url, json={**good, "current_password": "equivocada"}, headers=admin)
+        check("contraseña incorrecta -> 400 (no 401)", r.status_code == 400, r.text)
+        r = await c.patch(url, json={**good, "new_email": "admin@ajr.test"}, headers=admin)
+        check("email nuevo igual al actual -> 400", r.status_code == 400, r.text)
+        r = await c.patch(url, json={**good, "new_email": "cliente@x.com"}, headers=admin)
+        check("email nuevo ya registrado -> 409", r.status_code == 409, r.text)
+        r = await c.patch(url, json={**good, "new_email": "no-es-un-email"}, headers=admin)
+        check("email nuevo inválido -> 422", r.status_code == 422, r.text)
+        r = await c.patch(url, json=good, headers=admin)
+        check("cambio exitoso (se guarda en minúsculas)", r.status_code == 200 and r.json()["email"] == "admin.nuevo@ajr.test", r.text)
+        check("la sesión sigue válida tras el cambio", (await c.get("/api/auth/me", headers=admin)).status_code == 200)
+        check("el email viejo ya no entra", (await login(c, "admin@ajr.test", "Nueva-clave-123!")).status_code == 401)
+        check("el email nuevo entra", (await login(c, "admin.nuevo@ajr.test", "Nueva-clave-123!")).status_code == 200)
 
         # --------------------------------------------------------- SPA y rutas /api
         print("\n[frontend estático y fallback de SPA]")

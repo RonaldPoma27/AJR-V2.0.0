@@ -11,7 +11,7 @@ import { SidebarDesktop, SidebarDrawer } from "./Sidebar";
  * - Sin sesión: NavBar + contenido + Footer (sitio público).
  * - Con sesión: layout empresarial, con la NavBar arriba y un Sidebar a la izquierda
  *   (en mobile el Sidebar es un cajón que se abre desde la NavBar).
- * - Cliente (rol USER): además, la burbuja de chat de soporte abajo a la derecha.
+ * - Cualquier usuario con sesión (cliente, técnico o admin): burbuja de chat de soporte abajo a la derecha.
  */
 export default function AppLayout() {
   const hasSession = Boolean(getToken());
@@ -21,7 +21,7 @@ export default function AppLayout() {
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
 
   // En /cuenta/soporte el chat ya está a pantalla completa: la burbuja sobraría.
-  const showBubble = me?.role === "USER" && !pathname.startsWith("/cuenta/soporte");
+  const showBubble = Boolean(me) && !pathname.startsWith("/cuenta/soporte");
 
   return (
     <div className="flex min-h-screen flex-col">

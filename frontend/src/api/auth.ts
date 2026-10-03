@@ -87,3 +87,15 @@ export function useUpdateProfile() {
     onSuccess: (me) => queryClient.setQueryData(["me"], me),
   });
 }
+
+export function useChangeEmail() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: { current_email: string; new_email: string; current_password: string }) => {
+      const { data } = await apiClient.patch<CurrentUser>("/users/me/email", payload);
+      return data;
+    },
+    // El token lleva el id del usuario, así que la sesión sigue válida: solo refrescamos "me".
+    onSuccess: (me) => queryClient.setQueryData(["me"], me),
+  });
+}

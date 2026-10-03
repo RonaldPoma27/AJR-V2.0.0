@@ -94,7 +94,7 @@ export default function ChatThread({
                   "max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-3.5 py-2 text-sm",
                   mine
                     ? "rounded-br-sm bg-brand text-white"
-                    : "rounded-bl-sm bg-sky-100 text-sky-950 dark:bg-sky-500/20 dark:text-sky-50"
+                    : "rounded-bl-sm bg-slate-200 text-slate-900 dark:bg-slate-600/40 dark:text-slate-50"
                 )}
               >
                 {m.content}

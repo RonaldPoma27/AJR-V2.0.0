@@ -13,7 +13,7 @@ function ThreadTitle({ id }: { id: number }) {
 }
 
 /**
- * Burbuja de soporte (abajo a la derecha, azul/celeste). Se abre como un panel con tres
+ * Burbuja de soporte (abajo a la derecha, azul oscuro institucional). Se abre como un panel con tres
  * vistas: historial de chats, chat nuevo (con título) y conversación.
  */
 export default function ChatBubble() {
@@ -44,7 +44,7 @@ export default function ChatBubble() {
           aria-label="Chat de soporte"
           className="fixed bottom-24 right-4 z-50 flex h-[34rem] max-h-[calc(100vh-7rem)] w-[23rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-xl border bg-surface shadow-2xl sm:right-6"
         >
-          <header className="flex items-center gap-2 bg-sky-600 px-3 py-3 text-white dark:bg-sky-700">
+          <header className="flex items-center gap-2 bg-slate-800 px-3 py-3 text-white dark:bg-slate-700">
             {view.name !== "history" && (
               <button
                 type="button"
@@ -92,7 +92,7 @@ export default function ChatBubble() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label={open ? "Cerrar el chat de soporte" : "Abrir el chat de soporte"}
-        className="fixed bottom-5 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-sky-600 text-white shadow-lg hover:bg-sky-700 focus-visible:outline-offset-4 sm:right-6 dark:bg-sky-500 dark:hover:bg-sky-400 dark:text-sky-950"
+        className="fixed bottom-5 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-slate-800 text-white shadow-lg hover:bg-slate-900 focus-visible:outline-offset-4 sm:right-6 dark:bg-slate-600 dark:hover:bg-slate-500"
       >
         {open ? <X className="h-6 w-6" aria-hidden /> : <MessageCircle className="h-7 w-7" aria-hidden />}
       </button>

@@ -1,7 +1,27 @@
+import re
+
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 from app.models.enums import UserRole
 from app.schemas.common import OptionalPersonName, PersonName
+
+
+PASSWORD_RULES_MESSAGE = (
+    "La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial"
+)
+_UPPER = re.compile(r"[A-Z]")
+_DIGIT = re.compile(r"\d")
+_SPECIAL = re.compile(r"[^A-Za-z0-9\s]")
+
+
+def validate_password_strength(value: str) -> str:
+    """Política de contraseñas nuevas (registro y cambio). El login NO la aplica, para no
+    bloquear a usuarios con contraseñas anteriores a esta regla."""
+    if len(value.encode("utf-8")) > 72:  # bcrypt solo mira los primeros 72 *bytes*
+        raise ValueError("La contraseña es demasiado larga (máximo 72 bytes)")
+    if not (_UPPER.search(value) and _DIGIT.search(value) and _SPECIAL.search(value)):
+        raise ValueError(PASSWORD_RULES_MESSAGE)
+    return value
 
 
 class UserCreate(BaseModel):
@@ -16,6 +36,11 @@ class UserCreate(BaseModel):
     @classmethod
     def _lowercase_email(cls, value: str) -> str:
         return value.lower()
+
+    @field_validator("password")
+    @classmethod
+    def _strong_password(cls, value: str) -> str:
+        return validate_password_strength(value)
 
 
 class UserUpdate(BaseModel):
@@ -46,11 +71,23 @@ class PasswordChange(BaseModel):
 
     @field_validator("new_password")
     @classmethod
-    def _fits_bcrypt(cls, value: str) -> str:
-        # bcrypt solo mira los primeros 72 *bytes*: con tildes/emojis 72 caracteres se pasan.
-        if len(value.encode("utf-8")) > 72:
-            raise ValueError("La contraseña es demasiado larga (máximo 72 bytes)")
-        return value
+    def _strong_password(cls, value: str) -> str:
+        return validate_password_strength(value)
+
+
+class EmailChange(BaseModel):
+    """Cambio de email del usuario logueado (PATCH /users/me/email)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    current_email: EmailStr
+    new_email: EmailStr
+    current_password: str = Field(min_length=1, max_length=72)
+
+    @field_validator("current_email", "new_email")
+    @classmethod
+    def _lowercase_email(cls, value: str) -> str:
+        return value.lower()
 
 
 class TechnicianPromote(BaseModel):

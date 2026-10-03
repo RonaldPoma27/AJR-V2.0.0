@@ -52,6 +52,20 @@ async def change_password(
     return True
 
 
+async def change_email(
+    db: AsyncSession, user: User, *, current_password: str, new_email: str
+) -> User | None:
+    """Cambia el email si la contraseña es correcta. Devuelve None si no lo es.
+
+    Lanza IntegrityError si el email ya lo usa otra cuenta (carrera con otro registro).
+    """
+    if not await verify_password(current_password, user.hashed_password):
+        return None
+    user.email = new_email.strip().lower()
+    await db.commit()
+    return user
+
+
 async def update_name(db: AsyncSession, user: User, *, first_name: str, last_name: str) -> User:
     user.first_name = first_name
     user.last_name = last_name

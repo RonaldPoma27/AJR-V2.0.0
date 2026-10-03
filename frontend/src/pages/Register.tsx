@@ -4,7 +4,9 @@ import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { fetchMe, getToken, loginRequest, registerRequest } from "@/api/auth";
 import { TextField } from "@/components/forms/Fields";
+import PasswordChecklist from "@/components/forms/PasswordChecklist";
 import { getServerDetail } from "@/lib/errors";
+import { getPasswordError } from "@/lib/password";
 import { landingFor } from "./Login";
 
 const initial = { first_name: "", last_name: "", email: "", password: "", confirm: "" };
@@ -15,8 +17,8 @@ function validate(f: typeof initial): Errors {
   if (!f.first_name.trim()) e.first_name = "Escribí tu nombre.";
   if (!f.last_name.trim()) e.last_name = "Escribí tu apellido.";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.trim())) e.email = "Revisá el email: parece que tiene un error.";
-  if (f.password.length < 8) e.password = "Tiene que tener al menos 8 caracteres.";
-  else if (new TextEncoder().encode(f.password).length > 72) e.password = "Es demasiado larga (máximo 72 bytes).";
+  const passwordError = getPasswordError(f.password);
+  if (passwordError) e.password = passwordError;
   if (f.confirm !== f.password) e.confirm = "Las contraseñas no coinciden.";
   return e;
 }
@@ -84,7 +86,8 @@ export default function Register() {
           <TextField label="Apellido" name="last_name" value={form.last_name} onChange={handleChange} required maxLength={75} autoComplete="family-name" error={errors.last_name} />
         </div>
         <TextField label="Email" name="email" type="email" value={form.email} onChange={handleChange} required maxLength={255} autoComplete="email" error={errors.email} />
-        <TextField label="Contraseña" name="password" type="password" value={form.password} onChange={handleChange} required autoComplete="new-password" hint="Mínimo 8 caracteres." error={errors.password} />
+        <TextField label="Contraseña" name="password" type="password" value={form.password} onChange={handleChange} required autoComplete="new-password" error={errors.password} />
+        <PasswordChecklist value={form.password} />
         <TextField label="Repetí la contraseña" name="confirm" type="password" value={form.confirm} onChange={handleChange} required autoComplete="new-password" error={errors.confirm} />
         {serverError && (
           <p role="alert" className="text-sm text-red-600 dark:text-red-400">
