@@ -18,8 +18,8 @@ const nosotrosItems = [
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
-    "text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white",
-    isActive && "text-slate-900 dark:text-white"
+    "text-sm font-medium text-gray-300 hover:text-white",
+    isActive && "text-white"
   );
 
 /**
@@ -121,7 +121,6 @@ function NosotrosMenu({ active }: { active: boolean }) {
         aria-expanded={open}
         aria-controls="menu-nosotros"
         onClick={(e) => {
-          // detail === 0: se activó con teclado (Enter/Espacio) → pasamos el foco al menú.
           if (e.detail === 0 && !pinned) focusOnOpen.current = true;
           if (pinned) {
             close();
@@ -132,8 +131,8 @@ function NosotrosMenu({ active }: { active: boolean }) {
         }}
         onKeyDown={handleButtonKeyDown}
         className={cn(
-          "flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white",
-          active && "text-slate-900 dark:text-white"
+          "flex items-center gap-1 text-sm font-medium text-gray-300 hover:text-white",
+          active && "text-white"
         )}
       >
         {t("nav.about")}
@@ -177,13 +176,12 @@ function NosotrosMenu({ active }: { active: boolean }) {
 
 /**
  * El logo es un PNG con fondo casi negro (sin transparencia). `mix-blend-lighten` hace que ese
- * negro se funda con el color de la barra, y el recorte deja solo la marca (el PNG es cuadrado
- * con mucho margen alrededor).
+ * negro se funda con el color de la barra, y el recorte deja solo la marca.
  */
 function Logo() {
   const { t } = useTranslation();
   return (
-    <Link to="/" aria-label={t("nav.goHome")} className="relative block h-12 w-28 shrink-0 overflow-hidden rounded-sm bg-ink dark:bg-transparent">
+    <Link to="/" aria-label={t("nav.goHome")} className="relative block h-12 w-28 shrink-0 overflow-hidden rounded-sm bg-transparent">
       <img
         src="/logo.png"
         alt="AJR Data"
@@ -213,7 +211,6 @@ export default function NavBar({
   const [mobileNosotrosOpen, setMobileNosotrosOpen] = useState(false);
   const nosotrosActive = nosotrosItems.some((item) => item.to === pathname);
 
-  // Al navegar se cierra el menú mobile; si la página es de Nosotros, deja la sección abierta.
   useEffect(() => {
     setMobileOpen(false);
     setMobileNosotrosOpen(nosotrosActive);
@@ -228,12 +225,12 @@ export default function NavBar({
 
   const mobileLinkClass = ({ isActive }: { isActive: boolean }) =>
     cn(
-      "block rounded-md px-2 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-white/10",
-      isActive && "text-slate-900 dark:text-white"
+      "block rounded-md px-2 py-2 text-sm font-medium text-gray-200 hover:bg-white/10",
+      isActive && "text-white"
     );
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white text-slate-900 dark:border-white/10 dark:bg-slate-900 dark:text-slate-100">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-ink text-white">
       <nav className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:px-6" aria-label={t("nav.main")}>
         <Logo />
 
@@ -253,7 +250,7 @@ export default function NavBar({
 
           {!hasSession && (
             <div className="hidden items-center gap-2 md:flex">
-              <Link to="/login" className={cn(authButtonBase, "border border-slate-300 text-slate-900 hover:bg-slate-100 dark:border-white/25 dark:text-white dark:hover:bg-white/10")}>
+              <Link to="/login" className={cn(authButtonBase, "border border-white/25 text-white hover:bg-white/10")}>
                 {t("nav.login")}
               </Link>
               <Link to="/registro" className={cn(authButtonBase, "bg-brand text-white hover:bg-brand-dark")}>
@@ -262,10 +259,10 @@ export default function NavBar({
             </div>
           )}
 
-          {/* Mobile: con sesión abre el menú lateral de la cuenta; sin sesión, el menú público. */}
+          {/* Mobile: Menu button */}
           <button
             type="button"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-slate-700 hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-white/10 md:hidden"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-gray-200 hover:bg-white/10 md:hidden"
             aria-label={(hasSession ? sidebarOpen : mobileOpen) ? t("nav.closeMenu") : t("nav.openMenu")}
             aria-expanded={hasSession ? sidebarOpen : mobileOpen}
             aria-controls={hasSession ? "sidebar-drawer" : "menu-mobile"}
@@ -278,7 +275,7 @@ export default function NavBar({
 
       {/* Mobile sin sesión: panel */}
       {!hasSession && mobileOpen && (
-        <div id="menu-mobile" className="border-t border-slate-200 px-4 py-3 dark:border-white/10 md:hidden">
+        <div id="menu-mobile" className="border-t border-white/10 px-4 py-3 md:hidden">
           <ul className="space-y-1">
             {mainLinks.map((link) => (
               <li key={link.to}>
@@ -293,13 +290,13 @@ export default function NavBar({
                 aria-expanded={mobileNosotrosOpen}
                 aria-controls="menu-mobile-nosotros"
                 onClick={() => setMobileNosotrosOpen((v) => !v)}
-                className="flex w-full items-center justify-between rounded-md px-2 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-white/10"
+                className="flex w-full items-center justify-between rounded-md px-2 py-2 text-sm font-medium text-gray-200 hover:bg-white/10"
               >
                 {t("nav.about")}
                 <ChevronDown className={cn("h-4 w-4 transition-transform", mobileNosotrosOpen && "rotate-180")} aria-hidden />
               </button>
               {mobileNosotrosOpen && (
-                <ul id="menu-mobile-nosotros" className="ml-3 space-y-1 border-l border-slate-200 pl-3 dark:border-white/15">
+                <ul id="menu-mobile-nosotros" className="ml-3 space-y-1 border-l border-white/15 pl-3">
                   {nosotrosItems.map((item) => (
                     <li key={item.to}>
                       <NavLink to={item.to} className={mobileLinkClass}>
@@ -311,8 +308,8 @@ export default function NavBar({
               )}
             </li>
           </ul>
-          <div className="mt-3 grid grid-cols-2 gap-2 border-t border-slate-200 pt-3 dark:border-white/10">
-            <Link to="/login" className={cn(authButtonBase, "border border-slate-300 text-slate-900 hover:bg-slate-100 dark:border-white/25 dark:text-white dark:hover:bg-white/10")}>
+          <div className="mt-3 grid grid-cols-2 gap-2 border-t border-white/10 pt-3">
+            <Link to="/login" className={cn(authButtonBase, "border border-white/25 text-white hover:bg-white/10")}>
               {t("nav.login")}
             </Link>
             <Link to="/registro" className={cn(authButtonBase, "bg-brand text-white hover:bg-brand-dark")}>
