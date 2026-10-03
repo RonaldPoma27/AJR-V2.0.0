@@ -4,7 +4,7 @@ import { useChangeEmail, useChangePassword, useMe, useUpdateProfile } from "@/ap
 import { TextField } from "@/components/forms/Fields";
 import PasswordChecklist from "@/components/forms/PasswordChecklist";
 import { getServerDetail } from "@/lib/errors";
-import { getPasswordError } from "@/lib/password";
+import { getPasswordError as getPasswordErrorHelper } from "@/lib/password";
 
 const initial = { current: "", next: "", confirm: "" };
 const ROLE_LABEL = { USER: "Cliente", TECHNICIAN: "Técnico (editor)", ADMIN: "Administrador" } as const;
