@@ -1,0 +1,45 @@
+{
+  "nav": {
+    "home": "Home",
+    "portfolio": "Portfolio",
+    "about": "About us",
+    "contact": "Contact",
+    "work": "Work with us",
+    "login": "Log in",
+    "register": "Sign up",
+    "main": "Main",
+    "goHome": "AJR Data — go to home",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "lang": {
+    "label": "Language",
+    "switchToEn": "Switch to English",
+    "switchToEs": "Switch to Spanish"
+  },
+  "sidebar": {
+    "account": "My account",
+    "myOrders": "My orders",
+    "support": "Support",
+    "adminPanel": "Admin Panel",
+    "orders": "Orders",
+    "applications": "Applications",
+    "adminSupport": "Feedback / Support",
+    "portfolio": "Portfolio",
+    "team": "Team",
+    "trash": "Trash",
+    "site": "Site",
+    "home": "Home",
+    "requestProject": "Request a project",
+    "work": "Work with us",
+    "logout": "Log out",
+    "navLabel": "Account",
+    "drawerLabel": "Account menu",
+    "loading": "Loading your account",
+    "roles": {
+      "USER": "Client",
+      "TECHNICIAN": "Technician",
+      "ADMIN": "Administrator"
+    }
+  }
+}
