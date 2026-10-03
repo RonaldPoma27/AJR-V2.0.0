@@ -41,5 +41,46 @@
       "TECHNICIAN": "Técnico",
       "ADMIN": "Administrador"
     }
+  },
+  "home": {
+    "hero_title": "Software a medida que hace más competitiva a tu PyME",
+    "hero_subtitle": "En AJR Data resolvemos falencias concretas de tu negocio con desarrollo a medida — incorporando chatbots, agentes de IA y funcionalidades modernas en vez de soluciones genéricas.",
+    "btn_request": "Solicitar un proyecto",
+    "about_title": "Quiénes somos",
+    "about_desc": "Somos una consultora tecnológica enfocada en ayudar a PyMEs a resolver problemas puntuales de su negocio mediante software, diferenciándonos con ideas más modernas que la competencia de nuestros clientes."
+  },
+  "team": {
+    "title": "Equipo",
+    "description": "Los técnicos pueden ver y cambiar el estado de pedidos, postulaciones y chats, y editar el portfolio. Solo el administrador puede enviar a la papelera, restaurar y gestionar esta lista.",
+    "add_title": "Sumar un técnico",
+    "add_desc": "La persona tiene que estar registrada en el sitio. Ingresá el email con el que se registró.",
+    "email_label": "Email",
+    "btn_add": "Dar rol de técnico",
+    "current_technicians": "Técnicos actuales"
+  },
+  "account": {
+    "change_email_title": "Cambiar email",
+    "current_email": "Email actual",
+    "new_email": "Email nuevo",
+    "current_pwd": "Contraseña actual",
+    "pwd_confirm_msg": "La pedimos para confirmar que sos vos.",
+    "btn_change_email": "Cambiar email",
+    "change_pwd_title": "Cambiar contraseña",
+    "new_pwd": "Contraseña nueva",
+    "pwd_rules": {
+      "length": "8 caracteres o más",
+      "uppercase": "Una mayúscula",
+      "number": "Un número",
+      "special": "Un carácter especial (! ? # $ %...)"
+    },
+    "repeat_new_pwd": "Repetí la contraseña nueva",
+    "btn_change_pwd": "Cambiar contraseña"
+  },
+  "status": {
+    "nuevo": "Nuevo",
+    "en_revision": "En revisión",
+    "aprobado": "Aprobado",
+    "completado": "Completado",
+    "rechazado": "Rechazado"
   }
 }
