@@ -57,6 +57,14 @@ Sitio y panel de **AJR Data**, consultora tecnológica para PyMEs.
 
 ---
 
+## Seguridad por IP y auditoría
+
+- **Cloudflare Turnstile** ahora también protege **login** y **registro** (además de pedidos y postulaciones). El registro devuelve la sesión iniciada, porque el token de Turnstile sirve una sola vez. En producción hay que cargar `TURNSTILE_SECRET_KEY` y `VITE_TURNSTILE_SITE_KEY` (build arg) **antes** de desplegar; si falta alguna, el login queda cerrado.
+- **Bloqueo de login:** a la **5.ª contraseña incorrecta** desde una IP, esa IP no puede iniciar sesión ni registrarse durante **30 min** (`LOGIN_MAX_FAILURES`, `LOGIN_LOCK_MINUTES`). Un login correcto reinicia el conteo.
+- **Baneo por exceso de actividad:** **60 o más pedidos a `/api` en 1 minuto** => la IP queda baneada de toda la API durante **12 h** (`FLOOD_*`). `/api/health` está exento.
+- Los bloqueos se guardan en la tabla `ip_blocks` (sobreviven a reinicios); los contadores viven en memoria (1 solo proceso, igual que el rate limit). El ADMIN ve las IPs bloqueadas arriba de **Auditoría** y puede levantarlas desde ahí. Si te baneás a vos mismo, agregá tu IP a `IP_GUARD_TRUSTED_IPS` o borrá la fila de `ip_blocks` y reiniciá.
+- **Auditoría** (`/admin/auditoria`, solo ADMIN): cada alta, cambio, borrado, envío a papelera y restauración que hace un **ADMIN o TECHNICIAN** queda registrado con usuario, rol, IP, endpoint y los valores anteriores/nuevos (las contraseñas nunca se guardan). También se registran los logins del equipo, los logins fallidos contra cuentas del equipo y los bloqueos/baneos de IP. Se guarda en UTC y se muestra en **hora de Argentina (UTC-03:00)**; filtros por usuario, acción, sección, fechas y texto.
+
 ## Correrlo local
 
 ### Opción A — Docker Compose (todo junto)
