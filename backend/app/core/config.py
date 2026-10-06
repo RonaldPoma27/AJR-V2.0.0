@@ -62,10 +62,10 @@ class Settings(BaseSettings):
     IP_GUARD_ENABLED: bool = True
     IP_GUARD_TRUSTED_IPS: str = ""  # IPs exentas (coma). Útil para tu IP fija de oficina.
     LOGIN_MAX_FAILURES: int = Field(default=5, gt=0)  # contraseñas incorrectas seguidas...
-    LOGIN_LOCK_MINUTES: int = Field(default=30, gt=0)  # ...y la IP queda bloqueada este tiempo
+    LOGIN_LOCK_MINUTES: int = Field(default=10, gt=0)  # ...y la IP queda bloqueada este tiempo
     FLOOD_MAX_REQUESTS: int = Field(default=60, gt=0)  # pedidos a /api en la ventana...
     FLOOD_WINDOW_SECONDS: int = Field(default=60, gt=0)
-    FLOOD_BAN_HOURS: int = Field(default=12, gt=0)  # ...y la IP queda baneada este tiempo
+    FLOOD_BAN_HOURS: int = Field(default=1, gt=0)  # ...y la IP queda baneada este tiempo
 
     @field_validator("DATABASE_URL")
     @classmethod
