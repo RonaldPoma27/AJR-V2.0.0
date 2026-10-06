@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Trash2 } from "lucide-react";
 import { useMe } from "@/api/auth";
 import { useOrders, useTrashOrder, useUpdateOrderStatus, type ClientOrder, type OrderStatus } from "@/api/orders";
@@ -15,6 +16,7 @@ import { timeAgo, useNow } from "@/lib/time";
 import { cn } from "@/lib/utils";
 
 export default function AdminOrders() {
+  const { t } = useTranslation();
   const [status, setStatus] = useState<OrderStatus | null>(null);
   const [page, setPage] = useState(0);
   const [expanded, setExpanded] = useState<number | null>(null);
@@ -39,34 +41,34 @@ export default function AdminOrders() {
   return (
     <div className="mx-auto max-w-4xl space-y-5">
       <div>
-        <h1 className="text-2xl font-bold text-fg">Pedidos</h1>
-        <p className="text-sm text-fg-subtle">Solicitudes de proyecto que llegan desde la web.</p>
+        <h1 className="text-2xl font-bold text-fg">{t("adminOrders.title")}</h1>
+        <p className="text-sm text-fg-subtle">{t("adminOrders.subtitle")}</p>
       </div>
 
       {data && (
         <StatusChips counts={data.counts} labels={ORDER_STATUS_LABELS} active={status} onSelect={selectStatus} />
       )}
 
-      {isLoading && <p className="text-fg-subtle">Cargando pedidos…</p>}
+      {isLoading && <p className="text-fg-subtle">{t("adminOrders.loading")}</p>}
       {isError && (
         <p role="alert" className="text-red-600 dark:text-red-400">
-          No pudimos cargar los pedidos.{" "}
-          <button onClick={() => refetch()} className="font-medium underline">Reintentar</button>
+          {t("adminOrders.loadError")}{" "}
+          <button onClick={() => refetch()} className="font-medium underline">{t("adminCommon.retry")}</button>
         </p>
       )}
       {update.isError && (
         <p role="alert" className="text-sm text-red-600 dark:text-red-400">
-          {getServerDetail(update.error) ?? "No pudimos cambiar el estado. Probá de nuevo."}
+          {getServerDetail(update.error) ?? t("adminCommon.statusChangeError")}
         </p>
       )}
       {trash.isError && (
         <p role="alert" className="text-sm text-red-600 dark:text-red-400">
-          {getServerDetail(trash.error) ?? "No pudimos enviar el pedido a la papelera."}
+          {getServerDetail(trash.error) ?? t("adminOrders.trashError")}
         </p>
       )}
       {data && data.total === 0 && (
         <p className="rounded-md border bg-surface p-6 text-center text-fg-subtle">
-          {status ? "No hay pedidos con este estado." : "Todavía no llegó ningún pedido."}
+          {status ? t("adminOrders.emptyFiltered") : t("adminOrders.empty")}
         </p>
       )}
 
@@ -113,6 +115,7 @@ function OrderCard({
   onTrash?: () => void;
   trashing: boolean;
 }) {
+  const { t } = useTranslation();
   return (
     <li className="overflow-hidden rounded-lg border bg-surface">
       <div className="flex flex-wrap items-start justify-between gap-3 p-4">
@@ -124,10 +127,10 @@ function OrderCard({
         >
           <p className="font-semibold text-fg">{order.company_name}</p>
           <p className="text-sm text-fg-subtle">
-            {order.contact_name} · {order.industry} · Recibido {timeAgo(order.created_at, now)}
+            {order.contact_name} · {order.industry} · {t("adminOrders.received", { time: timeAgo(order.created_at, now) })}
           </p>
           {!open && <p className="mt-1 line-clamp-2 text-sm text-fg-muted">{order.problem_description}</p>}
-          <span className="mt-1 inline-block text-xs font-medium text-accent">{open ? "Ver menos ▲" : "Ver todo ▼"}</span>
+          <span className="mt-1 inline-block text-xs font-medium text-accent">{open ? t("adminCommon.seeLess") : t("adminCommon.seeAll")}</span>
         </button>
         <div className="flex items-center gap-2">
           <span className={cn("rounded-full px-2 py-0.5 text-xs font-medium", STATUS_BADGE[order.status])}>
@@ -138,42 +141,42 @@ function OrderCard({
             labels={ORDER_STATUS_LABELS}
             onChange={onStatus}
             disabled={saving}
-            label={`Cambiar estado del pedido de ${order.company_name}`}
+            label={t("adminOrders.changeStatusLabel", { name: order.company_name })}
           />
         </div>
       </div>
 
       {open && (
         <dl className="space-y-3 border-t bg-surface-2 p-4">
-          <DetailRow label="Empresa">{order.company_name}</DetailRow>
-          <DetailRow label="Contacto">{order.contact_name}</DetailRow>
-          <DetailRow label="Email">
+          <DetailRow label={t("adminOrders.company")}>{order.company_name}</DetailRow>
+          <DetailRow label={t("adminOrders.contact")}>{order.contact_name}</DetailRow>
+          <DetailRow label={t("adminCommon.email")}>
             <a href={`mailto:${order.contact_email}`} className="text-accent hover:underline">
               {order.contact_email}
             </a>
           </DetailRow>
-          <DetailRow label="Teléfono">
+          <DetailRow label={t("adminOrders.phone")}>
             {order.contact_phone && (
               <a href={`tel:${order.contact_phone.replace(/[^\d+]/g, "")}`} className="text-accent hover:underline">
                 {order.contact_phone}
               </a>
             )}
           </DetailRow>
-          <DetailRow label="Rubro">{order.industry}</DetailRow>
-          <DetailRow label="Problema a resolver">
+          <DetailRow label={t("adminOrders.industry")}>{order.industry}</DetailRow>
+          <DetailRow label={t("adminOrders.problem")}>
             <span className="whitespace-pre-wrap">{order.problem_description}</span>
           </DetailRow>
-          <DetailRow label="Cuenta del cliente">
-            {order.user_id ? `Usuario registrado #${order.user_id}` : "Sin cuenta (pedido anterior al registro)"}
+          <DetailRow label={t("adminOrders.clientAccount")}>
+            {order.user_id ? t("adminOrders.registeredUser", { id: order.user_id }) : t("adminOrders.noAccount")}
           </DetailRow>
-          <DetailRow label="Recibido">{formatDateTime(order.created_at)} ({timeAgo(order.created_at, now)})</DetailRow>
-          <DetailRow label="Última actualización">{formatDateTime(order.updated_at)} ({timeAgo(order.updated_at, now)})</DetailRow>
+          <DetailRow label={t("adminOrders.receivedLabel")}>{formatDateTime(order.created_at)} ({timeAgo(order.created_at, now)})</DetailRow>
+          <DetailRow label={t("adminCommon.lastUpdate")}>{formatDateTime(order.updated_at)} ({timeAgo(order.updated_at, now)})</DetailRow>
           {onTrash && (
             <div className="pt-2">
               <ConfirmButton
-                label="Enviar a la papelera"
-                question="Se puede restaurar durante 30 días."
-                confirmLabel="Sí, enviar"
+                label={t("adminCommon.sendToTrash")}
+                question={t("adminCommon.trashQuestion")}
+                confirmLabel={t("adminCommon.trashConfirm")}
                 onConfirm={onTrash}
                 disabled={trashing}
                 icon={<Trash2 className="h-4 w-4" aria-hidden />}

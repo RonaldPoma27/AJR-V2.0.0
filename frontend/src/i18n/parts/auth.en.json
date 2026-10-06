@@ -1,0 +1,58 @@
+{
+  "auth": {
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "confirmPassword": "Repeat the password"
+    },
+    "login": {
+      "title": "Log in",
+      "subtitle": "Log in to track your orders and contact us through support.",
+      "submit": "Log in",
+      "submitting": "Logging in...",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Sign up"
+    },
+    "register": {
+      "title": "Create account",
+      "subtitle": "With your account you can request projects, follow their progress and contact us through support.",
+      "submit": "Create account",
+      "submitting": "Creating account...",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in"
+    },
+    "errors": {
+      "server": "We couldn't connect to the server. Try again in a few minutes.",
+      "badCredentials": "Incorrect email or password.",
+      "tooMany": "Too many attempts. Wait a moment and try again.",
+      "loginFailed": "We couldn't log you in (code {{status}}).",
+      "unexpected": "An unexpected error occurred. Try again.",
+      "firstNameRequired": "Enter your first name.",
+      "lastNameRequired": "Enter your last name.",
+      "emailInvalid": "Check the email: it looks like it has a mistake.",
+      "passwordMismatch": "The passwords don't match.",
+      "invalidData": "Check the data: some of it isn't valid.",
+      "registerFailed": "We couldn't create your account (code {{status}})."
+    }
+  },
+  "password": {
+    "requirements": "Password requirements",
+    "met": "met",
+    "pending": "pending",
+    "rules": {
+      "length": "8 characters or more",
+      "upper": "An uppercase letter",
+      "digit": "A number",
+      "special": "A special character (! ? # $ %…)"
+    },
+    "errors": {
+      "tooLong": "It's too long (maximum 72 bytes).",
+      "minLength": "It must be at least 8 characters long.",
+      "upper": "It must include at least one uppercase letter.",
+      "digit": "It must include at least one number.",
+      "special": "It must include at least one special character (for example ! ? # $ %)."
+    }
+  }
+}

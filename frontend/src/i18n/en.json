@@ -40,6 +40,7 @@
       "USER": "Client",
       "TECHNICIAN": "Technician",
       "ADMIN": "Administrator"
-    }
+    },
+    "audit": "Audit log"
   }
 }

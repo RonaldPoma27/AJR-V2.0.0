@@ -1,4 +1,5 @@
 import { Check } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { ORDER_FLOW, type OrderStatus } from "@/api/orders";
 import { ORDER_STATUS_LABELS } from "@/lib/status";
 import { cn } from "@/lib/utils";
@@ -8,13 +9,14 @@ import { cn } from "@/lib/utils";
  * `descartado` no es un paso del camino: se muestra el recorrido apagado y un aviso.
  */
 export default function OrderStepper({ status }: { status: OrderStatus }) {
+  const { t } = useTranslation();
   const discarded = status === "descartado";
   const current = ORDER_FLOW.indexOf(status);
   const finished = status === "finalizado";
 
   return (
     <div>
-      <ol className="flex" aria-label="Progreso del pedido">
+      <ol className="flex" aria-label={t("orderStepper.label")}>
         {ORDER_FLOW.map((step, index) => {
           const done = !discarded && (index < current || finished);
           const active = !discarded && index === current && !finished;
@@ -51,7 +53,7 @@ export default function OrderStepper({ status }: { status: OrderStatus }) {
                 )}
               >
                 {ORDER_STATUS_LABELS[step]}
-                <span className="sr-only">{done ? " (completado)" : active ? " (paso actual)" : " (pendiente)"}</span>
+                <span className="sr-only">{done ? t("orderStepper.done") : active ? t("orderStepper.current") : t("orderStepper.pending")}</span>
               </span>
             </li>
           );
@@ -59,7 +61,7 @@ export default function OrderStepper({ status }: { status: OrderStatus }) {
       </ol>
       {discarded && (
         <p role="status" className="mt-4 rounded-md bg-gray-200 px-3 py-2 text-sm text-gray-700 dark:bg-gray-500/25 dark:text-gray-300">
-          Este pedido fue descartado. Si querés retomarlo, escribinos desde Soporte.
+          {t("orderStepper.discarded")}
         </p>
       )}
     </div>

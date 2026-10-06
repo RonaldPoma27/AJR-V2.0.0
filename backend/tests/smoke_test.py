@@ -29,6 +29,7 @@ os.environ.update(
     SMTP_HOST="smtp.invalido.test",
     SMTP_FROM="hola@ajr.test",
     RATE_LIMIT_PER_HOUR="5",
+    IP_GUARD_ENABLED="false",  # el flujo general hace muchos pedidos desde una IP; se prueba aparte
 )
 os.environ.pop("TURNSTILE_SECRET_KEY", None)
 
@@ -46,6 +47,7 @@ from app.core import email as email_mod  # noqa: E402
 from app.core import turnstile as turnstile_mod  # noqa: E402
 from app.core.config import settings  # noqa: E402
 from app.core.database import AsyncSessionLocal, engine  # noqa: E402
+from app.core.ip_guard import guard  # noqa: E402
 from app.core.rate_limit import limiter  # noqa: E402
 from app.main import app  # noqa: E402
 from app.core import scheduler as scheduler_mod  # noqa: E402
@@ -100,7 +102,7 @@ async def main() -> None:
         await conn.execute(
             text(
                 "TRUNCATE users, client_orders, job_applications, partners, portfolio_items, "
-                "portfolio_media, support_tickets, support_messages "
+                "portfolio_media, support_tickets, support_messages, audit_logs, ip_blocks "
                 "RESTART IDENTITY CASCADE"
             )
         )
@@ -617,6 +619,102 @@ async def main() -> None:
         r = await c.get("/%2e%2e/secreto.txt")
         check("path traversal bloqueado", "no deberías" not in r.text, r.text[:60])
         check("/api/docs disponible", (await c.get("/api/docs")).status_code == 200)
+
+        # ------------------------------------- protección por IP y auditoría
+        print("\n[protección por IP y auditoría]")
+        settings.IP_GUARD_ENABLED = True
+        settings.FLOOD_MAX_REQUESTS = 1000  # que el baneo por exceso no moleste en el bloqueo de login
+        guard.reset()
+        ip = "127.0.0.1"
+
+        codes = [(await login(c, "admin@ajr.test", "mala")).status_code for _ in range(5)]
+        check("4 claves malas -> 401 y la 5.ª bloquea la IP (429)", codes == [401, 401, 401, 401, 429], codes)
+        r = await login(c, "admin@ajr.test", "clave-inicial-123")
+        check(
+            "IP bloqueada: ni con la clave correcta entra (429 + Retry-After ~30 min)",
+            r.status_code == 429 and 1700 < int(r.headers.get("retry-after", 0)) <= 1800,
+            (r.status_code, r.headers.get("retry-after")),
+        )
+        limiter.reset()
+        r = await c.post("/api/auth/register", json={"email": "bloq@x.com", "password": "Clave-bloq-123!"})
+        check("registro también bloqueado mientras dura el bloqueo", r.status_code == 429, r.text)
+        check("el resto de la API sigue funcionando", (await c.get("/api/health")).status_code == 200)
+        async with AsyncSessionLocal() as s:
+            n = await s.scalar(text("select count(*) from ip_blocks where ip = :ip and kind = 'login_lock'"), {"ip": ip})
+        check("el bloqueo se guarda en la base (sobrevive a reinicios)", n == 1, n)
+        guard.reset()
+        await guard.load_active()
+        check("tras 'reiniciar' (recargar desde la base) sigue bloqueada", (await login(c, "admin@ajr.test", "clave-inicial-123")).status_code == 429)
+        check("levantar el bloqueo devuelve True", await guard.release(ip) is True)
+        r = await login(c, "admin@ajr.test", "clave-inicial-123")
+        check("sin bloqueo vuelve a poder iniciar sesión", r.status_code == 200, r.text)
+        admin = {"Authorization": f"Bearer {r.json()['access_token']}"}
+
+        settings.FLOOD_MAX_REQUESTS = 10
+        guard.reset()
+        codes = [(await c.get("/api/auth/me", headers=admin)).status_code for _ in range(10)]
+        check("9 pedidos pasan y el que llega al límite banea (429)", codes[:9] == [200] * 9 and codes[9] == 429, codes)
+        r = await c.get("/api/auth/me", headers=admin)
+        check("IP baneada: toda la API responde 429 ip_banned", r.status_code == 429 and r.json().get("code") == "ip_banned", r.text)
+        check("el ban dura ~12 h", 12 * 3600 - 60 < int(r.headers["retry-after"]) <= 12 * 3600, r.headers.get("retry-after"))
+        check("/api/health queda exento (health checks de Render)", (await c.get("/api/health")).status_code == 200)
+        await guard.release(ip)
+        settings.FLOOD_MAX_REQUESTS = 1000
+        check("al levantar el ban vuelve a andar", (await c.get("/api/auth/me", headers=admin)).status_code == 200)
+
+        # Auditoría: ADMIN y TECHNICIAN quedan registrados; un USER común, no.
+        limiter.reset()
+        await c.post("/api/auth/register", json={"email": "tecaudit@x.com", "password": "Clave-tec-aud-1!"})
+        r = await c.post("/api/team/technicians", json={"email": "tecaudit@x.com"}, headers=admin)
+        check("promover a técnico (acción auditada)", r.status_code == 201, r.text)
+        logs = (await c.get("/api/audit/logs", headers=admin, params={"entity": "users", "action": "update"})).json()
+        entry = next((i for i in logs["items"] if i["entity_label"] == "tecaudit@x.com"), None)
+        check(
+            "el cambio de rol quedó auditado: quién, qué y old -> new",
+            entry is not None
+            and entry["user_email"] == "admin@ajr.test"
+            and entry["user_role"] == "ADMIN"
+            and entry["changes"]["role"] == {"old": "USER", "new": "TECHNICIAN"}
+            and entry["method"] == "POST",
+            entry,
+        )
+        check(
+            "fecha y hora en horario de Argentina",
+            entry is not None
+            and entry["timezone"].startswith("America/Argentina/Buenos_Aires")
+            and len(entry["date_ar"]) == 10
+            and len(entry["time_ar"]) == 8,
+            entry,
+        )
+        tec_tok = (await login(c, "tecaudit@x.com", "Clave-tec-aud-1!")).json()["access_token"]
+        tec = {"Authorization": f"Bearer {tec_tok}"}
+        await c.patch("/api/users/me", json={"first_name": "Tec", "last_name": "Audit"}, headers=tec)
+        logs = (await c.get("/api/audit/logs", headers=admin, params={"q": "tecaudit@x.com", "action": "update"})).json()
+        check(
+            "lo que hace un TECHNICIAN también se registra (con su rol)",
+            any(i["user_email"] == "tecaudit@x.com" and i["user_role"] == "TECHNICIAN" for i in logs["items"]),
+            logs,
+        )
+        client_id = (await c.get("/api/auth/me", headers=user)).json()["id"]
+        await c.patch("/api/users/me", json={"first_name": "Lu", "last_name": "P"}, headers=user)
+        logs = (await c.get("/api/audit/logs", headers=admin, params={"user_id": client_id})).json()
+        check("un USER común no genera registros", logs["total"] == 0, logs)
+        pw = (await c.patch("/api/users/me/password", json={"current_password": "Clave-tec-aud-1!", "new_password": "Clave-tec-aud-2!"}, headers=tec))
+        logs = (await c.get("/api/audit/logs", headers=admin, params={"q": "tecaudit@x.com", "action": "update"})).json()
+        pw_entries = [i for i in logs["items"] if i["changes"] and "hashed_password" in i["changes"]]
+        check(
+            "el cambio de contraseña se audita sin guardar el hash",
+            pw.status_code == 204 and pw_entries and pw_entries[0]["changes"]["hashed_password"] == {"changed": True},
+            pw_entries,
+        )
+        for action in ("login", "ip_locked", "ip_banned"):
+            logs = (await c.get("/api/audit/logs", headers=admin, params={"action": action})).json()
+            check(f"evento '{action}' registrado", logs["total"] >= 1, logs["total"])
+        check("el técnico no puede ver la auditoría (403)", (await c.get("/api/audit/logs", headers=tec)).status_code == 403)
+        check("un USER no puede ver la auditoría (403)", (await c.get("/api/audit/logs", headers=user)).status_code == 403)
+        check("sin sesión no se ve la auditoría (401)", (await c.get("/api/audit/logs")).status_code == 401)
+        check("el ADMIN lista los filtros", (await c.get("/api/audit/filters", headers=admin)).status_code == 200)
+        settings.IP_GUARD_ENABLED = False
 
     await engine.dispose()
 

@@ -24,10 +24,15 @@ export async function fetchMe(): Promise<CurrentUser> {
 }
 
 /** El backend usa el login estándar OAuth2: form-urlencoded con `username` = email. */
-export async function loginRequest(email: string, password: string): Promise<string> {
+export async function loginRequest(
+  email: string,
+  password: string,
+  turnstileToken?: string | null
+): Promise<string> {
   const body = new URLSearchParams();
   body.set("username", email);
   body.set("password", password);
+  if (turnstileToken) body.set("turnstile_token", turnstileToken);
   const { data } = await apiClient.post<{ access_token: string }>("/auth/login", body, {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
   });
@@ -40,12 +45,19 @@ export interface RegisterPayload {
   password: string;
   first_name: string;
   last_name: string;
+  /** Token de Cloudflare Turnstile (anti-bots). */
+  turnstile_token?: string;
 }
 
-/** Registro público: el backend siempre crea un usuario con rol USER. */
+/**
+ * Registro público: el backend siempre crea un usuario con rol USER y devuelve la sesión ya
+ * iniciada (el token de Turnstile se consume una vez, así que no se hace un login aparte).
+ */
 export async function registerRequest(payload: RegisterPayload): Promise<CurrentUser> {
-  const { data } = await apiClient.post<CurrentUser>("/auth/register", payload);
-  return data;
+  const { data } = await apiClient.post<CurrentUser & { access_token: string }>("/auth/register", payload);
+  localStorage.setItem(TOKEN_KEY, data.access_token);
+  const { access_token: _token, ...user } = data;
+  return user;
 }
 
 /** Usuario logueado (solo consulta si hay token). */

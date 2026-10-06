@@ -1,0 +1,70 @@
+{
+  "time": {
+    "justNow": "hace instantes",
+    "daysOne": "{{count}} día",
+    "daysOther": "{{count}} días",
+    "lessThanHour": "menos de 1 h"
+  },
+  "orderStatus": {
+    "nuevo": "Nuevo",
+    "en_revision": "En revisión",
+    "contactado": "Contactado",
+    "finalizado": "Finalizado",
+    "descartado": "Descartado"
+  },
+  "applicationStatus": {
+    "nueva": "Nueva",
+    "en_revision": "En revisión",
+    "entrevista": "Entrevista",
+    "descartada": "Descartada",
+    "contratada": "Contratada"
+  },
+  "supportStatus": {
+    "abierto": "Abierto",
+    "respondido": "Respondido",
+    "cerrado": "Cerrado"
+  },
+  "serverErrors": {
+    "formsUnavailable": "El envío de formularios no está disponible por el momento.",
+    "antiSpamRequired": "Completá la verificación anti-spam antes de enviar.",
+    "antiSpamFailed": "No pudimos verificar que sos una persona. Recargá la página y probá de nuevo.",
+    "antiSpamUnavailable": "No pudimos verificar el anti-spam. Probá de nuevo en unos minutos.",
+    "invalidCredentials": "Email o contraseña incorrectos",
+    "sessionInvalid": "No se pudieron validar las credenciales",
+    "notFound": "Recurso no encontrado",
+    "requiresAdmin": "Requiere rol ADMIN",
+    "requiresStaff": "Requiere rol TECHNICIAN o ADMIN",
+    "currentEmailMismatch": "El email actual no coincide con el de tu cuenta",
+    "newEmailSame": "El email nuevo tiene que ser distinto del actual",
+    "currentPasswordWrong": "La contraseña actual no es correcta",
+    "passwordWrong": "La contraseña no es correcta",
+    "newPasswordSame": "La contraseña nueva tiene que ser distinta de la actual",
+    "emailTaken": "El email ya está registrado",
+    "onlyOwnerApproves": "Solo el cliente dueño del ticket puede aprobar el presupuesto.",
+    "ipNotBlocked": "Esa IP no está bloqueada.",
+    "notTechnician": "Esa cuenta no es TECHNICIAN.",
+    "notInTrash": "No está en la papelera",
+    "noUserWithEmail": "No hay ningún usuario registrado con ese email.",
+    "applicationNotFound": "Postulación no encontrada",
+    "accountIsAdmin": "Esa cuenta es ADMIN: ya tiene todos los permisos.",
+    "alreadyTechnician": "Esa cuenta ya es TECHNICIAN.",
+    "chatClosed": "Este chat está cerrado.",
+    "estimatedCostRequired": "Debes indicar estimated_cost para pedir la aprobación del cliente.",
+    "tooManyForms": "Enviaste demasiados formularios en poco tiempo. Probá de nuevo en un rato.",
+    "ipBanned": "Tu IP fue bloqueada por actividad sospechosa. Volvé a intentar en {{time}}.",
+    "loginLocked": "Demasiados intentos fallidos. Tu IP está bloqueada: probá de nuevo en {{time}}.",
+    "connection": "No pudimos conectar con el servidor. Revisá tu conexión y probá de nuevo.",
+    "invalidFields": "Revisá que todos los campos estén completos y sean válidos.",
+    "serviceUnavailable404": "El servicio no está disponible en este momento (404). Avisale al equipo técnico.",
+    "sendFailedOrder": "No pudimos enviar tu pedido. Probá de nuevo en un rato.",
+    "sendFailedApplication": "No pudimos enviar tu postulación. Probá de nuevo en un rato.",
+    "sendErrorCodeOrder": "Ocurrió un error al enviar tu pedido (código {{status}}). Probá de nuevo.",
+    "sendErrorCodeApplication": "Ocurrió un error al enviar tu postulación (código {{status}}). Probá de nuevo.",
+    "sendErrorOrder": "Ocurrió un error al enviar tu pedido. Probá de nuevo.",
+    "sendErrorApplication": "Ocurrió un error al enviar tu postulación. Probá de nuevo."
+  },
+  "turnstile": {
+    "missingKey": "Falta configurar la verificación anti-spam (VITE_TURNSTILE_SITE_KEY).",
+    "required": "Completá la verificación anti-spam."
+  }
+}

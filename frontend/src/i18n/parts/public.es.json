@@ -1,0 +1,130 @@
+{
+  "pubHome": {
+    "title": "Software a medida que hace más competitiva a tu PyME",
+    "intro": "En AJR Data resolvemos falencias concretas de tu negocio con desarrollo a medida — incorporando chatbots, agentes de IA y funcionalidades modernas en vez de soluciones genéricas.",
+    "cta": "Solicitar un proyecto",
+    "aboutTitle": "Quiénes somos",
+    "aboutText": "Somos una consultora tecnológica enfocada en ayudar a PyMEs a resolver problemas puntuales de su negocio mediante software, diferenciándonos con ideas más modernas que la competencia de nuestros clientes.",
+    "partnersTitle": "Con quiénes trabajamos"
+  },
+  "pubPortfolio": {
+    "title": "Portfolio",
+    "subtitle": "Trabajos hechos y proyectos en progreso.",
+    "loading": "Cargando...",
+    "loadError": "No pudimos cargar el portfolio.",
+    "retry": "Reintentar",
+    "empty": "Pronto vamos a mostrar acá nuestros proyectos.",
+    "videoLabel": "Video de {{title}}",
+    "videoFallback": "Tu navegador no puede reproducir este video. <1>Abrirlo en otra pestaña</1>.",
+    "fileFallback": "Archivo del proyecto",
+    "newTab": "(se abre en otra pestaña)",
+    "done": "Terminado",
+    "inProgress": "En progreso",
+    "client": "Cliente: {{name}}",
+    "viewProject": "Ver el proyecto"
+  },
+  "pubNotFound": {
+    "title": "Esta página no existe",
+    "text": "Puede que el link esté mal o que la hayamos movido.",
+    "home": "Volver al inicio"
+  },
+  "orderForm": {
+    "errors": {
+      "company": "Contanos el nombre de tu PyME.",
+      "name": "Necesitamos tu nombre para escribirte.",
+      "emailRequired": "Necesitamos un email para responderte.",
+      "emailInvalid": "Revisá el email: parece que tiene un error.",
+      "phone": "Usá solo números, espacios y + - ( ).",
+      "industry": "Contanos a qué rubro se dedica tu negocio.",
+      "description": "Contanos un poquito más (mínimo {{min}} caracteres)."
+    },
+    "loginTitle": "Iniciá sesión para solicitar un proyecto",
+    "loginText": "Con tu cuenta podés seguir el avance de tu pedido y escribirnos por soporte.",
+    "login": "Iniciar sesión",
+    "register": "Crear cuenta",
+    "thanks": "¡Gracias!",
+    "successText": "Recibimos tu pedido. Te mandamos un mail de confirmación y te vamos a contactar a la brevedad. Podés seguir su avance en <1>Mis pedidos</1>.",
+    "sendAnother": "Enviar otro pedido",
+    "title": "Contacto — Solicitar proyecto",
+    "subtitle": "Contanos el problema de tu negocio y lo vemos juntos.",
+    "company": "Nombre de la PyME",
+    "name": "Tu nombre",
+    "email": "Email de contacto",
+    "phone": "Teléfono (opcional)",
+    "industry": "Rubro de tu negocio",
+    "description": "Describí el problema a resolver",
+    "sending": "Enviando...",
+    "submit": "Enviar pedido"
+  },
+  "jobForm": {
+    "heroTitle": "Formá parte de la familia AJR",
+    "heroIntro": "Somos un equipo chico que resuelve problemas reales de PyMEs con software a medida: desde sistemas de gestión hasta asistentes con IA que le devuelven horas de trabajo a un negocio. Nos importa más entender bien el problema que usar la última moda, y nos gusta hacerlo en buena compañía.",
+    "heroOutro": "Si disfrutás construir cosas útiles, preguntar “¿para qué?” y crecer con gente que te banca cuando algo se traba, contanos quién sos. Todas las postulaciones las lee una persona del equipo.",
+    "perks": {
+      "custom": { "title": "Desarrollo a medida", "text": "Nada de plantillas: cada proyecto arranca escuchando cómo trabaja el negocio." },
+      "ai": { "title": "IA aplicada", "text": "Chatbots, agentes y automatizaciones que las PyMEs usan desde el primer día." },
+      "learning": { "title": "Aprendizaje continuo", "text": "Tiempo y espacio para probar tecnologías nuevas y equivocarnos en compañía." },
+      "remote": { "title": "Remoto y flexible", "text": "Trabajás desde donde rindas mejor, con acuerdos claros y sin microgestión." }
+    },
+    "areas": {
+      "backend": "Desarrollo Backend",
+      "frontend": "Desarrollo Frontend",
+      "data": "Datos e IA",
+      "design": "Diseño UI/UX",
+      "sales": "Comercial/Ventas",
+      "other": "Otro"
+    },
+    "levels": {
+      "student": "Estudiante",
+      "junior": "Junior",
+      "semi": "Semi-senior",
+      "senior": "Senior"
+    },
+    "availability": {
+      "full": "Full-time",
+      "part": "Part-time",
+      "freelance": "Freelance",
+      "tbd": "A definir"
+    },
+    "errors": {
+      "fullName": "Contanos tu nombre y apellido.",
+      "emailRequired": "Necesitamos un email para escribirte.",
+      "emailInvalid": "Revisá el email: parece que tiene un error.",
+      "phone": "Usá solo números, espacios y + - ( ).",
+      "location": "Decinos desde qué ciudad y país nos escribís.",
+      "area": "Elegí un área de interés.",
+      "url": "El link tiene que empezar con http:// o https://",
+      "motivation": "Contanos un poco más (mínimo {{min}} caracteres).",
+      "consent": "Tenés que aceptar el tratamiento de tus datos para postularte."
+    },
+    "thanks": "¡Gracias por querer sumarte a la familia AJR!",
+    "thanksText": "Recibimos tu postulación y te mandamos un mail de confirmación. La vamos a leer con atención y, si hay match, te escribimos para conocernos.",
+    "applyTitle": "Postulate",
+    "requiredNote": "Los campos con * son obligatorios.",
+    "fullName": "Nombre y apellido",
+    "email": "Email",
+    "phone": "Teléfono / WhatsApp (opcional)",
+    "location": "Ciudad y país",
+    "locationPlaceholder": "Ej: Rosario, Argentina",
+    "area": "Área de interés",
+    "level": "Nivel de experiencia",
+    "linkedin": "LinkedIn (opcional)",
+    "github": "GitHub o portfolio (opcional)",
+    "cv": "Link a tu CV (opcional)",
+    "cvHint": "Subilo a Drive o Dropbox y pegá el link (con permiso de lectura para quien tenga el enlace).",
+    "motivation": "Contanos por qué querés sumarte",
+    "availabilityLabel": "Disponibilidad",
+    "consent": "Acepto que AJR Data trate mis datos personales para evaluar mi postulación y contactarme. Puedo pedir que los borren escribiéndonos.",
+    "sending": "Enviando...",
+    "submit": "Enviar postulación"
+  },
+  "fields": {
+    "counterMissing": "{{length}}/{{max}} · faltan {{missing}} para el mínimo",
+    "counter": "{{length}}/{{max}}",
+    "selectPlaceholder": "Elegí una opción",
+    "honeypot": "No completar este campo"
+  },
+  "footer": {
+    "line": "© {{year}} AJR Data — Consultora Tecnológica"
+  }
+}

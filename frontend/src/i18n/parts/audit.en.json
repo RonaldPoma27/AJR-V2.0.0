@@ -1,0 +1,80 @@
+{
+  "audit": {
+    "title": "Audit log",
+    "description": "A record of what each administrator and technician does: what changed, when and from which IP.",
+    "timezoneNote": "Dates and times are in Argentina time (America/Argentina/Buenos_Aires, UTC-03:00).",
+    "tzShort": "ART",
+    "system": "System",
+    "emptyValue": "(empty)",
+    "changed": "changed",
+    "showChanges": "View changes ({{count}})",
+    "hideChanges": "Hide changes",
+    "loading": "Loading the log…",
+    "loadError": "We couldn't load the audit log.",
+    "retry": "Retry",
+    "empty": "There are no records matching those filters.",
+    "filters": {
+      "search": "Search",
+      "searchPlaceholder": "Email, record name, IP or path",
+      "user": "User",
+      "action": "Action",
+      "entity": "Section",
+      "from": "From",
+      "to": "To",
+      "all": "All"
+    },
+    "actions": {
+      "create": "Created",
+      "update": "Modified",
+      "delete": "Deleted",
+      "trash": "Moved to trash",
+      "restore": "Restored",
+      "login": "Logged in",
+      "login_failed": "Failed login attempt",
+      "ip_locked": "IP locked",
+      "ip_banned": "IP banned",
+      "ip_released": "Lifted an IP block"
+    },
+    "entities": {
+      "users": "Users",
+      "client_orders": "Orders",
+      "job_applications": "Applications",
+      "partners": "Partners",
+      "tickets": "Tickets",
+      "ticket_updates": "Ticket updates",
+      "ticket_comments": "Ticket comments",
+      "support_tickets": "Support chats",
+      "support_messages": "Support messages",
+      "services": "Services",
+      "portfolio_items": "Portfolio",
+      "portfolio_media": "Portfolio gallery",
+      "blog_posts": "Blog",
+      "prompt_templates": "Prompt templates",
+      "ip": "IP"
+    },
+    "fields": {
+      "status": "Status",
+      "role": "Role",
+      "email": "Email",
+      "hashed_password": "Password",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "deleted_at": "Moved to trash",
+      "title": "Title",
+      "name": "Name",
+      "description": "Description",
+      "content": "Content",
+      "estimated_cost": "Estimated cost"
+    },
+    "blocked": {
+      "title": "IPs blocked right now",
+      "banned": "banned for excessive activity",
+      "locked": "locked for failed login attempts",
+      "remaining": "Released in {{time}}",
+      "release": "Lift block",
+      "confirmQuestion": "Lift it?",
+      "confirm": "Yes, lift it",
+      "releaseError": "We couldn't lift the block."
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 /** Contador por estado. Cada chip también filtra la lista al hacer click. */
@@ -12,14 +13,15 @@ export default function StatusChips({
   active: string | null;
   onSelect: (status: string | null) => void;
 }) {
+  const { t } = useTranslation();
   const total = Object.values(counts).reduce((sum, n) => sum + n, 0);
   const chips: { key: string | null; label: string; count: number }[] = [
-    { key: null, label: "Todos", count: total },
+    { key: null, label: t("adminCommon.all"), count: total },
     ...Object.keys(labels).map((key) => ({ key, label: labels[key], count: counts[key] ?? 0 })),
   ];
 
   return (
-    <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrar por estado">
+    <div className="flex flex-wrap gap-2" role="group" aria-label={t("adminCommon.filterByStatus")}>
       {chips.map((chip) => {
         const selected = chip.key === active;
         return (

@@ -10,6 +10,7 @@ import {
   LogOut,
   MessagesSquare,
   Package,
+  ScrollText,
   Trash2,
   User,
   Users,
@@ -43,6 +44,7 @@ const PANEL_ITEMS: Item[] = [
   { to: "/admin/equipo", labelKey: "sidebar.team", icon: Users },
 ];
 const TRASH_ITEM: Item = { to: "/admin/papelera", labelKey: "sidebar.trash", icon: Trash2 };
+const AUDIT_ITEM: Item = { to: "/admin/auditoria", labelKey: "sidebar.audit", icon: ScrollText };
 
 const PUBLIC_ITEMS: Item[] = [
   { to: "/", labelKey: "sidebar.home", icon: Home, end: true },
@@ -118,7 +120,7 @@ function SidebarContent({ showPublicLinks }: { showPublicLinks: boolean }) {
         {isStaff(me?.role) && (
           <NavGroup
             title={t("sidebar.adminPanel")}
-            items={me?.role === "ADMIN" ? [...PANEL_ITEMS, TRASH_ITEM] : PANEL_ITEMS}
+            items={me?.role === "ADMIN" ? [...PANEL_ITEMS, AUDIT_ITEM, TRASH_ITEM] : PANEL_ITEMS}
           />
         )}
         {showPublicLinks && <NavGroup title={t("sidebar.site")} items={PUBLIC_ITEMS} />}

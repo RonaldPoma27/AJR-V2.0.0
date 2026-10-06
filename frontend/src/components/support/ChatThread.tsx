@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Send } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import {
   MAX_CONSECUTIVE_MESSAGES,
   MAX_MESSAGE_LENGTH,
@@ -33,6 +34,7 @@ export default function ChatThread({
   perspective: "customer" | "staff";
   className?: string;
 }) {
+  const { t } = useTranslation();
   const { data, isLoading, isError, refetch } = useSupportTicket(ticketId);
   const send = useSendSupportMessage(ticketId);
   const [text, setText] = useState("");
@@ -45,12 +47,12 @@ export default function ChatThread({
     if (el) el.scrollTop = el.scrollHeight;
   }, [messageCount, ticketId]);
 
-  if (isLoading) return <p className="p-4 text-sm text-fg-subtle">Cargando conversación…</p>;
+  if (isLoading) return <p className="p-4 text-sm text-fg-subtle">{t("chat.thread.loading")}</p>;
   if (isError || !data) {
     return (
       <p role="alert" className="p-4 text-sm text-red-600 dark:text-red-400">
-        No pudimos cargar el chat.{" "}
-        <button onClick={() => refetch()} className="font-medium underline">Reintentar</button>
+        {t("chat.thread.loadError")}{" "}
+        <button onClick={() => refetch()} className="font-medium underline">{t("chat.thread.retry")}</button>
       </p>
     );
   }
@@ -68,12 +70,12 @@ export default function ChatThread({
 
   const placeholder =
     data.block_reason === "closed"
-      ? "Este chat está cerrado"
+      ? t("chat.thread.closedPlaceholder")
       : data.block_reason === "awaiting_support"
-        ? "Esperando la respuesta del equipo…"
+        ? t("chat.thread.awaitingPlaceholder")
         : customer
-          ? "Escribí tu mensaje…"
-          : "Escribí tu respuesta…";
+          ? t("chat.thread.customerPlaceholder")
+          : t("chat.thread.staffPlaceholder");
 
   return (
     <div className={cn("flex min-h-0 flex-col", className)}>
@@ -81,12 +83,12 @@ export default function ChatThread({
         ref={listRef}
         role="log"
         aria-live="polite"
-        aria-label={`Mensajes del chat «${data.title}»`}
+        aria-label={t("chat.thread.logLabel", { title: data.title })}
         className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4"
       >
         {data.messages.map((m) => {
           const mine = customer ? m.from_customer : !m.from_customer;
-          const author = m.from_customer ? (customer ? "Vos" : m.sender_name) : customer ? "Equipo AJR Data" : m.sender_name;
+          const author = m.from_customer ? (customer ? t("chat.thread.you") : m.sender_name) : customer ? t("chat.thread.team") : m.sender_name;
           return (
             <div key={m.id} className={cn("flex flex-col", mine ? "items-end" : "items-start")}>
               <div
@@ -111,13 +113,13 @@ export default function ChatThread({
         {blocked && (
           <p role="status" className="mb-2 rounded-md bg-amber-100 px-3 py-2 text-xs text-amber-900 dark:bg-amber-500/15 dark:text-amber-200">
             {data.block_reason === "closed"
-              ? "Este chat está cerrado. Si necesitás algo más, iniciá uno nuevo."
-              : `Enviaste ${MAX_CONSECUTIVE_MESSAGES} mensajes seguidos. Vas a poder escribir de nuevo cuando el equipo responda.`}
+              ? t("chat.thread.blockedClosed")
+              : t("chat.thread.blockedConsecutive", { count: MAX_CONSECUTIVE_MESSAGES })}
           </p>
         )}
         {customer && !blocked && remaining === 1 && (
           <p className="mb-2 text-xs text-fg-subtle">
-            Podés enviar 1 mensaje más hasta que el equipo responda.
+            {t("chat.thread.oneMore")}
           </p>
         )}
         <div className="flex items-end gap-2">
@@ -134,28 +136,28 @@ export default function ChatThread({
             maxLength={MAX_MESSAGE_LENGTH}
             rows={2}
             placeholder={placeholder}
-            aria-label="Escribir un mensaje"
+            aria-label={t("chat.thread.writeLabel")}
             className="min-h-[2.75rem] flex-1 resize-none rounded-md border bg-surface px-3 py-2 text-sm text-fg focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand disabled:cursor-not-allowed disabled:bg-surface-2 disabled:opacity-70"
           />
           <button
             type="button"
             onClick={submit}
             disabled={blocked || !trimmed || send.isPending}
-            aria-label="Enviar mensaje"
+            aria-label={t("chat.thread.sendLabel")}
             className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-brand text-white hover:bg-brand-dark disabled:opacity-50"
           >
             <Send className="h-5 w-5" aria-hidden />
           </button>
         </div>
         <div className="mt-1 flex justify-between text-xs text-fg-subtle">
-          <span>Enter envía · Shift+Enter nueva línea</span>
+          <span>{t("chat.thread.keys")}</span>
           <span className={cn(text.length >= MAX_MESSAGE_LENGTH - 100 && "font-semibold text-amber-700 dark:text-amber-300")} aria-live="polite">
             {text.length}/{MAX_MESSAGE_LENGTH}
           </span>
         </div>
         {send.isError && (
           <p role="alert" className="mt-2 text-xs text-red-600 dark:text-red-400">
-            {getServerDetail(send.error) ?? "No pudimos enviar el mensaje. Probá de nuevo."}
+            {getServerDetail(send.error) ?? t("chat.thread.sendError")}
           </p>
         )}
       </div>

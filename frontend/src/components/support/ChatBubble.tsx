@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, MessageCircle, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useSupportTicket } from "@/api/support";
 import ChatHistory from "./ChatHistory";
 import ChatThread from "./ChatThread";
@@ -8,8 +9,9 @@ import NewChatForm from "./NewChatForm";
 type View = { name: "history" } | { name: "new" } | { name: "thread"; id: number };
 
 function ThreadTitle({ id }: { id: number }) {
+  const { t } = useTranslation();
   const { data } = useSupportTicket(id);
-  return <>{data?.title ?? "Chat"}</>;
+  return <>{data?.title ?? t("chat.chatFallback")}</>;
 }
 
 /**
@@ -17,6 +19,7 @@ function ThreadTitle({ id }: { id: number }) {
  * vistas: historial de chats, chat nuevo (con título) y conversación.
  */
 export default function ChatBubble() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<View>({ name: "history" });
   const launcherRef = useRef<HTMLButtonElement>(null);
@@ -34,14 +37,14 @@ export default function ChatBubble() {
   }, [open]);
 
   const title =
-    view.name === "history" ? "Soporte" : view.name === "new" ? "Nuevo chat" : <ThreadTitle id={view.id} />;
+    view.name === "history" ? t("chat.support") : view.name === "new" ? t("chat.newChat") : <ThreadTitle id={view.id} />;
 
   return (
     <>
       {open && (
         <section
           role="dialog"
-          aria-label="Chat de soporte"
+          aria-label={t("chat.bubbleTitle")}
           className="fixed bottom-24 right-4 z-50 flex h-[34rem] max-h-[calc(100vh-7rem)] w-[23rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-xl border bg-surface shadow-2xl sm:right-6"
         >
           <header className="flex items-center gap-2 bg-slate-800 px-3 py-3 text-white dark:bg-slate-700">
@@ -49,7 +52,7 @@ export default function ChatBubble() {
               <button
                 type="button"
                 onClick={() => setView({ name: "history" })}
-                aria-label="Volver al historial de chats"
+                aria-label={t("chat.backToHistory")}
                 className="rounded-md p-1 hover:bg-white/15"
               >
                 <ArrowLeft className="h-5 w-5" aria-hidden />
@@ -62,7 +65,7 @@ export default function ChatBubble() {
                 setOpen(false);
                 launcherRef.current?.focus();
               }}
-              aria-label="Cerrar el chat"
+              aria-label={t("chat.closeChat")}
               className="rounded-md p-1 hover:bg-white/15"
             >
               <X className="h-5 w-5" aria-hidden />
@@ -91,7 +94,7 @@ export default function ChatBubble() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        aria-label={open ? "Cerrar el chat de soporte" : "Abrir el chat de soporte"}
+        aria-label={open ? t("chat.closeSupport") : t("chat.openSupport")}
         className="fixed bottom-5 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-slate-800 text-white shadow-lg hover:bg-slate-900 focus-visible:outline-offset-4 sm:right-6 dark:bg-slate-600 dark:hover:bg-slate-500"
       >
         {open ? <X className="h-6 w-6" aria-hidden /> : <MessageCircle className="h-7 w-7" aria-hidden />}

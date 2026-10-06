@@ -1,3 +1,4 @@
+from app.models.audit import AuditLog, IpBlock
 from app.models.base import Base
 from app.models.client_order import ClientOrder
 from app.models.cms import BlogPost, PortfolioItem, PortfolioMedia, Service
@@ -19,9 +20,11 @@ from app.models.user import User
 
 __all__ = [
     "ApplicationStatus",
+    "AuditLog",
     "Base",
     "BlogPost",
     "ClientOrder",
+    "IpBlock",
     "JobApplication",
     "MediaType",
     "OrderStatus",

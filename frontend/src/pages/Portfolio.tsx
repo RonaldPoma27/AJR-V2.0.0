@@ -1,8 +1,10 @@
+import { Trans, useTranslation } from "react-i18next";
 import { Download, ExternalLink, FileText } from "lucide-react";
 import { useProjects, type Project, type ProjectMedia } from "@/api/projects";
 import { cn } from "@/lib/utils";
 
 function MediaItem({ media, title, wide }: { media: ProjectMedia; title: string; wide: boolean }) {
+  const { t } = useTranslation();
   const span = wide ? "sm:col-span-2" : "";
   const caption = media.caption && (
     <figcaption className="mt-2 text-sm text-fg-subtle">{media.caption}</figcaption>
@@ -11,9 +13,9 @@ function MediaItem({ media, title, wide }: { media: ProjectMedia; title: string;
   if (media.media_type === "video") {
     return (
       <figure className={span}>
-        <video controls preload="metadata" className="w-full rounded-lg bg-black" aria-label={media.caption || `Video de ${title}`}>
+        <video controls preload="metadata" className="w-full rounded-lg bg-black" aria-label={media.caption || t("pubPortfolio.videoLabel", { title })}>
           <source src={media.url} />
-          Tu navegador no puede reproducir este video. <a href={media.url}>Abrirlo en otra pestaña</a>.
+          <Trans i18nKey="pubPortfolio.videoFallback" components={{ 1: <a href={media.url} /> }} />
         </video>
         {caption}
       </figure>
@@ -29,11 +31,11 @@ function MediaItem({ media, title, wide }: { media: ProjectMedia; title: string;
       >
         <FileText className="h-8 w-8 shrink-0 text-accent" aria-hidden />
         <span className="min-w-0 flex-1">
-          <span className="block truncate font-medium text-fg">{media.caption || "Archivo del proyecto"}</span>
+          <span className="block truncate font-medium text-fg">{media.caption || t("pubPortfolio.fileFallback")}</span>
           <span className="block truncate text-sm text-fg-subtle">{media.url}</span>
         </span>
         <Download className="h-5 w-5 shrink-0 text-fg-subtle" aria-hidden />
-        <span className="sr-only">(se abre en otra pestaña)</span>
+        <span className="sr-only">{t("pubPortfolio.newTab")}</span>
       </a>
     );
   }
@@ -46,6 +48,7 @@ function MediaItem({ media, title, wide }: { media: ProjectMedia; title: string;
 }
 
 function ProjectSection({ project }: { project: Project }) {
+  const { t } = useTranslation();
   const gallery = project.media;
   const done = project.status === "terminado";
   return (
@@ -58,9 +61,9 @@ function ProjectSection({ project }: { project: Project }) {
               done ? "bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-300" : "bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300"
             )}
           >
-            {done ? "Terminado" : "En progreso"}
+            {done ? t("pubPortfolio.done") : t("pubPortfolio.inProgress")}
           </span>
-          {project.client_name && <span className="text-fg-subtle">Cliente: {project.client_name}</span>}
+          {project.client_name && <span className="text-fg-subtle">{t("pubPortfolio.client", { name: project.client_name })}</span>}
         </div>
         <h2 id={`project-${project.id}`} className="mt-3 text-2xl font-bold text-fg sm:text-3xl">
           {project.title}
@@ -79,8 +82,8 @@ function ProjectSection({ project }: { project: Project }) {
 
       {project.project_url && (
         <a href={project.project_url} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-1.5 font-medium text-accent hover:underline">
-          Ver el proyecto <ExternalLink className="h-4 w-4" aria-hidden />
-          <span className="sr-only">(se abre en otra pestaña)</span>
+          {t("pubPortfolio.viewProject")} <ExternalLink className="h-4 w-4" aria-hidden />
+          <span className="sr-only">{t("pubPortfolio.newTab")}</span>
         </a>
       )}
     </article>
@@ -88,20 +91,21 @@ function ProjectSection({ project }: { project: Project }) {
 }
 
 export default function Portfolio() {
+  const { t } = useTranslation();
   const { data: projects, isLoading, isError, refetch } = useProjects();
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-16">
-      <h1 className="text-3xl font-bold text-fg">Portfolio</h1>
-      <p className="mt-2 text-fg-muted">Trabajos hechos y proyectos en progreso.</p>
+      <h1 className="text-3xl font-bold text-fg">{t("pubPortfolio.title")}</h1>
+      <p className="mt-2 text-fg-muted">{t("pubPortfolio.subtitle")}</p>
 
-      {isLoading && <p className="mt-8 text-fg-subtle">Cargando...</p>}
+      {isLoading && <p className="mt-8 text-fg-subtle">{t("pubPortfolio.loading")}</p>}
       {isError && (
         <p role="alert" className="mt-8 text-red-600 dark:text-red-400">
-          No pudimos cargar el portfolio. <button onClick={() => refetch()} className="font-medium underline">Reintentar</button>
+          {t("pubPortfolio.loadError")} <button onClick={() => refetch()} className="font-medium underline">{t("pubPortfolio.retry")}</button>
         </p>
       )}
-      {projects && projects.length === 0 && <p className="mt-8 text-fg-subtle">Pronto vamos a mostrar acá nuestros proyectos.</p>}
+      {projects && projects.length === 0 && <p className="mt-8 text-fg-subtle">{t("pubPortfolio.empty")}</p>}
 
       {/* space-y-24 = 6rem ≈ 4 renglones de texto entre un proyecto y el siguiente. */}
       <div className="mt-16 space-y-24">

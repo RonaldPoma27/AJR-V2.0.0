@@ -58,6 +58,15 @@ class Settings(BaseSettings):
     # Límite de envíos por IP en los formularios públicos
     RATE_LIMIT_PER_HOUR: int = Field(default=5, gt=0)
 
+    # Protección por IP (app/core/ip_guard.py)
+    IP_GUARD_ENABLED: bool = True
+    IP_GUARD_TRUSTED_IPS: str = ""  # IPs exentas (coma). Útil para tu IP fija de oficina.
+    LOGIN_MAX_FAILURES: int = Field(default=5, gt=0)  # contraseñas incorrectas seguidas...
+    LOGIN_LOCK_MINUTES: int = Field(default=30, gt=0)  # ...y la IP queda bloqueada este tiempo
+    FLOOD_MAX_REQUESTS: int = Field(default=60, gt=0)  # pedidos a /api en la ventana...
+    FLOOD_WINDOW_SECONDS: int = Field(default=60, gt=0)
+    FLOOD_BAN_HOURS: int = Field(default=12, gt=0)  # ...y la IP queda baneada este tiempo
+
     @field_validator("DATABASE_URL")
     @classmethod
     def _normalize_database_url(cls, value: str) -> str:
@@ -95,6 +104,10 @@ class Settings(BaseSettings):
     @property
     def cors_origins_list(self) -> list[str]:
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
+
+    @property
+    def trusted_ips(self) -> set[str]:
+        return {ip.strip() for ip in self.IP_GUARD_TRUSTED_IPS.split(",") if ip.strip()}
 
     @property
     def is_production(self) -> bool:

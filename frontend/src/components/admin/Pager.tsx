@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 /** Paginación con "Anterior / Siguiente" y "Mostrando X–Y de N". `page` empieza en 0. */
 export default function Pager({
   page,
@@ -12,6 +14,7 @@ export default function Pager({
   onPage: (page: number) => void;
   disabled?: boolean;
 }) {
+  const { t } = useTranslation();
   if (total === 0) return null;
   const from = page * pageSize + 1;
   const to = Math.min((page + 1) * pageSize, total);
@@ -23,14 +26,14 @@ export default function Pager({
   return (
     <div className="flex items-center justify-between gap-3">
       <p className="text-sm text-fg-subtle" aria-live="polite">
-        Mostrando {from}–{to} de {total}
+        {t("adminCommon.showing", { from, to, total })}
       </p>
       <div className="flex gap-2">
         <button type="button" className={button} disabled={!hasPrev || disabled} onClick={() => onPage(page - 1)}>
-          Anterior
+          {t("adminCommon.previous")}
         </button>
         <button type="button" className={button} disabled={!hasNext || disabled} onClick={() => onPage(page + 1)}>
-          Siguiente
+          {t("adminCommon.next")}
         </button>
       </div>
     </div>

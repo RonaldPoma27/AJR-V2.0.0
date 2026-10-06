@@ -1,0 +1,19 @@
+{
+  "guard": {
+    "verifying": "Verifying your session…",
+    "verifyFailed": "We couldn't verify your session. It may be a connection problem.",
+    "retry": "Retry",
+    "forbidden": "Your account doesn't have permission to view this section.",
+    "goAccount": "Go to my account",
+    "logout": "Log out"
+  },
+  "theme": {
+    "toLight": "Switch to light mode",
+    "toDark": "Switch to dark mode",
+    "light": "Light mode",
+    "dark": "Dark mode"
+  },
+  "meta": {
+    "title": "AJR Data — Tech Consultancy"
+  }
+}

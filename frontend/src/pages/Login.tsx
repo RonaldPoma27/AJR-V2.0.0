@@ -1,24 +1,32 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { isAxiosError } from "axios";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { fetchMe, getToken, isStaff, loginRequest, type UserRole } from "@/api/auth";
 import { TextField } from "@/components/forms/Fields";
+import Turnstile, { turnstileEnabled, type TurnstileHandle } from "@/components/Turnstile";
+import i18n from "@/i18n";
+import { getServerDetail } from "@/lib/errors";
 
 function getLoginErrorMessage(error: unknown): string {
   if (isAxiosError(error)) {
     if (!error.response || error.response.status >= 500) {
-      return "No pudimos conectar con el servidor. Probá de nuevo en unos minutos.";
+      return i18n.t("auth.errors.server");
     }
     if (error.response.status === 401) {
-      return "Email o contraseña incorrectos.";
+      return i18n.t("auth.errors.badCredentials");
     }
     if (error.response.status === 429) {
-      return "Demasiados intentos. Esperá un momento y probá de nuevo.";
+      // Bloqueo de IP (5 contraseñas incorrectas): el mensaje trae cuánto falta.
+      return getServerDetail(error) ?? i18n.t("auth.errors.tooMany");
     }
-    return `No pudimos iniciar sesión (código ${error.response.status}).`;
+    if (error.response.status === 400 || error.response.status === 503) {
+      return getServerDetail(error) ?? i18n.t("auth.errors.loginFailed", { status: error.response.status });
+    }
+    return i18n.t("auth.errors.loginFailed", { status: error.response.status });
   }
-  return "Ocurrió un error inesperado. Probá de nuevo.";
+  return i18n.t("auth.errors.unexpected");
 }
 
 /** A dónde mandar a la persona después de entrar: a donde iba, o a su pantalla de inicio. */
@@ -29,6 +37,7 @@ export function landingFor(role: UserRole, from?: string): string {
 }
 
 export default function Login() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
@@ -37,16 +46,22 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileHandle>(null);
 
   if (getToken() && !loading) return <Navigate to={from ?? "/cuenta"} replace />;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (loading) return;
+    if (turnstileEnabled && !token) {
+      setError(t("turnstile.required"));
+      return;
+    }
     setError(null);
     setLoading(true);
     try {
-      await loginRequest(email.trim(), password);
+      await loginRequest(email.trim(), password, token);
       queryClient.clear(); // que no queden datos de otra sesión
       const me = await fetchMe();
       queryClient.setQueryData(["me"], me);
@@ -54,16 +69,18 @@ export default function Login() {
     } catch (err) {
       setError(getLoginErrorMessage(err));
       setLoading(false);
+      turnstileRef.current?.reset(); // el token de Turnstile es de un solo uso
     }
   }
 
   return (
     <div className="mx-auto max-w-sm px-6 py-16 sm:py-24">
-      <h1 className="text-2xl font-bold text-fg">Iniciar sesión</h1>
-      <p className="mt-1 text-sm text-fg-subtle">Ingresá para seguir tus pedidos y escribirnos por soporte.</p>
+      <h1 className="text-2xl font-bold text-fg">{t("auth.login.title")}</h1>
+      <p className="mt-1 text-sm text-fg-subtle">{t("auth.login.subtitle")}</p>
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-        <TextField label="Email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="username" />
-        <TextField label="Contraseña" name="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
+        <TextField label={t("auth.fields.email")} name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="username" />
+        <TextField label={t("auth.fields.password")} name="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
+        <Turnstile ref={turnstileRef} onToken={setToken} />
         {error && (
           <p role="alert" className="text-sm text-red-600 dark:text-red-400">
             {error}
@@ -71,16 +88,16 @@ export default function Login() {
         )}
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || (turnstileEnabled && !token)}
           className="w-full rounded-md bg-brand px-6 py-3 font-medium text-white hover:bg-brand-dark disabled:opacity-50"
         >
-          {loading ? "Ingresando..." : "Ingresar"}
+          {loading ? t("auth.login.submitting") : t("auth.login.submit")}
         </button>
       </form>
       <p className="mt-6 text-center text-sm text-fg-subtle">
-        ¿No tenés cuenta?{" "}
+        {t("auth.login.noAccount")}{" "}
         <Link to="/registro" state={{ from }} className="font-medium text-accent hover:underline">
-          Registrate
+          {t("auth.login.registerLink")}
         </Link>
       </p>
     </div>

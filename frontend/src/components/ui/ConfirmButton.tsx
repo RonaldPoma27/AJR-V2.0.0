@@ -1,11 +1,12 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 /** Botón destructivo en dos pasos (evita borrar por un click accidental). */
 export default function ConfirmButton({
   label,
-  question = "¿Seguro?",
-  confirmLabel = "Confirmar",
+  question,
+  confirmLabel,
   onConfirm,
   disabled,
   icon,
@@ -19,6 +20,7 @@ export default function ConfirmButton({
   icon?: React.ReactNode;
   className?: string;
 }) {
+  const { t } = useTranslation();
   const [asking, setAsking] = useState(false);
 
   if (!asking) {
@@ -39,7 +41,7 @@ export default function ConfirmButton({
   }
   return (
     <span role="group" aria-label={label} className="inline-flex flex-wrap items-center gap-2 text-sm">
-      <span className="text-fg-muted">{question}</span>
+      <span className="text-fg-muted">{question ?? t("confirm.question")}</span>
       <button
         type="button"
         disabled={disabled}
@@ -50,10 +52,10 @@ export default function ConfirmButton({
         }}
         className="rounded-md bg-red-600 px-3 py-1.5 font-medium text-white hover:bg-red-700 disabled:opacity-50"
       >
-        {confirmLabel}
+        {confirmLabel ?? t("confirm.confirm")}
       </button>
       <button type="button" onClick={() => setAsking(false)} className="rounded-md border px-3 py-1.5 font-medium text-fg-muted hover:bg-surface-2">
-        Cancelar
+        {t("confirm.cancel")}
       </button>
     </span>
   );

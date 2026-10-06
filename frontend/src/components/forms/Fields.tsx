@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 const inputClass =
@@ -104,12 +105,13 @@ export function TextAreaField({
   minLength?: number;
   rows?: number;
 }) {
+  const { t } = useTranslation();
   const id = useId();
   const length = value.trim().length;
   const counter =
     minLength && length < minLength
-      ? `${length}/${maxLength} · faltan ${minLength - length} para el mínimo`
-      : `${length}/${maxLength}`;
+      ? t("fields.counterMissing", { length, max: maxLength, missing: minLength - length })
+      : t("fields.counter", { length, max: maxLength });
   return (
     <FieldShell id={id} label={label} required={required} error={error} hint={hint}>
       <textarea
@@ -139,13 +141,14 @@ export function SelectField({
   required,
   error,
   hint,
-  placeholder = "Elegí una opción",
+  placeholder,
 }: BaseProps & {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  options: readonly string[];
+  options: readonly (string | { value: string; label: string })[];
   placeholder?: string;
 }) {
+  const { t } = useTranslation();
   const id = useId();
   return (
     <FieldShell id={id} label={label} required={required} error={error} hint={hint}>
@@ -158,12 +161,15 @@ export function SelectField({
         aria-describedby={error ? `${id}-error` : undefined}
         className={cn(inputClass, "bg-surface", error && "border-red-400")}
       >
-        <option value="">{placeholder}</option>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
+        <option value="">{placeholder ?? t("fields.selectPlaceholder")}</option>
+        {options.map((option) => {
+          const opt = typeof option === "string" ? { value: option, label: option } : option;
+          return (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          );
+        })}
       </select>
     </FieldShell>
   );
@@ -217,10 +223,11 @@ export function Honeypot({
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
+  const { t } = useTranslation();
   return (
     <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
       <label>
-        No completar este campo
+        {t("fields.honeypot")}
         <input
           type="text"
           name="website"

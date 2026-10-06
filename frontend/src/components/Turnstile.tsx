@@ -1,4 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 /** Widget anti-bots de Cloudflare Turnstile (sin librerías extra: script oficial). */
 
@@ -32,7 +33,7 @@ function loadScript(): Promise<void> {
       script.onload = () => resolve();
       script.onerror = () => {
         scriptPromise = null; // permite reintentar
-        reject(new Error("No se pudo cargar Turnstile"));
+        reject(new Error("Could not load Turnstile"));
       };
       document.head.appendChild(script);
     });
@@ -50,6 +51,8 @@ interface Props {
 }
 
 const Turnstile = forwardRef<TurnstileHandle, Props>(function Turnstile({ onToken }, ref) {
+  const { t, i18n } = useTranslation();
+  const language = i18n.resolvedLanguage === "en" ? "en" : "es";
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   const onTokenRef = useRef(onToken);
@@ -73,7 +76,7 @@ const Turnstile = forwardRef<TurnstileHandle, Props>(function Turnstile({ onToke
         if (cancelled || !containerRef.current || !window.turnstile) return;
         widgetIdRef.current = window.turnstile.render(containerRef.current, {
           sitekey: SITE_KEY,
-          language: "es",
+          language,
           callback: (token: string) => onTokenRef.current(token),
           "expired-callback": () => onTokenRef.current(null),
           "error-callback": () => onTokenRef.current(null),
@@ -87,13 +90,15 @@ const Turnstile = forwardRef<TurnstileHandle, Props>(function Turnstile({ onToke
         window.turnstile.remove(widgetIdRef.current);
       }
       widgetIdRef.current = null;
+      onTokenRef.current(null); // el token del widget anterior ya no sirve
     };
-  }, []);
+    // Al cambiar de idioma se vuelve a dibujar el widget (y pide un token nuevo).
+  }, [language]);
 
   if (!SITE_KEY) {
     return import.meta.env.PROD ? (
       <p className="text-sm text-red-600 dark:text-red-400">
-        Falta configurar la verificación anti-spam (VITE_TURNSTILE_SITE_KEY).
+        {t("turnstile.missingKey")}
       </p>
     ) : null;
   }

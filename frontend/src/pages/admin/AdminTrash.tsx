@@ -1,14 +1,16 @@
 import { RotateCcw } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useRestoreTrashItem, useTrash, type TrashItem } from "@/api/trash";
 import { getServerDetail } from "@/lib/errors";
 import { formatDateTime } from "@/lib/format";
 import { formatRemaining, useNow } from "@/lib/time";
 import { cn } from "@/lib/utils";
 
-const KIND_LABEL = { order: "Pedido", application: "Postulación" } as const;
+const KIND_LABEL_KEY = { order: "adminTrash.kindOrder", application: "adminTrash.kindApplication" } as const;
 const URGENT_SECONDS = 3 * 86_400;
 
 function Row({ item, now, loadedAt }: { item: TrashItem; now: number; loadedAt: number }) {
+  const { t } = useTranslation();
   const restore = useRestoreTrashItem();
   // seconds_left lo calcula el servidor (no depende del reloj del cliente); entre recargas
   // lo descontamos con el tiempo transcurrido para que la cuenta regresiva siga viva.
@@ -18,15 +20,15 @@ function Row({ item, now, loadedAt }: { item: TrashItem; now: number; loadedAt: 
     <li className="flex flex-wrap items-center justify-between gap-3 p-4">
       <div className="min-w-0">
         <p className="flex items-center gap-2 font-medium text-fg">
-          <span className="rounded-full bg-surface-2 px-2 py-0.5 text-xs font-medium text-fg-muted">{KIND_LABEL[item.kind]}</span>
+          <span className="rounded-full bg-surface-2 px-2 py-0.5 text-xs font-medium text-fg-muted">{t(KIND_LABEL_KEY[item.kind])}</span>
           <span className="truncate">{item.title}</span>
         </p>
         <p className="text-sm text-fg-subtle">{item.subtitle}</p>
-        <p className="mt-1 text-sm text-fg-subtle">Enviado a la papelera el {formatDateTime(item.deleted_at)}</p>
+        <p className="mt-1 text-sm text-fg-subtle">{t("adminTrash.sentOn", { date: formatDateTime(item.deleted_at) })}</p>
         <p className={cn("text-sm font-medium", urgent ? "text-red-600 dark:text-red-400" : "text-fg-muted")}>
-          Se elimina definitivamente en {formatRemaining(left)}
+          {t("adminTrash.deletesIn", { time: formatRemaining(left) })}
         </p>
-        {restore.isError && <p role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{getServerDetail(restore.error) ?? "No pudimos restaurarlo."}</p>}
+        {restore.isError && <p role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{getServerDetail(restore.error) ?? t("adminTrash.restoreError")}</p>}
       </div>
       <button
         type="button"
@@ -35,7 +37,7 @@ function Row({ item, now, loadedAt }: { item: TrashItem; now: number; loadedAt: 
         className="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm font-medium text-fg-muted hover:border-brand hover:text-accent disabled:opacity-50"
       >
         <RotateCcw className="h-4 w-4" aria-hidden />
-        {restore.isPending ? "Restaurando..." : "Restaurar"}
+        {restore.isPending ? t("adminTrash.restoring") : t("adminTrash.restore")}
       </button>
     </li>
   );
@@ -43,26 +45,27 @@ function Row({ item, now, loadedAt }: { item: TrashItem; now: number; loadedAt: 
 
 /** Solo ADMIN: lo que se envió a la papelera y cuánto falta para que se elimine de verdad. */
 export default function AdminTrash() {
+  const { t } = useTranslation();
   const { data, isLoading, isError, refetch, dataUpdatedAt } = useTrash();
   const now = useNow(30_000);
 
   return (
     <div className="mx-auto max-w-3xl space-y-5 p-4 md:p-8">
       <div>
-        <h1 className="text-2xl font-bold text-fg">Papelera</h1>
+        <h1 className="text-2xl font-bold text-fg">{t("adminTrash.title")}</h1>
         <p className="text-sm text-fg-subtle">
-          Pedidos y postulaciones descartados. Se eliminan definitivamente a los {data?.retention_days ?? 30} días; hasta entonces podés restaurarlos.
+          {t("adminTrash.subtitle", { days: data?.retention_days ?? 30 })}
         </p>
       </div>
 
-      {isLoading && <p className="text-fg-subtle">Cargando…</p>}
+      {isLoading && <p className="text-fg-subtle">{t("adminCommon.loading")}</p>}
       {isError && (
         <p role="alert" className="text-red-600 dark:text-red-400">
-          No pudimos cargar la papelera. <button onClick={() => refetch()} className="font-medium underline">Reintentar</button>
+          {t("adminTrash.loadError")} <button onClick={() => refetch()} className="font-medium underline">{t("adminCommon.retry")}</button>
         </p>
       )}
       {data && data.items.length === 0 && (
-        <p className="rounded-lg border border-dashed p-10 text-center text-fg-subtle">La papelera está vacía.</p>
+        <p className="rounded-lg border border-dashed p-10 text-center text-fg-subtle">{t("adminTrash.empty")}</p>
       )}
       {data && data.items.length > 0 && (
         <ul className="divide-y rounded-lg border bg-surface">

@@ -16,6 +16,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s [%(name)s] %(messa
 from app.api.deps import DBSession
 from app.api.routers import (
     applications,
+    audit,
     auth,
     cms,
     orders,
@@ -29,6 +30,7 @@ from app.api.routers import (
 from app.core.config import settings
 from app.core.database import engine
 from app.core.exceptions import AppError
+from app.core.ip_guard import IpGuardMiddleware, guard
 from app.core.scheduler import start_scheduler, stop_scheduler
 
 # Carpeta con el frontend compilado (el Dockerfile copia `dist/` acá). Se resuelve desde
@@ -38,6 +40,7 @@ STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    await guard.load_active()  # bloqueos de IP vigentes (sobreviven a reinicios)
     start_scheduler()  # limpieza periódica de la papelera (APScheduler)
     yield
     stop_scheduler()
@@ -52,6 +55,9 @@ app = FastAPI(
     redoc_url=None,
     openapi_url="/api/openapi.json",
 )
+
+# Se agrega ANTES que CORS para quedar adentro: así los 429 también llevan los headers CORS.
+app.add_middleware(IpGuardMiddleware)
 
 # En producción el frontend sale del mismo dominio y CORS no interviene;
 # sirve para desarrollo (Vite en :5173).
@@ -72,6 +78,7 @@ async def app_error_handler(_: Request, exc: AppError) -> JSONResponse:
 # --------------------------------------------------------------------------- API (/api)
 api = APIRouter(prefix="/api")
 api.include_router(auth.router)
+api.include_router(audit.router)
 api.include_router(users.router)
 api.include_router(orders.router)
 api.include_router(applications.router)

@@ -1,44 +1,41 @@
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { usePartners } from "@/api/partners";
 
 export default function Home() {
+  const { t } = useTranslation();
   const { data: partners } = usePartners();
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16">
       <section className="text-center">
         <h1 className="text-4xl font-bold text-fg">
-          Software a medida que hace más competitiva a tu PyME
+          {t("pubHome.title")}
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-fg-muted">
-          En AJR Data resolvemos falencias concretas de tu negocio con
-          desarrollo a medida — incorporando chatbots, agentes de IA y
-          funcionalidades modernas en vez de soluciones genéricas.
+          {t("pubHome.intro")}
         </p>
         <Link
           to="/solicitar-proyecto"
           className="mt-8 inline-block rounded-md bg-brand px-6 py-3 font-medium text-white hover:bg-brand-dark"
         >
-          Solicitar un proyecto
+          {t("pubHome.cta")}
         </Link>
       </section>
 
       <section className="mt-20">
         <h2 className="text-center text-2xl font-semibold text-fg">
-          Quiénes somos
+          {t("pubHome.aboutTitle")}
         </h2>
         <p className="mx-auto mt-3 max-w-2xl text-center text-fg-muted">
-          Somos una consultora tecnológica enfocada en ayudar a PyMEs a
-          resolver problemas puntuales de su negocio mediante software,
-          diferenciándonos con ideas más modernas que la competencia de
-          nuestros clientes.
+          {t("pubHome.aboutText")}
         </p>
       </section>
 
       {partners && partners.length > 0 && (
         <section className="mt-20">
           <h2 className="text-center text-2xl font-semibold text-fg">
-            Con quiénes trabajamos
+            {t("pubHome.partnersTitle")}
           </h2>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-10">
             {partners.map((p) => (

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Trash2 } from "lucide-react";
 import { useMe } from "@/api/auth";
 import {
@@ -21,6 +22,7 @@ import { timeAgo, useNow } from "@/lib/time";
 import { cn } from "@/lib/utils";
 
 export default function AdminApplications() {
+  const { t } = useTranslation();
   const [status, setStatus] = useState<ApplicationStatus | null>(null);
   const [page, setPage] = useState(0);
   const [expanded, setExpanded] = useState<number | null>(null);
@@ -44,34 +46,34 @@ export default function AdminApplications() {
   return (
     <div className="mx-auto max-w-4xl space-y-5">
       <div>
-        <h1 className="text-2xl font-bold text-fg">Postulaciones</h1>
-        <p className="text-sm text-fg-subtle">Personas que quieren sumarse al equipo.</p>
+        <h1 className="text-2xl font-bold text-fg">{t("adminApplications.title")}</h1>
+        <p className="text-sm text-fg-subtle">{t("adminApplications.subtitle")}</p>
       </div>
 
       {data && (
         <StatusChips counts={data.counts} labels={APPLICATION_STATUS_LABELS} active={status} onSelect={selectStatus} />
       )}
 
-      {isLoading && <p className="text-fg-subtle">Cargando postulaciones…</p>}
+      {isLoading && <p className="text-fg-subtle">{t("adminApplications.loading")}</p>}
       {isError && (
         <p role="alert" className="text-red-600 dark:text-red-400">
-          No pudimos cargar las postulaciones.{" "}
-          <button onClick={() => refetch()} className="font-medium underline">Reintentar</button>
+          {t("adminApplications.loadError")}{" "}
+          <button onClick={() => refetch()} className="font-medium underline">{t("adminCommon.retry")}</button>
         </p>
       )}
       {update.isError && (
         <p role="alert" className="text-sm text-red-600 dark:text-red-400">
-          {getServerDetail(update.error) ?? "No pudimos cambiar el estado. Probá de nuevo."}
+          {getServerDetail(update.error) ?? t("adminCommon.statusChangeError")}
         </p>
       )}
       {trash.isError && (
         <p role="alert" className="text-sm text-red-600 dark:text-red-400">
-          {getServerDetail(trash.error) ?? "No pudimos enviar la postulación a la papelera."}
+          {getServerDetail(trash.error) ?? t("adminApplications.trashError")}
         </p>
       )}
       {data && data.total === 0 && (
         <p className="rounded-md border bg-surface p-6 text-center text-fg-subtle">
-          {status ? "No hay postulaciones con este estado." : "Todavía no llegó ninguna postulación."}
+          {status ? t("adminApplications.emptyFiltered") : t("adminApplications.empty")}
         </p>
       )}
 
@@ -118,6 +120,7 @@ function ApplicationCard({
   onTrash?: () => void;
   trashing: boolean;
 }) {
+  const { t } = useTranslation();
   return (
     <li className="overflow-hidden rounded-lg border bg-surface">
       <div className="flex flex-wrap items-start justify-between gap-3 p-4">
@@ -125,10 +128,10 @@ function ApplicationCard({
           <p className="font-semibold text-fg">{a.full_name}</p>
           <p className="text-sm text-fg-subtle">
             {a.area}
-            {a.experience_level ? ` · ${a.experience_level}` : ""} · {a.location} · Recibida {timeAgo(a.created_at, now)}
+            {a.experience_level ? ` · ${a.experience_level}` : ""} · {a.location} · {t("adminApplications.received", { time: timeAgo(a.created_at, now) })}
           </p>
           {!open && <p className="mt-1 line-clamp-2 text-sm text-fg-muted">{a.motivation}</p>}
-          <span className="mt-1 inline-block text-xs font-medium text-accent">{open ? "Ver menos ▲" : "Ver todo ▼"}</span>
+          <span className="mt-1 inline-block text-xs font-medium text-accent">{open ? t("adminCommon.seeLess") : t("adminCommon.seeAll")}</span>
         </button>
         <div className="flex items-center gap-2">
           <span className={cn("rounded-full px-2 py-0.5 text-xs font-medium", STATUS_BADGE[a.status])}>
@@ -139,43 +142,43 @@ function ApplicationCard({
             labels={APPLICATION_STATUS_LABELS}
             onChange={onStatus}
             disabled={saving}
-            label={`Cambiar estado de la postulación de ${a.full_name}`}
+            label={t("adminApplications.changeStatusLabel", { name: a.full_name })}
           />
         </div>
       </div>
 
       {open && (
         <dl className="space-y-3 border-t bg-surface-2 p-4">
-          <DetailRow label="Nombre">{a.full_name}</DetailRow>
-          <DetailRow label="Email">
+          <DetailRow label={t("adminApplications.name")}>{a.full_name}</DetailRow>
+          <DetailRow label={t("adminCommon.email")}>
             <a href={`mailto:${a.email}`} className="text-accent hover:underline">{a.email}</a>
           </DetailRow>
-          <DetailRow label="Teléfono / WhatsApp">
+          <DetailRow label={t("adminApplications.phone")}>
             {a.phone && (
               <a href={`tel:${a.phone.replace(/[^\d+]/g, "")}`} className="text-accent hover:underline">{a.phone}</a>
             )}
           </DetailRow>
-          <DetailRow label="Ciudad y país">{a.location}</DetailRow>
-          <DetailRow label="Área de interés">{a.area}</DetailRow>
-          <DetailRow label="Experiencia">{a.experience_level}</DetailRow>
-          <DetailRow label="Disponibilidad">{a.availability}</DetailRow>
+          <DetailRow label={t("adminApplications.location")}>{a.location}</DetailRow>
+          <DetailRow label={t("adminApplications.area")}>{a.area}</DetailRow>
+          <DetailRow label={t("adminApplications.experience")}>{a.experience_level}</DetailRow>
+          <DetailRow label={t("adminApplications.availability")}>{a.availability}</DetailRow>
           <DetailRow label="LinkedIn">{a.linkedin_url && <ExternalLink href={a.linkedin_url} />}</DetailRow>
           <DetailRow label="GitHub / Portfolio">{a.github_url && <ExternalLink href={a.github_url} />}</DetailRow>
           <DetailRow label="CV">{a.cv_url && <ExternalLink href={a.cv_url} />}</DetailRow>
-          <DetailRow label="Por qué quiere sumarse">
+          <DetailRow label={t("adminApplications.motivation")}>
             <span className="whitespace-pre-wrap">{a.motivation}</span>
           </DetailRow>
-          <DetailRow label="Consentimiento de datos">
-            {a.consent ? `Aceptado el ${a.consent_at ? formatDateTime(a.consent_at) : "—"}` : "No registrado"}
+          <DetailRow label={t("adminApplications.consent")}>
+            {a.consent ? t("adminApplications.consentAccepted", { date: a.consent_at ? formatDateTime(a.consent_at) : "—" }) : t("adminApplications.consentNone")}
           </DetailRow>
-          <DetailRow label="Recibida">{formatDateTime(a.created_at)}</DetailRow>
-          <DetailRow label="Última actualización">{formatDateTime(a.updated_at)}</DetailRow>
+          <DetailRow label={t("adminApplications.receivedLabel")}>{formatDateTime(a.created_at)}</DetailRow>
+          <DetailRow label={t("adminCommon.lastUpdate")}>{formatDateTime(a.updated_at)}</DetailRow>
           {onTrash && (
             <div className="pt-2">
               <ConfirmButton
-                label="Enviar a la papelera"
-                question="Se puede restaurar durante 30 días."
-                confirmLabel="Sí, enviar"
+                label={t("adminCommon.sendToTrash")}
+                question={t("adminCommon.trashQuestion")}
+                confirmLabel={t("adminCommon.trashConfirm")}
                 onConfirm={onTrash}
                 disabled={trashing}
                 icon={<Trash2 className="h-4 w-4" aria-hidden />}

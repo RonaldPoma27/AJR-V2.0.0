@@ -31,6 +31,7 @@ class UserCreate(BaseModel):
     password: str = Field(min_length=8, max_length=72)  # bcrypt ignora lo que pasa de 72 bytes
     first_name: OptionalPersonName = None
     last_name: OptionalPersonName = None
+    turnstile_token: str | None = Field(default=None, max_length=4096)  # Cloudflare Turnstile
 
     @field_validator("email")
     @classmethod
@@ -61,6 +62,17 @@ class UserRead(BaseModel):
     last_name: str | None = None
     full_name: str | None = None  # propiedad del modelo: first_name + last_name
     role: UserRole
+
+
+class UserRegistered(UserRead):
+    """Respuesta del registro: el usuario + su sesión ya iniciada.
+
+    El token de Turnstile es de un solo uso (lo consume el registro), así que el frontend no
+    puede hacer un login aparte sin pedir otro desafío: la sesión viene en la misma respuesta.
+    """
+
+    access_token: str
+    token_type: str = "bearer"
 
 
 class PasswordChange(BaseModel):

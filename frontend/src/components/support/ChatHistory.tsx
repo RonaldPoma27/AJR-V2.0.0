@@ -1,4 +1,5 @@
 import { Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useMySupportTickets } from "@/api/support";
 import { SUPPORT_STATUS_LABELS, STATUS_BADGE } from "@/lib/status";
 import { timeAgo, useNow } from "@/lib/time";
@@ -14,6 +15,7 @@ export default function ChatHistory({
   onSelect: (id: number) => void;
   onNew: () => void;
 }) {
+  const { t } = useTranslation();
   const { data, isLoading, isError, refetch } = useMySupportTickets();
   const now = useNow();
 
@@ -26,26 +28,26 @@ export default function ChatHistory({
           className="flex w-full items-center justify-center gap-2 rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark"
         >
           <Plus className="h-4 w-4" aria-hidden />
-          Nuevo chat
+          {t("chat.newChat")}
         </button>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
-        {isLoading && <p className="text-sm text-fg-subtle">Cargando tus chats…</p>}
+        {isLoading && <p className="text-sm text-fg-subtle">{t("chat.history.loading")}</p>}
         {isError && (
           <p role="alert" className="text-sm text-red-600 dark:text-red-400">
-            No pudimos cargar tus chats.{" "}
-            <button onClick={() => refetch()} className="font-medium underline">Reintentar</button>
+            {t("chat.history.loadError")}{" "}
+            <button onClick={() => refetch()} className="font-medium underline">{t("chat.history.retry")}</button>
           </p>
         )}
         {data && data.length === 0 && (
           <p className="rounded-md border border-dashed p-4 text-center text-sm text-fg-subtle">
-            Todavía no iniciaste ningún chat. Escribinos y te respondemos por acá.
+            {t("chat.history.empty")}
           </p>
         )}
         {data && data.length > 0 && (
           <>
-            <h3 className="px-1 pb-2 text-xs font-semibold text-fg-subtle">Historial de chats</h3>
+            <h3 className="px-1 pb-2 text-xs font-semibold text-fg-subtle">{t("chat.history.title")}</h3>
             <ul className="space-y-1.5">
               {data.map((t) => (
                 <li key={t.id}>
