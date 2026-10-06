@@ -1,0 +1,46 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "portfolio": "Portfolio",
+    "about": "Nosotros",
+    "contact": "Contacto",
+    "work": "Trabajá con nosotros",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "main": "Principal",
+    "goHome": "AJR Data — ir al inicio",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú"
+  },
+  "lang": {
+    "label": "Idioma",
+    "switchToEn": "Cambiar a inglés",
+    "switchToEs": "Cambiar a español"
+  },
+  "sidebar": {
+    "account": "Mi cuenta",
+    "myOrders": "Mis pedidos",
+    "support": "Soporte",
+    "adminPanel": "Panel de Administración",
+    "orders": "Pedidos",
+    "applications": "Postulaciones",
+    "adminSupport": "Comentarios / Soporte",
+    "portfolio": "Portfolio",
+    "team": "Equipo",
+    "trash": "Papelera",
+    "site": "Sitio",
+    "home": "Inicio",
+    "requestProject": "Solicitar proyecto",
+    "work": "Trabajá con nosotros",
+    "logout": "Cerrar sesión",
+    "navLabel": "Cuenta",
+    "drawerLabel": "Menú de la cuenta",
+    "loading": "Cargando tu cuenta",
+    "roles": {
+      "USER": "Cliente",
+      "TECHNICIAN": "Técnico",
+      "ADMIN": "Administrador"
+    },
+    "audit": "Auditoría"
+  }
+}

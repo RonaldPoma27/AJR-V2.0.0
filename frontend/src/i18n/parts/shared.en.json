@@ -1,0 +1,70 @@
+{
+  "time": {
+    "justNow": "just now",
+    "daysOne": "{{count}} day",
+    "daysOther": "{{count}} days",
+    "lessThanHour": "less than 1 h"
+  },
+  "orderStatus": {
+    "nuevo": "New",
+    "en_revision": "Under review",
+    "contactado": "Contacted",
+    "finalizado": "Completed",
+    "descartado": "Discarded"
+  },
+  "applicationStatus": {
+    "nueva": "New",
+    "en_revision": "Under review",
+    "entrevista": "Interview",
+    "descartada": "Discarded",
+    "contratada": "Hired"
+  },
+  "supportStatus": {
+    "abierto": "Open",
+    "respondido": "Answered",
+    "cerrado": "Closed"
+  },
+  "serverErrors": {
+    "formsUnavailable": "Form submission is not available at the moment.",
+    "antiSpamRequired": "Complete the anti-spam check before submitting.",
+    "antiSpamFailed": "We couldn't verify that you're a person. Reload the page and try again.",
+    "antiSpamUnavailable": "We couldn't verify the anti-spam check. Try again in a few minutes.",
+    "invalidCredentials": "Incorrect email or password",
+    "sessionInvalid": "Could not validate credentials",
+    "notFound": "Resource not found",
+    "requiresAdmin": "Requires the ADMIN role",
+    "requiresStaff": "Requires the TECHNICIAN or ADMIN role",
+    "currentEmailMismatch": "The current email doesn't match your account's email",
+    "newEmailSame": "The new email must be different from the current one",
+    "currentPasswordWrong": "The current password is incorrect",
+    "passwordWrong": "The password is incorrect",
+    "newPasswordSame": "The new password must be different from the current one",
+    "emailTaken": "This email is already registered",
+    "onlyOwnerApproves": "Only the customer who owns the ticket can approve the quote.",
+    "ipNotBlocked": "That IP is not blocked.",
+    "notTechnician": "That account is not a TECHNICIAN.",
+    "notInTrash": "It is not in the trash",
+    "noUserWithEmail": "There is no registered user with that email.",
+    "applicationNotFound": "Application not found",
+    "accountIsAdmin": "That account is an ADMIN: it already has every permission.",
+    "alreadyTechnician": "That account is already a TECHNICIAN.",
+    "chatClosed": "This chat is closed.",
+    "estimatedCostRequired": "You must provide estimated_cost to request the customer's approval.",
+    "tooManyForms": "You submitted too many forms in a short time. Try again in a while.",
+    "ipBanned": "Your IP was blocked due to suspicious activity. Try again in {{time}}.",
+    "loginLocked": "Too many failed attempts. Your IP is blocked: try again in {{time}}.",
+    "connection": "We couldn't connect to the server. Check your connection and try again.",
+    "invalidFields": "Check that all fields are filled in and valid.",
+    "serviceUnavailable404": "The service is not available right now (404). Let the technical team know.",
+    "sendFailedOrder": "We couldn't send your order. Try again in a while.",
+    "sendFailedApplication": "We couldn't send your application. Try again in a while.",
+    "sendErrorCodeOrder": "An error occurred while sending your order (code {{status}}). Try again.",
+    "sendErrorCodeApplication": "An error occurred while sending your application (code {{status}}). Try again.",
+    "sendErrorOrder": "An error occurred while sending your order. Try again.",
+    "sendErrorApplication": "An error occurred while sending your application. Try again."
+  },
+  "turnstile": {
+    "missingKey": "The anti-spam check is not configured (VITE_TURNSTILE_SITE_KEY).",
+    "required": "Complete the anti-spam check."
+  }
+}

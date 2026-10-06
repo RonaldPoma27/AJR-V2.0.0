@@ -1,0 +1,138 @@
+{
+  "myAccount": {
+    "title": "Mi cuenta",
+    "roles": {
+      "USER": "Cliente",
+      "TECHNICIAN": "Técnico (editor)",
+      "ADMIN": "Administrador"
+    },
+    "errors": {
+      "connection": "No pudimos conectar con el servidor. Probá de nuevo.",
+      "passwordWeak": "La contraseña nueva no cumple los requisitos: 8 caracteres o más, una mayúscula, un número y un carácter especial.",
+      "passwordFailed": "No pudimos cambiar la contraseña. Probá de nuevo.",
+      "newPasswordPrefix": "La contraseña nueva: {{error}}",
+      "samePassword": "La contraseña nueva tiene que ser distinta de la actual.",
+      "passwordMismatch": "Las contraseñas nuevas no coinciden.",
+      "nameRequired": "Completá tu nombre y tu apellido.",
+      "profileFailed": "No pudimos guardar tus datos. Probá de nuevo.",
+      "emailsInvalid": "Revisá los emails: alguno no es válido.",
+      "emailFailed": "No pudimos cambiar el email. Probá de nuevo.",
+      "newEmailInvalid": "Revisá el email nuevo: parece que tiene un error.",
+      "currentEmailMismatch": "El email actual no coincide con el de tu cuenta.",
+      "sameEmail": "El email nuevo tiene que ser distinto del actual."
+    },
+    "profile": {
+      "title": "Mis datos",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "email": "Email",
+      "role": "Rol",
+      "saved": "Datos guardados.",
+      "saving": "Guardando...",
+      "save": "Guardar cambios"
+    },
+    "email": {
+      "title": "Cambiar email",
+      "current": "Email actual",
+      "new": "Email nuevo",
+      "password": "Contraseña actual",
+      "passwordHint": "La pedimos para confirmar que sos vos.",
+      "done": "¡Listo! Cambiaste tu email. Desde ahora usá el nuevo para ingresar.",
+      "saving": "Guardando...",
+      "submit": "Cambiar email"
+    },
+    "password": {
+      "title": "Cambiar contraseña",
+      "current": "Contraseña actual",
+      "new": "Contraseña nueva",
+      "confirm": "Repetí la contraseña nueva",
+      "done": "¡Listo! Cambiaste tu contraseña. Desde ahora usá la nueva para ingresar.",
+      "saving": "Guardando...",
+      "submit": "Cambiar contraseña"
+    }
+  },
+  "myOrders": {
+    "title": "Mis pedidos",
+    "subtitle": "Seguí el avance de tus proyectos. Te avisamos por mail cuando cambie el estado.",
+    "newOrder": "Nuevo pedido",
+    "loading": "Cargando tus pedidos…",
+    "loadError": "No pudimos cargar tus pedidos.",
+    "retry": "Reintentar",
+    "emptyTitle": "Todavía no hiciste ningún pedido",
+    "emptyText": "Contanos el problema de tu negocio y lo vemos juntos.",
+    "requestProject": "Solicitar un proyecto",
+    "meta": "Pedido #{{id}} · {{industry}} · enviado {{date}}",
+    "lastUpdate": "Última actualización {{time}}",
+    "hideDetail": "Ocultar detalle",
+    "showDetail": "Ver detalle del pedido",
+    "problem": "Problema a resolver",
+    "contact": "Contacto: {{name}} · {{email}}",
+    "contactPhone": " · {{phone}}"
+  },
+  "supportPage": {
+    "title": "Soporte",
+    "subtitle": "Escribinos y te respondemos por acá. Podés mandar hasta 2 mensajes seguidos mientras esperás la respuesta.",
+    "history": "Historial de chats",
+    "pick": "Elegí un chat del historial o iniciá uno nuevo."
+  },
+  "chat": {
+    "bubbleTitle": "Chat de soporte",
+    "support": "Soporte",
+    "newChat": "Nuevo chat",
+    "chatFallback": "Chat",
+    "backToHistory": "Volver al historial de chats",
+    "closeChat": "Cerrar el chat",
+    "closeSupport": "Cerrar el chat de soporte",
+    "openSupport": "Abrir el chat de soporte",
+    "history": {
+      "loading": "Cargando tus chats…",
+      "loadError": "No pudimos cargar tus chats.",
+      "retry": "Reintentar",
+      "empty": "Todavía no iniciaste ningún chat. Escribinos y te respondemos por acá.",
+      "title": "Historial de chats"
+    },
+    "thread": {
+      "loading": "Cargando conversación…",
+      "loadError": "No pudimos cargar el chat.",
+      "retry": "Reintentar",
+      "closedPlaceholder": "Este chat está cerrado",
+      "awaitingPlaceholder": "Esperando la respuesta del equipo…",
+      "customerPlaceholder": "Escribí tu mensaje…",
+      "staffPlaceholder": "Escribí tu respuesta…",
+      "logLabel": "Mensajes del chat «{{title}}»",
+      "you": "Vos",
+      "team": "Equipo AJR Data",
+      "blockedClosed": "Este chat está cerrado. Si necesitás algo más, iniciá uno nuevo.",
+      "blockedConsecutive": "Enviaste {{count}} mensajes seguidos. Vas a poder escribir de nuevo cuando el equipo responda.",
+      "oneMore": "Podés enviar 1 mensaje más hasta que el equipo responda.",
+      "writeLabel": "Escribir un mensaje",
+      "sendLabel": "Enviar mensaje",
+      "keys": "Enter envía · Shift+Enter nueva línea",
+      "sendError": "No pudimos enviar el mensaje. Probá de nuevo."
+    },
+    "new": {
+      "title": "Título del chat",
+      "titlePlaceholder": "Ej.: Consulta sobre mi pedido",
+      "titleError": "Poné un título de al menos {{min}} caracteres.",
+      "message": "Mensaje",
+      "messagePlaceholder": "Contanos en qué podemos ayudarte…",
+      "messageError": "Escribí tu mensaje.",
+      "createError": "No pudimos iniciar el chat. Probá de nuevo.",
+      "cancel": "Cancelar",
+      "starting": "Iniciando…",
+      "start": "Iniciar chat"
+    }
+  },
+  "orderStepper": {
+    "label": "Progreso del pedido",
+    "done": " (completado)",
+    "current": " (paso actual)",
+    "pending": " (pendiente)",
+    "discarded": "Este pedido fue descartado. Si querés retomarlo, escribinos desde Soporte."
+  },
+  "confirm": {
+    "question": "¿Seguro?",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar"
+  }
+}
