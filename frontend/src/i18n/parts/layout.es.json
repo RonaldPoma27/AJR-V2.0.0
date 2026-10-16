@@ -1,0 +1,19 @@
+{
+  "guard": {
+    "verifying": "Verificando tu sesión…",
+    "verifyFailed": "No pudimos verificar tu sesión. Puede ser un problema de conexión.",
+    "retry": "Reintentar",
+    "forbidden": "Tu cuenta no tiene permisos para ver esta sección.",
+    "goAccount": "Ir a mi cuenta",
+    "logout": "Cerrar sesión"
+  },
+  "theme": {
+    "toLight": "Cambiar a modo claro",
+    "toDark": "Cambiar a modo oscuro",
+    "light": "Modo claro",
+    "dark": "Modo oscuro"
+  },
+  "meta": {
+    "title": "AJR Data — Consultora Tech"
+  }
+}

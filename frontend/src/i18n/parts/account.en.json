@@ -1,0 +1,138 @@
+{
+  "myAccount": {
+    "title": "My account",
+    "roles": {
+      "USER": "Customer",
+      "TECHNICIAN": "Technician (editor)",
+      "ADMIN": "Administrator"
+    },
+    "errors": {
+      "connection": "We couldn't connect to the server. Please try again.",
+      "passwordWeak": "The new password doesn't meet the requirements: 8 characters or more, an uppercase letter, a number and a special character.",
+      "passwordFailed": "We couldn't change your password. Please try again.",
+      "newPasswordPrefix": "New password: {{error}}",
+      "samePassword": "The new password must be different from the current one.",
+      "passwordMismatch": "The new passwords don't match.",
+      "nameRequired": "Please enter your first and last name.",
+      "profileFailed": "We couldn't save your details. Please try again.",
+      "emailsInvalid": "Check the emails: one of them is not valid.",
+      "emailFailed": "We couldn't change your email. Please try again.",
+      "newEmailInvalid": "Check the new email: it looks like it has a mistake.",
+      "currentEmailMismatch": "The current email doesn't match your account's email.",
+      "sameEmail": "The new email must be different from the current one."
+    },
+    "profile": {
+      "title": "My details",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "role": "Role",
+      "saved": "Details saved.",
+      "saving": "Saving...",
+      "save": "Save changes"
+    },
+    "email": {
+      "title": "Change email",
+      "current": "Current email",
+      "new": "New email",
+      "password": "Current password",
+      "passwordHint": "We ask for it to confirm it's you.",
+      "done": "All set! You've changed your email. From now on, use the new one to log in.",
+      "saving": "Saving...",
+      "submit": "Change email"
+    },
+    "password": {
+      "title": "Change password",
+      "current": "Current password",
+      "new": "New password",
+      "confirm": "Repeat the new password",
+      "done": "All set! You've changed your password. From now on, use the new one to log in.",
+      "saving": "Saving...",
+      "submit": "Change password"
+    }
+  },
+  "myOrders": {
+    "title": "My orders",
+    "subtitle": "Follow the progress of your projects. We'll email you when the status changes.",
+    "newOrder": "New order",
+    "loading": "Loading your orders…",
+    "loadError": "We couldn't load your orders.",
+    "retry": "Retry",
+    "emptyTitle": "You haven't placed any orders yet",
+    "emptyText": "Tell us about your business problem and we'll work on it together.",
+    "requestProject": "Request a project",
+    "meta": "Order #{{id}} · {{industry}} · sent {{date}}",
+    "lastUpdate": "Last updated {{time}}",
+    "hideDetail": "Hide details",
+    "showDetail": "View order details",
+    "problem": "Problem to solve",
+    "contact": "Contact: {{name}} · {{email}}",
+    "contactPhone": " · {{phone}}"
+  },
+  "supportPage": {
+    "title": "Support",
+    "subtitle": "Write to us and we'll reply here. You can send up to 2 messages in a row while you wait for a reply.",
+    "history": "Chat history",
+    "pick": "Pick a chat from the history or start a new one."
+  },
+  "chat": {
+    "bubbleTitle": "Support chat",
+    "support": "Support",
+    "newChat": "New chat",
+    "chatFallback": "Chat",
+    "backToHistory": "Back to chat history",
+    "closeChat": "Close the chat",
+    "closeSupport": "Close the support chat",
+    "openSupport": "Open the support chat",
+    "history": {
+      "loading": "Loading your chats…",
+      "loadError": "We couldn't load your chats.",
+      "retry": "Retry",
+      "empty": "You haven't started any chats yet. Write to us and we'll reply here.",
+      "title": "Chat history"
+    },
+    "thread": {
+      "loading": "Loading conversation…",
+      "loadError": "We couldn't load the chat.",
+      "retry": "Retry",
+      "closedPlaceholder": "This chat is closed",
+      "awaitingPlaceholder": "Waiting for the team's reply…",
+      "customerPlaceholder": "Write your message…",
+      "staffPlaceholder": "Write your reply…",
+      "logLabel": "Messages in chat «{{title}}»",
+      "you": "You",
+      "team": "AJR Data Team",
+      "blockedClosed": "This chat is closed. If you need anything else, start a new one.",
+      "blockedConsecutive": "You've sent {{count}} messages in a row. You'll be able to write again once the team replies.",
+      "oneMore": "You can send 1 more message until the team replies.",
+      "writeLabel": "Write a message",
+      "sendLabel": "Send message",
+      "keys": "Enter sends · Shift+Enter new line",
+      "sendError": "We couldn't send the message. Please try again."
+    },
+    "new": {
+      "title": "Chat title",
+      "titlePlaceholder": "E.g.: Question about my order",
+      "titleError": "Enter a title of at least {{min}} characters.",
+      "message": "Message",
+      "messagePlaceholder": "Tell us how we can help you…",
+      "messageError": "Write your message.",
+      "createError": "We couldn't start the chat. Please try again.",
+      "cancel": "Cancel",
+      "starting": "Starting…",
+      "start": "Start chat"
+    }
+  },
+  "orderStepper": {
+    "label": "Order progress",
+    "done": " (completed)",
+    "current": " (current step)",
+    "pending": " (pending)",
+    "discarded": "This order was discarded. If you'd like to resume it, write to us from Support."
+  },
+  "confirm": {
+    "question": "Are you sure?",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  }
+}
