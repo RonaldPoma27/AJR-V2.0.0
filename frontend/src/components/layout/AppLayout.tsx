@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { getToken, useMe } from "@/api/auth";
 import ChatBubble from "@/components/support/ChatBubble";
+import AuroraBackground from "./AuroraBackground";
 import Footer from "./Footer";
 import NavBar from "./NavBar";
 import { SidebarDesktop, SidebarDrawer } from "./Sidebar";
@@ -24,7 +25,8 @@ export default function AppLayout() {
   const showBubble = Boolean(me) && !pathname.startsWith("/cuenta/soporte");
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="relative isolate flex min-h-screen flex-col">
+      <AuroraBackground />
       <NavBar hasSession={hasSession} sidebarOpen={drawerOpen} onToggleSidebar={() => setDrawerOpen((v) => !v)} />
       <div className="flex flex-1">
         {hasSession && <SidebarDesktop />}

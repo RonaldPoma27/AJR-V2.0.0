@@ -20,6 +20,27 @@ export default {
           dark: "#1a5fd0",
         },
       },
+      keyframes: {
+        "gradient-x": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
+        blob: {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "25%": { transform: "translate(40px, 60px) scale(1.15)" },
+          "50%": { transform: "translate(-30px, 140px) scale(0.9)" },
+          "75%": { transform: "translate(-50px, 50px) scale(1.1)" },
+        },
+        "pulse-ring": {
+          "0%": { transform: "scale(1)", opacity: "0.65" },
+          "100%": { transform: "scale(1.35)", opacity: "0" },
+        },
+      },
+      animation: {
+        "gradient-x": "gradient-x 6s ease infinite",
+        blob: "blob 18s ease-in-out infinite",
+        "pulse-ring": "pulse-ring 1.8s ease-out infinite",
+      },
       borderColor: { DEFAULT: token("line") },
       divideColor: { DEFAULT: token("line") },
     },

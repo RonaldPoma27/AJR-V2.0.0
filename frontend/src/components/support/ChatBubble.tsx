@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, MessageCircle, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSupportTicket } from "@/api/support";
+import { cn } from "@/lib/utils";
 import ChatHistory from "./ChatHistory";
 import ChatThread from "./ChatThread";
 import NewChatForm from "./NewChatForm";
@@ -95,9 +96,18 @@ export default function ChatBubble() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label={open ? t("chat.closeSupport") : t("chat.openSupport")}
-        className="fixed bottom-5 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-slate-800 text-white shadow-lg hover:bg-slate-900 focus-visible:outline-offset-4 sm:right-6 dark:bg-slate-600 dark:hover:bg-slate-500"
+        className={cn(
+          "fixed bottom-5 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-slate-800 text-white shadow-lg transition-shadow hover:bg-slate-900 focus-visible:outline-offset-4 sm:right-6 dark:bg-slate-600 dark:hover:bg-slate-500",
+          open && "shadow-[0_0_16px_3px_rgb(56_189_248/0.55)] dark:shadow-[0_0_16px_3px_rgb(147_197_253/0.5)]"
+        )}
       >
-        {open ? <X className="h-6 w-6" aria-hidden /> : <MessageCircle className="h-7 w-7" aria-hidden />}
+        {open && (
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 animate-pulse-ring rounded-full bg-sky-400/50 dark:bg-blue-300/40"
+          />
+        )}
+        {open ? <X className="relative h-6 w-6" aria-hidden /> : <MessageCircle className="relative h-7 w-7" aria-hidden />}
       </button>
     </>
   );
