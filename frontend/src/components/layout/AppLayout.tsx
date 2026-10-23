@@ -25,13 +25,13 @@ export default function AppLayout() {
   const showBubble = Boolean(me) && !pathname.startsWith("/cuenta/soporte");
 
   return (
-    <div className="relative isolate flex min-h-screen flex-col">
+    <div className="ajr-app-shell relative isolate flex min-h-screen flex-col">
       <AuroraBackground />
       <NavBar hasSession={hasSession} sidebarOpen={drawerOpen} onToggleSidebar={() => setDrawerOpen((v) => !v)} />
       <div className="flex flex-1">
         {hasSession && <SidebarDesktop />}
         <div className="flex min-w-0 flex-1 flex-col">
-          <main className="flex-1">
+          <main className="app-main relative flex-1">
             <Outlet />
           </main>
           <Footer />

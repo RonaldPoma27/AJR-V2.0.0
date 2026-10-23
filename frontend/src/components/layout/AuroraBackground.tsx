@@ -10,7 +10,7 @@ const blobs = [
 /** Luces difusas que se mueven por el fondo (efecto aurora). Decorativo: no recibe clicks ni lo leen los lectores de pantalla. */
 export default function AuroraBackground() {
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div aria-hidden className="ajr-aurora pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       {blobs.map((b) => (
         <div
           key={b.delay}
