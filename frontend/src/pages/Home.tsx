@@ -7,8 +7,8 @@ export default function Home() {
   const { data: partners } = usePartners();
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-16">
-      <section className="text-center">
+    <div className="ajr-home mx-auto max-w-6xl px-6 py-16">
+      <section className="ajr-home-hero text-center">
         <h1 className="text-4xl font-bold text-fg">
           {t("pubHome.title")}
         </h1>
@@ -23,7 +23,7 @@ export default function Home() {
         </Link>
       </section>
 
-      <section className="mt-20">
+      <section className="ajr-home-section mt-20">
         <h2 className="text-center text-2xl font-semibold text-fg">
           {t("pubHome.aboutTitle")}
         </h2>
@@ -33,7 +33,7 @@ export default function Home() {
       </section>
 
       {partners && partners.length > 0 && (
-        <section className="mt-20">
+        <section className="ajr-home-section ajr-home-partners mt-20">
           <h2 className="text-center text-2xl font-semibold text-fg">
             {t("pubHome.partnersTitle")}
           </h2>
