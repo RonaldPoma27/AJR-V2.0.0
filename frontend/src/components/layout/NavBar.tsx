@@ -241,7 +241,7 @@ export default function NavBar({
     );
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-ink text-white">
+    <header className="ajr-navbar sticky top-0 z-40 border-b border-white/10 bg-ink text-white">
       <nav
         className="mx-auto flex h-16 max-w-7xl items-center gap-3 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] sm:gap-6 sm:pl-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))]"
         aria-label={t("nav.main")}>
@@ -307,9 +307,7 @@ export default function NavBar({
           <div
             id="menu-mobile"
             className={cn(
-              "relative h-full w-72 max-w-[85vw] overflow-y-auto border-r border-white/10 px-4 py-3 shadow-xl transition-transform duration-200 ease-out",
-              "animate-gradient-x bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-700 bg-[length:200%_100%]",
-              "dark:from-slate-950 dark:via-blue-950 dark:to-slate-950",
+              "ajr-mobile-menu relative h-full w-72 max-w-[85vw] overflow-y-auto border-r border-white/10 px-4 py-3 shadow-2xl transition-transform duration-300 ease-out",
               mobileOpen ? "translate-x-0" : "-translate-x-full"
             )}
           >

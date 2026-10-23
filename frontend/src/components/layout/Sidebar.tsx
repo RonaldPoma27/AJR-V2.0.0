@@ -71,7 +71,7 @@ function NavGroup({ title, items }: { title?: string; items: Item[] }) {
               end={end}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-fg-muted hover:bg-surface-2 hover:text-fg",
+                  "ajr-nav-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-fg-muted hover:bg-surface-2 hover:text-fg",
                   isActive && "bg-brand/10 text-accent hover:bg-brand/10 hover:text-accent"
                 )
               }
@@ -130,7 +130,7 @@ function SidebarContent({ showPublicLinks }: { showPublicLinks: boolean }) {
         <button
           type="button"
           onClick={logout}
-          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-fg-muted hover:bg-surface-2 hover:text-fg"
+          className="ajr-nav-link flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-fg-muted hover:bg-surface-2 hover:text-fg"
         >
           <LogOut className="h-[18px] w-[18px]" aria-hidden />
           {t("sidebar.logout")}
@@ -143,7 +143,7 @@ function SidebarContent({ showPublicLinks }: { showPublicLinks: boolean }) {
 /** Desktop: columna fija a la izquierda. */
 export function SidebarDesktop() {
   return (
-    <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 border-r bg-surface md:block">
+    <aside className="ajr-sidebar sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 border-r bg-surface md:block">
       <SidebarContent showPublicLinks={false} />
     </aside>
   );
@@ -183,9 +183,7 @@ export function SidebarDrawer({ open, onClose }: { open: boolean; onClose: () =>
         aria-modal="true"
         aria-label={t("sidebar.drawerLabel")}
         className={cn(
-          "relative h-full w-72 max-w-[85vw] border-r shadow-xl transition-transform duration-200 ease-out",
-          "animate-gradient-x bg-gradient-to-r from-surface via-brand/15 to-surface bg-[length:200%_100%]",
-          "dark:via-brand/25",
+          "ajr-mobile-panel relative h-full w-72 max-w-[85vw] overflow-hidden border-r shadow-2xl transition-transform duration-300 ease-out",
           open ? "translate-x-0" : "-translate-x-full"
         )}
       >
