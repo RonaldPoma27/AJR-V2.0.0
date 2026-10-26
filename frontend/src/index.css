@@ -127,6 +127,75 @@ body {
   pointer-events: none;
 }
 
+/* Hover premium para enlaces principales: conserva el color base y anima acento/subrayado. */
+.ajr-top-nav-link,
+.ajr-top-nav-link-btn {
+  position: relative;
+  isolation: isolate;
+  transition: color 240ms ease, transform 240ms ease;
+}
+
+.ajr-top-nav-link::after,
+.ajr-top-nav-link-btn::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.45rem;
+  left: 0;
+  height: 2px;
+  border-radius: 999px;
+  content: "";
+  background: linear-gradient(90deg, rgb(var(--ajr-cyan)), rgb(var(--ajr-violet)));
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 300ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.ajr-top-nav-link:hover,
+.ajr-top-nav-link:focus-visible,
+.ajr-top-nav-link[aria-current="page"],
+.ajr-top-nav-link-btn:hover,
+.ajr-top-nav-link-btn:focus-visible {
+  background-image: linear-gradient(100deg, #67e8f9 0%, #a78bfa 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.ajr-top-nav-link:hover::after,
+.ajr-top-nav-link:focus-visible::after,
+.ajr-top-nav-link[aria-current="page"]::after,
+.ajr-top-nav-link-btn:hover::after,
+.ajr-top-nav-link-btn:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.ajr-theme-transition,
+.ajr-theme-transition body,
+.ajr-theme-transition .app-main,
+.ajr-theme-transition .ajr-home-section,
+.ajr-theme-transition .rounded-lg.border.bg-surface,
+.ajr-theme-transition .rounded-xl.border.bg-surface,
+.ajr-theme-transition .rounded-md.border.bg-surface {
+  transition: color 760ms ease, background-color 760ms ease, border-color 760ms ease, box-shadow 760ms ease;
+}
+
+.ajr-plan-card {
+  position: relative;
+  transition: transform 260ms ease, border-color 260ms ease, box-shadow 260ms ease;
+}
+
+.ajr-plan-card:hover,
+.ajr-plan-card:focus-within {
+  transform: translateY(-5px);
+  border-color: rgb(var(--c-accent) / 0.68);
+  box-shadow: 0 22px 48px rgb(var(--ajr-shadow) / 0.14), 0 0 0 1px rgb(var(--c-accent) / 0.12);
+}
+
+.ajr-plan-card-featured {
+  border-color: rgb(var(--c-accent) / 0.52);
+  box-shadow: 0 18px 44px rgb(var(--ajr-blue) / 0.12);
+}
+
 .ajr-mobile-panel,
 .ajr-mobile-menu {
   /* An opaque color is always painted first; only the decorative light layers move. */
@@ -400,6 +469,8 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .ajr-aurora::before,
+  .ajr-theme-transition,
+  .ajr-theme-transition body,
   .ajr-mobile-panel,
   .ajr-mobile-menu,
   .ajr-mobile-panel::before,
@@ -411,6 +482,13 @@ body {
   }
 
   .ajr-nav-link,
+  .ajr-top-nav-link,
+  .ajr-top-nav-link-btn,
+  .ajr-plan-card,
+  .ajr-theme-transition,
+  .ajr-theme-transition body,
+  .ajr-theme-transition .app-main,
+  .ajr-theme-transition .ajr-home-section,
   .app-main .rounded-lg.border.bg-surface,
   .app-main a[class*="bg-brand"],
   .app-main button[class*="bg-brand"] {
