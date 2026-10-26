@@ -16,7 +16,7 @@ export default function Home() {
         <p className="mx-auto mt-4 max-w-2xl text-lg text-fg-muted">
           {t("pubHome.intro")}
         </p>
-        <Link unstable_viewTransition
+        <Link viewTransition
           to="/solicitar-proyecto"
           className="btn-cta mt-8 inline-block rounded-md bg-brand px-6 py-3 font-medium text-white hover:bg-brand-dark"
         >

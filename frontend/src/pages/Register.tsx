@@ -122,7 +122,7 @@ export default function Register() {
       </form>
       <p className="mt-6 text-center text-sm text-fg-subtle">
         {t("auth.register.haveAccount")}{" "}
-        <Link unstable_viewTransition to="/login" state={{ from }} className="font-medium text-accent hover:underline">
+        <Link viewTransition to="/login" state={{ from }} className="font-medium text-accent hover:underline">
           {t("auth.register.loginLink")}
         </Link>
       </p>
