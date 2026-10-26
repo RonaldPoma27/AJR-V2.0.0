@@ -53,7 +53,7 @@ export default function ProtectedRoute({
         <div>
           <p className="text-fg-muted">{t("guard.forbidden")}</p>
           <div className="mt-4 flex justify-center gap-4 text-sm font-medium">
-            <Link unstable_viewTransition to="/cuenta" className="text-accent hover:underline">{t("guard.goAccount")}</Link>
+            <Link viewTransition to="/cuenta" className="text-accent hover:underline">{t("guard.goAccount")}</Link>
             <button onClick={logout} className="text-accent hover:underline">{t("guard.logout")}</button>
           </div>
         </div>
