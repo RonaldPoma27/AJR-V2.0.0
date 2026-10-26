@@ -1,0 +1,36 @@
+# Desarrollo/prueba local del monolito completo:
+#   cp .env.example .env   (y completá SECRET_KEY, ADMIN_*)
+#   docker compose up --build
+# -> http://localhost:8000  (API docs en /api/docs)
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ajr}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ajr}
+      POSTGRES_DB: ${POSTGRES_DB:-ajrdata}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ajr} -d ${POSTGRES_DB:-ajrdata}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      args:
+        VITE_TURNSTILE_SITE_KEY: ${VITE_TURNSTILE_SITE_KEY:-}
+    env_file: .env
+    environment:
+      # Pisa cualquier DATABASE_URL del .env: dentro de compose la base es el servicio `db`.
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-ajr}:${POSTGRES_PASSWORD:-ajr}@db:5432/${POSTGRES_DB:-ajrdata}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+volumes:
+  pgdata:
