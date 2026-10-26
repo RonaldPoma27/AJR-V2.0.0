@@ -39,7 +39,7 @@ export default function ProtectedRoute({
           <p className="text-fg-muted">{t("guard.verifyFailed")}</p>
           <button
             onClick={() => refetch()}
-            className="mt-4 rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark"
+            className="btn-cta mt-4 rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark"
           >
             {t("guard.retry")}
           </button>
@@ -53,7 +53,7 @@ export default function ProtectedRoute({
         <div>
           <p className="text-fg-muted">{t("guard.forbidden")}</p>
           <div className="mt-4 flex justify-center gap-4 text-sm font-medium">
-            <Link to="/cuenta" className="text-accent hover:underline">{t("guard.goAccount")}</Link>
+            <Link viewTransition to="/cuenta" className="text-accent hover:underline">{t("guard.goAccount")}</Link>
             <button onClick={logout} className="text-accent hover:underline">{t("guard.logout")}</button>
           </div>
         </div>

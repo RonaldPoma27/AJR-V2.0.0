@@ -1,0 +1,80 @@
+{
+  "audit": {
+    "title": "Auditoría",
+    "description": "Registro de lo que hace cada administrador y técnico: qué cambió, cuándo y desde qué IP.",
+    "timezoneNote": "Fechas y horas en horario de Argentina (America/Argentina/Buenos_Aires, UTC-03:00).",
+    "tzShort": "ART",
+    "system": "Sistema",
+    "emptyValue": "(vacío)",
+    "changed": "modificada",
+    "showChanges": "Ver cambios ({{count}})",
+    "hideChanges": "Ocultar cambios",
+    "loading": "Cargando el registro…",
+    "loadError": "No pudimos cargar el registro de auditoría.",
+    "retry": "Reintentar",
+    "empty": "No hay registros con esos filtros.",
+    "filters": {
+      "search": "Buscar",
+      "searchPlaceholder": "Email, nombre del registro, IP o ruta",
+      "user": "Usuario",
+      "action": "Acción",
+      "entity": "Sección",
+      "from": "Desde",
+      "to": "Hasta",
+      "all": "Todos"
+    },
+    "actions": {
+      "create": "Creó",
+      "update": "Modificó",
+      "delete": "Eliminó",
+      "trash": "Envió a la papelera",
+      "restore": "Restauró",
+      "login": "Inició sesión",
+      "login_failed": "Intento de login fallido",
+      "ip_locked": "IP bloqueada",
+      "ip_banned": "IP baneada",
+      "ip_released": "Levantó un bloqueo de IP"
+    },
+    "entities": {
+      "users": "Usuarios",
+      "client_orders": "Pedidos",
+      "job_applications": "Postulaciones",
+      "partners": "Partners",
+      "tickets": "Tickets",
+      "ticket_updates": "Actualizaciones de ticket",
+      "ticket_comments": "Comentarios de ticket",
+      "support_tickets": "Chats de soporte",
+      "support_messages": "Mensajes de soporte",
+      "services": "Servicios",
+      "portfolio_items": "Portfolio",
+      "portfolio_media": "Galería del portfolio",
+      "blog_posts": "Blog",
+      "prompt_templates": "Plantillas de prompt",
+      "ip": "IP"
+    },
+    "fields": {
+      "status": "Estado",
+      "role": "Rol",
+      "email": "Email",
+      "hashed_password": "Contraseña",
+      "first_name": "Nombre",
+      "last_name": "Apellido",
+      "deleted_at": "Enviado a la papelera",
+      "title": "Título",
+      "name": "Nombre",
+      "description": "Descripción",
+      "content": "Contenido",
+      "estimated_cost": "Costo estimado"
+    },
+    "blocked": {
+      "title": "IPs bloqueadas ahora",
+      "banned": "baneada por exceso de actividad",
+      "locked": "bloqueada por intentos de login fallidos",
+      "remaining": "Se libera en {{time}}",
+      "release": "Levantar bloqueo",
+      "confirmQuestion": "¿Levantar?",
+      "confirm": "Sí, levantar",
+      "releaseError": "No pudimos levantar el bloqueo."
+    }
+  }
+}

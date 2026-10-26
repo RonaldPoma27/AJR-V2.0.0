@@ -1,39 +1,42 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { usePartners } from "@/api/partners";
+import Reveal from "@/components/ui/Reveal";
 
 export default function Home() {
   const { t } = useTranslation();
   const { data: partners } = usePartners();
 
   return (
-    <div className="ajr-home mx-auto max-w-6xl px-6 py-16">
-      <section className="ajr-home-hero text-center">
+    <div className="mx-auto max-w-6xl px-6 py-16">
+      <section className="text-center">
         <h1 className="text-4xl font-bold text-fg">
           {t("pubHome.title")}
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-fg-muted">
           {t("pubHome.intro")}
         </p>
-        <Link
+        <Link viewTransition
           to="/solicitar-proyecto"
-          className="mt-8 inline-block rounded-md bg-brand px-6 py-3 font-medium text-white hover:bg-brand-dark"
+          className="btn-cta mt-8 inline-block rounded-md bg-brand px-6 py-3 font-medium text-white hover:bg-brand-dark"
         >
           {t("pubHome.cta")}
         </Link>
       </section>
 
-      <section className="ajr-home-section mt-20">
-        <h2 className="text-center text-2xl font-semibold text-fg">
-          {t("pubHome.aboutTitle")}
-        </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-center text-fg-muted">
-          {t("pubHome.aboutText")}
-        </p>
-      </section>
+      <Reveal className="mt-20">
+        <section>
+          <h2 className="text-center text-2xl font-semibold text-fg">
+            {t("pubHome.aboutTitle")}
+          </h2>
+          <p className="mx-auto mt-3 max-w-2xl text-center text-fg-muted">
+            {t("pubHome.aboutText")}
+          </p>
+        </section>
+      </Reveal>
 
       {partners && partners.length > 0 && (
-        <section className="ajr-home-section ajr-home-partners mt-20">
+        <Reveal className="mt-20" delay={100}><section>
           <h2 className="text-center text-2xl font-semibold text-fg">
             {t("pubHome.partnersTitle")}
           </h2>
@@ -48,7 +51,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-        </section>
+        </section></Reveal>
       )}
     </div>
   );

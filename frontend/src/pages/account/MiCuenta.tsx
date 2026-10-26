@@ -6,6 +6,7 @@ import { useChangeEmail, useChangePassword, useMe, useUpdateProfile } from "@/ap
 import { TextField } from "@/components/forms/Fields";
 import PasswordChecklist from "@/components/forms/PasswordChecklist";
 import { getServerDetail } from "@/lib/errors";
+import { toast } from "@/lib/toast";
 import { getPasswordError as getPasswordErrorHelper } from "@/lib/password";
 
 const initial = { current: "", next: "", confirm: "" };
@@ -37,7 +38,7 @@ function ProfileForm() {
     setSaved(false);
     setLocalError(null);
     if (!first.trim() || !last.trim()) return setLocalError(t("myAccount.errors.nameRequired"));
-    update.mutate({ first_name: first.trim(), last_name: last.trim() }, { onSuccess: () => setSaved(true) });
+    update.mutate({ first_name: first.trim(), last_name: last.trim() }, { onSuccess: () => { setSaved(true); toast.success(t("myAccount.profile.saved")); } });
   }
 
   return (
@@ -59,7 +60,7 @@ function ProfileForm() {
         </p>
       )}
       {saved && <p role="status" className="text-sm text-green-700 dark:text-green-400">{t("myAccount.profile.saved")}</p>}
-      <button type="submit" disabled={update.isPending} className="rounded-md bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50">
+      <button type="submit" disabled={update.isPending} className="btn-cta rounded-md bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50">
         {update.isPending ? t("myAccount.profile.saving") : t("myAccount.profile.save")}
       </button>
     </form>
@@ -98,7 +99,7 @@ function EmailForm() {
     if (next === current) return setLocalError(t("myAccount.errors.sameEmail"));
     changeEmail.mutate(
       { current_email: current, new_email: next, current_password: form.password },
-      { onSuccess: () => { setForm({ current: "", next: "", password: "" }); setDone(true); } }
+      { onSuccess: () => { setForm({ current: "", next: "", password: "" }); setDone(true); toast.success(t("myAccount.email.done")); } }
     );
   }
 
@@ -112,7 +113,7 @@ function EmailForm() {
         <p role="alert" className="text-sm text-red-600 dark:text-red-400">{localError ?? getEmailError(changeEmail.error)}</p>
       )}
       {done && <p role="status" className="text-sm text-green-700 dark:text-green-400">{t("myAccount.email.done")}</p>}
-      <button type="submit" disabled={changeEmail.isPending} className="rounded-md bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50">
+      <button type="submit" disabled={changeEmail.isPending} className="btn-cta rounded-md bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50">
         {changeEmail.isPending ? t("myAccount.email.saving") : t("myAccount.email.submit")}
       </button>
     </form>
@@ -141,7 +142,7 @@ function PasswordForm() {
     if (form.next !== form.confirm) return setLocalError(t("myAccount.errors.passwordMismatch"));
     changePassword.mutate(
       { current_password: form.current, new_password: form.next },
-      { onSuccess: () => { setForm(initial); setDone(true); } }
+      { onSuccess: () => { setForm(initial); setDone(true); toast.success(t("myAccount.password.done")); } }
     );
   }
 
@@ -156,7 +157,7 @@ function PasswordForm() {
         <p role="alert" className="text-sm text-red-600 dark:text-red-400">{localError ?? getPasswordError(changePassword.error)}</p>
       )}
       {done && <p role="status" className="text-sm text-green-700 dark:text-green-400">{t("myAccount.password.done")}</p>}
-      <button type="submit" disabled={changePassword.isPending} className="rounded-md bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50">
+      <button type="submit" disabled={changePassword.isPending} className="btn-cta rounded-md bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50">
         {changePassword.isPending ? t("myAccount.password.saving") : t("myAccount.password.submit")}
       </button>
     </form>
