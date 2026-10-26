@@ -25,7 +25,7 @@ export default function ChatHistory({
         <button
           type="button"
           onClick={onNew}
-          className="flex w-full items-center justify-center gap-2 rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark"
+          className="btn-cta flex w-full items-center justify-center gap-2 rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark"
         >
           <Plus className="h-4 w-4" aria-hidden />
           {t("chat.newChat")}
