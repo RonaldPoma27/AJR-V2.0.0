@@ -7,6 +7,7 @@ import { useCreateOrder } from "@/api/orders";
 import Turnstile, { turnstileEnabled, type TurnstileHandle } from "@/components/Turnstile";
 import { Honeypot, TextAreaField, TextField } from "@/components/forms/Fields";
 import { getFormErrorMessage } from "@/lib/errors";
+import { toast } from "@/lib/toast";
 
 const MAX_DESCRIPTION = 5000;
 const MIN_DESCRIPTION = 10;
@@ -91,7 +92,11 @@ export default function OrderForm() {
       },
       {
         // El token de Turnstile es de un solo uso: hay que pedir otro tras cada intento.
-        onError: () => turnstileRef.current?.reset(),
+        onSuccess: () => toast.success(t("orderForm.thanks")),
+        onError: (err) => {
+          turnstileRef.current?.reset();
+          toast.error(getFormErrorMessage(err, "order"));
+        },
       }
     );
   }
@@ -114,10 +119,10 @@ export default function OrderForm() {
           {t("orderForm.loginText")}
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link to="/login" state={{ from: location.pathname }} className="rounded-md bg-brand px-6 py-2.5 font-medium text-white hover:bg-brand-dark">
+          <Link unstable_viewTransition to="/login" state={{ from: location.pathname }} className="btn-cta rounded-md bg-brand px-6 py-2.5 font-medium text-white hover:bg-brand-dark">
             {t("orderForm.login")}
           </Link>
-          <Link to="/registro" state={{ from: location.pathname }} className="rounded-md border px-6 py-2.5 font-medium text-fg hover:bg-surface-2">
+          <Link unstable_viewTransition to="/registro" state={{ from: location.pathname }} className="rounded-md border px-6 py-2.5 font-medium text-fg hover:bg-surface-2">
             {t("orderForm.register")}
           </Link>
         </div>
@@ -132,7 +137,7 @@ export default function OrderForm() {
         <p className="mt-2 text-fg-muted">
           <Trans
             i18nKey="orderForm.successText"
-            components={{ 1: <Link to="/cuenta/pedidos" className="font-medium text-accent hover:underline" /> }}
+            components={{ 1: <Link unstable_viewTransition to="/cuenta/pedidos" className="font-medium text-accent hover:underline" /> }}
           />
         </p>
         <button
@@ -173,7 +178,7 @@ export default function OrderForm() {
         <button
           type="submit"
           disabled={createOrder.isPending || (turnstileEnabled && !token)}
-          className="w-full rounded-md bg-brand px-6 py-3 font-medium text-white hover:bg-brand-dark disabled:opacity-50"
+          className="btn-cta w-full rounded-md bg-brand px-6 py-3 font-medium text-white hover:bg-brand-dark disabled:opacity-50"
         >
           {createOrder.isPending ? t("orderForm.sending") : t("orderForm.submit")}
         </button>

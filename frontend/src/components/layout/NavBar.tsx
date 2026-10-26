@@ -162,7 +162,7 @@ function NosotrosMenu({ active }: { active: boolean }) {
                   open ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"
                 )}
               >
-                <NavLink
+                <NavLink unstable_viewTransition
                   ref={(el) => {
                     itemRefs.current[index] = el;
                   }}
@@ -192,7 +192,7 @@ function NosotrosMenu({ active }: { active: boolean }) {
 function Logo() {
   const { t } = useTranslation();
   return (
-    <Link to="/" aria-label={t("nav.goHome")} className="relative block h-12 w-28 shrink-0 overflow-hidden rounded-sm bg-transparent">
+    <Link unstable_viewTransition to="/" aria-label={t("nav.goHome")} className="relative block h-12 w-28 shrink-0 overflow-hidden rounded-sm bg-transparent">
       <img
         src="/logo.png"
         alt="AJR Data"
@@ -241,7 +241,7 @@ export default function NavBar({
     );
 
   return (
-    <header className="ajr-navbar sticky top-0 z-40 border-b border-white/10 bg-ink text-white">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-ink text-white">
       <nav
         className="mx-auto flex h-16 max-w-7xl items-center gap-3 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] sm:gap-6 sm:pl-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))]"
         aria-label={t("nav.main")}>
@@ -250,7 +250,7 @@ export default function NavBar({
         {/* Desktop */}
         <div className="hidden items-center gap-6 md:flex">
           {mainLinks.map((link) => (
-            <NavLink key={link.to} to={link.to} end={link.end} className={linkClass}>
+            <NavLink unstable_viewTransition key={link.to} to={link.to} end={link.end} className={linkClass}>
               {t(link.labelKey)}
             </NavLink>
           ))}
@@ -263,10 +263,10 @@ export default function NavBar({
 
           {!hasSession && (
             <div className="hidden items-center gap-2 md:flex">
-              <Link to="/login" className={cn(authButtonBase, "border border-white/25 text-white hover:bg-white/10")}>
+              <Link unstable_viewTransition to="/login" className={cn(authButtonBase, "border border-white/25 text-white hover:bg-white/10")}>
                 {t("nav.login")}
               </Link>
-              <Link to="/registro" className={cn(authButtonBase, "bg-brand text-white hover:bg-brand-dark")}>
+              <Link unstable_viewTransition to="/registro" className={cn(authButtonBase, "bg-brand text-white hover:bg-brand-dark")}>
                 {t("nav.register")}
               </Link>
             </div>
@@ -307,14 +307,16 @@ export default function NavBar({
           <div
             id="menu-mobile"
             className={cn(
-              "ajr-mobile-menu relative h-full w-72 max-w-[85vw] overflow-y-auto border-r border-white/10 px-4 py-3 shadow-2xl transition-transform duration-300 ease-out",
+              "relative h-full w-72 max-w-[85vw] overflow-y-auto border-r border-white/10 px-4 py-3 shadow-xl transition-transform duration-200 ease-out",
+              "animate-gradient-x bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-700 bg-[length:200%_100%]",
+              "dark:from-slate-950 dark:via-blue-950 dark:to-slate-950",
               mobileOpen ? "translate-x-0" : "-translate-x-full"
             )}
           >
           <ul className="space-y-1">
             {mainLinks.map((link) => (
               <li key={link.to}>
-                <NavLink to={link.to} end={link.end} className={mobileLinkClass}>
+                <NavLink unstable_viewTransition to={link.to} end={link.end} className={mobileLinkClass}>
                   {t(link.labelKey)}
                 </NavLink>
               </li>
@@ -334,7 +336,7 @@ export default function NavBar({
                 <ul id="menu-mobile-nosotros" className="ml-3 space-y-1 border-l border-white/15 pl-3">
                   {nosotrosItems.map((item) => (
                     <li key={item.to}>
-                      <NavLink to={item.to} className={mobileLinkClass}>
+                      <NavLink unstable_viewTransition to={item.to} className={mobileLinkClass}>
                         {t(item.labelKey)}
                       </NavLink>
                     </li>
@@ -344,10 +346,10 @@ export default function NavBar({
             </li>
           </ul>
           <div className="mt-3 grid grid-cols-2 gap-2 border-t border-white/10 pt-3">
-            <Link to="/login" className={cn(authButtonBase, "border border-white/25 text-white hover:bg-white/10")}>
+            <Link unstable_viewTransition to="/login" className={cn(authButtonBase, "border border-white/25 text-white hover:bg-white/10")}>
               {t("nav.login")}
             </Link>
-            <Link to="/registro" className={cn(authButtonBase, "bg-brand text-white hover:bg-brand-dark")}>
+            <Link unstable_viewTransition to="/registro" className={cn(authButtonBase, "bg-brand text-white hover:bg-brand-dark")}>
               {t("nav.register")}
             </Link>
           </div>
