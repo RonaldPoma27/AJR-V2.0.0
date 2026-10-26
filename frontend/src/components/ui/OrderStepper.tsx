@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { ORDER_FLOW, type OrderStatus } from "@/api/orders";
 import { ORDER_STATUS_LABELS } from "@/lib/status";
 import { cn } from "@/lib/utils";
+import { useInView } from "@/lib/useInView";
 
 /**
  * Progreso de un pedido: NUEVO → EN REVISIÓN → CONTACTADO → FINALIZADO.
@@ -13,10 +14,11 @@ export default function OrderStepper({ status }: { status: OrderStatus }) {
   const discarded = status === "descartado";
   const current = ORDER_FLOW.indexOf(status);
   const finished = status === "finalizado";
+  const { ref, inView } = useInView<HTMLOListElement>();
 
   return (
     <div>
-      <ol className="flex" aria-label={t("orderStepper.label")}>
+      <ol ref={ref} className="flex" aria-label={t("orderStepper.label")}>
         {ORDER_FLOW.map((step, index) => {
           const done = !discarded && (index < current || finished);
           const active = !discarded && index === current && !finished;
@@ -28,13 +30,15 @@ export default function OrderStepper({ status }: { status: OrderStatus }) {
               className="relative flex flex-1 flex-col items-center text-center"
             >
               {index > 0 && (
-                <span
-                  aria-hidden
-                  className={cn(
-                    "absolute right-1/2 top-3.5 h-0.5 w-full -translate-y-1/2",
-                    reached ? "bg-brand" : "bg-line"
-                  )}
-                />
+                <span aria-hidden className="absolute right-1/2 top-3.5 h-0.5 w-full -translate-y-1/2 bg-line">
+                  <span
+                    style={{ transitionDelay: `${index * 150}ms` }}
+                    className={cn(
+                      "absolute inset-y-0 right-0 w-full origin-right bg-brand transition-transform duration-500 ease-out motion-reduce:transition-none",
+                      reached && inView ? "scale-x-100" : "scale-x-0"
+                    )}
+                  />
+                </span>
               )}
               <span
                 className={cn(
