@@ -1,0 +1,130 @@
+{
+  "pubHome": {
+    "title": "Custom software that makes your SME more competitive",
+    "intro": "At AJR Data we solve concrete weaknesses in your business with custom development — adding chatbots, AI agents and modern features instead of generic solutions.",
+    "cta": "Request a project",
+    "aboutTitle": "Who we are",
+    "aboutText": "We are a technology consultancy focused on helping SMEs solve specific business problems through software, standing out with more modern ideas than our clients' competitors.",
+    "partnersTitle": "Who we work with"
+  },
+  "pubPortfolio": {
+    "title": "Portfolio",
+    "subtitle": "Completed work and projects in progress.",
+    "loading": "Loading...",
+    "loadError": "We couldn't load the portfolio.",
+    "retry": "Retry",
+    "empty": "We'll soon showcase our projects here.",
+    "videoLabel": "Video of {{title}}",
+    "videoFallback": "Your browser can't play this video. <1>Open it in a new tab</1>.",
+    "fileFallback": "Project file",
+    "newTab": "(opens in a new tab)",
+    "done": "Completed",
+    "inProgress": "In progress",
+    "client": "Client: {{name}}",
+    "viewProject": "View the project"
+  },
+  "pubNotFound": {
+    "title": "This page doesn't exist",
+    "text": "The link may be wrong, or we may have moved the page.",
+    "home": "Back to home"
+  },
+  "orderForm": {
+    "errors": {
+      "company": "Tell us the name of your SME.",
+      "name": "We need your name so we can write to you.",
+      "emailRequired": "We need an email address to reply to you.",
+      "emailInvalid": "Check your email: it looks like it has a mistake.",
+      "phone": "Use only numbers, spaces and + - ( ).",
+      "industry": "Tell us what industry your business is in.",
+      "description": "Tell us a little more (minimum {{min}} characters)."
+    },
+    "loginTitle": "Log in to request a project",
+    "loginText": "With your account you can follow the progress of your request and contact us through support.",
+    "login": "Log in",
+    "register": "Create account",
+    "thanks": "Thank you!",
+    "successText": "We received your request. We've sent you a confirmation email and will contact you shortly. You can follow its progress in <1>My orders</1>.",
+    "sendAnother": "Submit another request",
+    "title": "Contact — Request a project",
+    "subtitle": "Tell us about your business problem and we'll work it out together.",
+    "company": "SME name",
+    "name": "Your name",
+    "email": "Contact email",
+    "phone": "Phone (optional)",
+    "industry": "Your business industry",
+    "description": "Describe the problem to solve",
+    "sending": "Sending...",
+    "submit": "Submit request"
+  },
+  "jobForm": {
+    "heroTitle": "Join the AJR family",
+    "heroIntro": "We are a small team that solves real SME problems with custom software: from management systems to AI assistants that give hours of work back to a business. We care more about understanding the problem well than about using the latest trend, and we like doing it in good company.",
+    "heroOutro": "If you enjoy building useful things, asking “what for?” and growing with people who have your back when something gets stuck, tell us who you are. Every application is read by a member of the team.",
+    "perks": {
+      "custom": { "title": "Custom development", "text": "No templates: every project starts by listening to how the business works." },
+      "ai": { "title": "Applied AI", "text": "Chatbots, agents and automations that SMEs use from day one." },
+      "learning": { "title": "Continuous learning", "text": "Time and space to try new technologies and make mistakes together." },
+      "remote": { "title": "Remote and flexible", "text": "Work from wherever you perform best, with clear agreements and no micromanagement." }
+    },
+    "areas": {
+      "backend": "Backend Development",
+      "frontend": "Frontend Development",
+      "data": "Data and AI",
+      "design": "UI/UX Design",
+      "sales": "Sales/Business",
+      "other": "Other"
+    },
+    "levels": {
+      "student": "Student",
+      "junior": "Junior",
+      "semi": "Mid-level",
+      "senior": "Senior"
+    },
+    "availability": {
+      "full": "Full-time",
+      "part": "Part-time",
+      "freelance": "Freelance",
+      "tbd": "To be determined"
+    },
+    "errors": {
+      "fullName": "Tell us your first and last name.",
+      "emailRequired": "We need an email address to write to you.",
+      "emailInvalid": "Check your email: it looks like it has a mistake.",
+      "phone": "Use only numbers, spaces and + - ( ).",
+      "location": "Tell us which city and country you are writing from.",
+      "area": "Choose an area of interest.",
+      "url": "The link must start with http:// or https://",
+      "motivation": "Tell us a little more (minimum {{min}} characters).",
+      "consent": "You must accept the processing of your data in order to apply."
+    },
+    "thanks": "Thank you for wanting to join the AJR family!",
+    "thanksText": "We received your application and sent you a confirmation email. We'll read it carefully and, if it's a match, we'll write to get to know you.",
+    "applyTitle": "Apply",
+    "requiredNote": "Fields marked with * are required.",
+    "fullName": "Full name",
+    "email": "Email",
+    "phone": "Phone / WhatsApp (optional)",
+    "location": "City and country",
+    "locationPlaceholder": "E.g.: Rosario, Argentina",
+    "area": "Area of interest",
+    "level": "Experience level",
+    "linkedin": "LinkedIn (optional)",
+    "github": "GitHub or portfolio (optional)",
+    "cv": "Link to your CV (optional)",
+    "cvHint": "Upload it to Drive or Dropbox and paste the link (with read access for anyone who has the link).",
+    "motivation": "Tell us why you want to join",
+    "availabilityLabel": "Availability",
+    "consent": "I agree that AJR Data may process my personal data to evaluate my application and contact me. I can ask for it to be deleted by writing to us.",
+    "sending": "Sending...",
+    "submit": "Submit application"
+  },
+  "fields": {
+    "counterMissing": "{{length}}/{{max}} · {{missing}} more to reach the minimum",
+    "counter": "{{length}}/{{max}}",
+    "selectPlaceholder": "Choose an option",
+    "honeypot": "Do not fill in this field"
+  },
+  "footer": {
+    "line": "© {{year}} AJR Data — Technology Consultancy"
+  }
+}

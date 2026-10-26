@@ -1,0 +1,142 @@
+{
+  "pricing": {
+    "title": "Plans for every stage of your business",
+    "subtitle": "Pick where to start. If you're not sure which one fits, tell us about your case and we'll figure it out together.",
+    "from": "From",
+    "price": "USD {{amount}}",
+    "request": "Request",
+    "requestAria": "Request the {{plan}} plan",
+    "note": "Indicative prices: the final amount depends on the scope we define together.",
+    "plans": {
+      "presencia-digital": {
+        "name": "Digital Presence",
+        "tagline": "So your business can be found and looks professional online.",
+        "f1": "Presentation page for your business",
+        "f2": "Design that adapts to mobile phones",
+        "f3": "Direct contact button and form"
+      },
+      "web-gestion": {
+        "name": "Web + Management",
+        "tagline": "Your complete website, with the tools to manage it yourself.",
+        "f1": "Multi-section website",
+        "f2": "Content you can update without coding",
+        "f3": "Domain and hosting handled by AJR Data"
+      },
+      "sistema-a-medida": {
+        "name": "Custom System",
+        "tagline": "Software built to solve a specific problem in your operation.",
+        "f1": "Web system designed around how you work",
+        "f2": "Users, permissions and reports",
+        "f3": "Chatbots and AI if your case needs them"
+      }
+    }
+  },
+  "requestForm": {
+    "progress": "Request steps",
+    "stepOf": "Step {{current}} of {{total}}",
+    "steps": {
+      "plan": "Plan",
+      "project": "Your project",
+      "contact": "Contact"
+    },
+    "heading": {
+      "plan": "Which plan are you interested in?",
+      "project": "Tell us about your project",
+      "contact": "How can we reach you?"
+    },
+    "plan": {
+      "label": "Plan",
+      "chosen": "Selected plan:",
+      "change": "Change"
+    },
+    "budget": {
+      "label": "Approximate budget",
+      "options": {
+        "lt-100": "Less than USD 100",
+        "100-250": "USD 100 - 250",
+        "250-450": "USD 250 - 450",
+        "450-plus": "USD 450 or more"
+      }
+    },
+    "timeline": {
+      "label": "Estimated timeline",
+      "options": {
+        "1-2-weeks": "1-2 weeks",
+        "1-month": "1 month",
+        "2-3-months": "2-3 months",
+        "exploring": "I'm just exploring"
+      }
+    },
+    "domain": {
+      "label": "Do you already have a domain and hosting?",
+      "hint": "If you don't, we take care of it.",
+      "yes": "Yes, I have them",
+      "no": "No, I need help"
+    },
+    "errors": {
+      "plan": "Choose a plan to continue.",
+      "budget": "Choose an approximate budget.",
+      "timeline": "Choose an estimated timeline.",
+      "domain": "Tell us whether you already have a domain and hosting."
+    },
+    "back": "Back",
+    "next": "Continue"
+  },
+  "projectStepper": {
+    "label": "Project progress",
+    "done": " (completed)",
+    "current": " (current step)",
+    "pending": " (pending)",
+    "steps": {
+      "analysis": "Analysis",
+      "design": "Design",
+      "development": "Development",
+      "review": "Review",
+      "delivered": "Delivered"
+    }
+  },
+  "orderExtra": {
+    "plan": "Plan",
+    "budget": "Budget",
+    "timeline": "Timeline",
+    "domain": "Domain and hosting",
+    "domainOwn": "Already has a domain and hosting",
+    "domainNeeds": "Needs AJR Data to manage it",
+    "changeStepLabel": "Change the project step for {{name}}"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "{{count}} active projects",
+    "subtitleEmpty": "Overview of orders and projects",
+    "loading": "Loading statistics…",
+    "loadError": "We couldn't load the statistics.",
+    "noData": "There's no data to show yet.",
+    "total": "total",
+    "projectsCount": "{{count}} projects",
+    "monthly": {
+      "title": "Projects requested per month",
+      "description": "Orders received in the last 12 months.",
+      "series": "Requests"
+    },
+    "revenue": {
+      "title": "Estimated revenue by service type",
+      "description": "Estimated total: {{total}}.",
+      "series": "Estimated revenue",
+      "note": "Estimate: number of active projects × base price of each plan (USD 100, 250 and 450). Not collected revenue."
+    },
+    "steps": {
+      "title": "Active projects by status",
+      "description": "Which stage each project is in."
+    },
+    "plans": {
+      "title": "Plans chosen",
+      "description": "Which service level clients ask for."
+    },
+    "domain": {
+      "title": "Domain and hosting",
+      "description": "Clients with their own domain vs. those who need us to manage it.",
+      "own": "Own domain",
+      "hosting": "Domain and hosting management"
+    }
+  }
+}
