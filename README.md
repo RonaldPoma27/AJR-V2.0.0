@@ -26,7 +26,6 @@ Todo es solo frontend (sin cambios de backend ni de dependencias) y con CSS/Tail
 - **Botones principales:** clase `.btn-cta` (brillo que cruza el botón y escala 1.03 al pasar el mouse).
 - **Chat de soporte:** el panel entra desde abajo (`translateY` + `opacity`), la burbuja tiene un halo pulsante al abrirse y aparece un indicador animado «El equipo está escribiendo» mientras se espera respuesta.
 - **Aparición al entrar al viewport** con `IntersectionObserver` (`lib/useInView.ts`): `<Reveal>` para secciones, `<CountUp>` para números y la línea de progreso del `OrderStepper`.
-- **Transiciones de página** con la View Transitions API (`viewTransition` en `Link`/`NavLink`; `main.tsx` usa `createBrowserRouter` + `RouterProvider`). Sin soporte del navegador, la navegación es la normal.
 - **Scrollbar** fina que respeta el tema.
 - **Toasts** propios (sin dependencias): `toast.success()`, `toast.error()` y `toast.info()` desde `lib/toast.ts`; el `<Toaster />` está montado en `AppLayout`. Ya se usan en Mi cuenta, pedidos y postulaciones.
 - **Accesibilidad de movimiento:** con `prefers-reduced-motion` se detienen solo los bucles decorativos (aurora, degradado, partículas, halo) y las transiciones de página; las transiciones cortas se mantienen. Si en Windows están desactivados los "Efectos de animación", el navegador aplica ese modo.
