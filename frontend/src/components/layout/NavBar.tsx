@@ -162,7 +162,7 @@ function NosotrosMenu({ active }: { active: boolean }) {
                   open ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"
                 )}
               >
-                <NavLink unstable_viewTransition
+                <NavLink viewTransition
                   ref={(el) => {
                     itemRefs.current[index] = el;
                   }}
@@ -192,7 +192,7 @@ function NosotrosMenu({ active }: { active: boolean }) {
 function Logo() {
   const { t } = useTranslation();
   return (
-    <Link unstable_viewTransition to="/" aria-label={t("nav.goHome")} className="relative block h-12 w-28 shrink-0 overflow-hidden rounded-sm bg-transparent">
+    <Link viewTransition to="/" aria-label={t("nav.goHome")} className="relative block h-12 w-28 shrink-0 overflow-hidden rounded-sm bg-transparent">
       <img
         src="/logo.png"
         alt="AJR Data"
@@ -250,7 +250,7 @@ export default function NavBar({
         {/* Desktop */}
         <div className="hidden items-center gap-6 md:flex">
           {mainLinks.map((link) => (
-            <NavLink unstable_viewTransition key={link.to} to={link.to} end={link.end} className={linkClass}>
+            <NavLink viewTransition key={link.to} to={link.to} end={link.end} className={linkClass}>
               {t(link.labelKey)}
             </NavLink>
           ))}
@@ -263,10 +263,10 @@ export default function NavBar({
 
           {!hasSession && (
             <div className="hidden items-center gap-2 md:flex">
-              <Link unstable_viewTransition to="/login" className={cn(authButtonBase, "border border-white/25 text-white hover:bg-white/10")}>
+              <Link viewTransition to="/login" className={cn(authButtonBase, "border border-white/25 text-white hover:bg-white/10")}>
                 {t("nav.login")}
               </Link>
-              <Link unstable_viewTransition to="/registro" className={cn(authButtonBase, "bg-brand text-white hover:bg-brand-dark")}>
+              <Link viewTransition to="/registro" className={cn(authButtonBase, "bg-brand text-white hover:bg-brand-dark")}>
                 {t("nav.register")}
               </Link>
             </div>
@@ -316,7 +316,7 @@ export default function NavBar({
           <ul className="space-y-1">
             {mainLinks.map((link) => (
               <li key={link.to}>
-                <NavLink unstable_viewTransition to={link.to} end={link.end} className={mobileLinkClass}>
+                <NavLink viewTransition to={link.to} end={link.end} className={mobileLinkClass}>
                   {t(link.labelKey)}
                 </NavLink>
               </li>
@@ -336,7 +336,7 @@ export default function NavBar({
                 <ul id="menu-mobile-nosotros" className="ml-3 space-y-1 border-l border-white/15 pl-3">
                   {nosotrosItems.map((item) => (
                     <li key={item.to}>
-                      <NavLink unstable_viewTransition to={item.to} className={mobileLinkClass}>
+                      <NavLink viewTransition to={item.to} className={mobileLinkClass}>
                         {t(item.labelKey)}
                       </NavLink>
                     </li>
@@ -346,10 +346,10 @@ export default function NavBar({
             </li>
           </ul>
           <div className="mt-3 grid grid-cols-2 gap-2 border-t border-white/10 pt-3">
-            <Link unstable_viewTransition to="/login" className={cn(authButtonBase, "border border-white/25 text-white hover:bg-white/10")}>
+            <Link viewTransition to="/login" className={cn(authButtonBase, "border border-white/25 text-white hover:bg-white/10")}>
               {t("nav.login")}
             </Link>
-            <Link unstable_viewTransition to="/registro" className={cn(authButtonBase, "bg-brand text-white hover:bg-brand-dark")}>
+            <Link viewTransition to="/registro" className={cn(authButtonBase, "bg-brand text-white hover:bg-brand-dark")}>
               {t("nav.register")}
             </Link>
           </div>
