@@ -108,7 +108,8 @@
       "writeLabel": "Escribir un mensaje",
       "sendLabel": "Enviar mensaje",
       "keys": "Enter envía · Shift+Enter nueva línea",
-      "sendError": "No pudimos enviar el mensaje. Probá de nuevo."
+      "sendError": "No pudimos enviar el mensaje. Probá de nuevo.",
+      "typing": "El equipo está escribiendo"
     },
     "new": {
       "title": "Título del chat",
