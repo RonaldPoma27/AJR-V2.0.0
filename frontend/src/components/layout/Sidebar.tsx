@@ -66,7 +66,7 @@ function NavGroup({ title, items }: { title?: string; items: Item[] }) {
       <ul className="space-y-0.5">
         {items.map(({ to, labelKey, icon: Icon, end }) => (
           <li key={to}>
-            <NavLink unstable_viewTransition
+            <NavLink viewTransition
               to={to}
               end={end}
               className={({ isActive }) =>

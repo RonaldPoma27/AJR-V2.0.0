@@ -11,7 +11,7 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false } },
 });
 
-// Router de datos: habilita `unstable_viewTransition` en <Link>/<NavLink> (View Transitions API).
+// Router de datos: habilita `viewTransition` en <Link>/<NavLink> (View Transitions API).
 // <App /> sigue definiendo todas las rutas con <Routes>, colgado de una ruta comodín.
 const router = createBrowserRouter([{ path: "*", element: <App /> }]);
 

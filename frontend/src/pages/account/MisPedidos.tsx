@@ -61,7 +61,7 @@ export default function MisPedidos() {
           <h1 className="text-2xl font-bold text-fg">{t("myOrders.title")}</h1>
           <p className="text-sm text-fg-subtle">{t("myOrders.subtitle")}</p>
         </div>
-        <Link unstable_viewTransition to="/solicitar-proyecto" className="btn-cta rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+        <Link viewTransition to="/solicitar-proyecto" className="btn-cta rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
           {t("myOrders.newOrder")}
         </Link>
       </div>
@@ -76,7 +76,7 @@ export default function MisPedidos() {
         <div className="rounded-lg border border-dashed p-10 text-center">
           <p className="font-medium text-fg">{t("myOrders.emptyTitle")}</p>
           <p className="mt-1 text-sm text-fg-subtle">{t("myOrders.emptyText")}</p>
-          <Link unstable_viewTransition to="/solicitar-proyecto" className="btn-cta mt-4 inline-block rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+          <Link viewTransition to="/solicitar-proyecto" className="btn-cta mt-4 inline-block rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
             {t("myOrders.requestProject")}
           </Link>
         </div>
