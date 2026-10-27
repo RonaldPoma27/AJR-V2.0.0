@@ -2,21 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Tokens de color (triplets RGB para que funcionen con opacidad: bg-surface/50). */
+/* Hydra 3.0: Tema oscuro permanente. Tokens de color (triplets RGB para que funcionen con opacidad: bg-surface/50). */
 @layer base {
   :root {
-    --c-app: 249 250 251;
-    --c-surface: 255 255 255;
-    --c-surface-2: 243 244 246;
-    --c-line: 229 231 235;
-    --c-fg: 17 24 39;
-    --c-fg-muted: 55 65 81;
-    --c-fg-subtle: 107 114 128;
-    --c-accent: 29 106 229;
-    color-scheme: light;
-  }
-
-  .dark {
+    /* Tokens únicamente oscuros (Hydra 3.0) */
     --c-app: 3 7 18;
     --c-surface: 17 24 39;
     --c-surface-2: 31 41 55;
@@ -178,16 +167,4 @@ html {
   .nav-fx::after { transition: none; }
 }
 
-/* ---------- Cambio de tema: todos los colores se funden mientras el interruptor está bloqueado ---------- */
-html.theme-anim,
-html.theme-anim *,
-html.theme-anim *::before,
-html.theme-anim *::after {
-  transition:
-    background-color 1000ms ease-in-out,
-    border-color 1000ms ease-in-out,
-    color 1000ms ease-in-out,
-    fill 1000ms ease-in-out,
-    stroke 1000ms ease-in-out,
-    box-shadow 1000ms ease-in-out !important;
-}
+/* Hydra 3.0: Tema oscuro permanente - no se necesitan transiciones de cambio de tema */
