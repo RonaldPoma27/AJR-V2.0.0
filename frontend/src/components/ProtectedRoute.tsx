@@ -2,6 +2,7 @@ import { isAxiosError } from "axios";
 import { useTranslation } from "react-i18next";
 import { Link, Navigate, useLocation } from "react-router-dom";
 import { getToken, useLogout, useMe, type UserRole } from "@/api/auth";
+import { saveReturnUrl } from "@/lib/returnUrl";
 
 function Message({ children }: { children: React.ReactNode }) {
   return <div className="flex items-center justify-center p-12 text-center">{children}</div>;
@@ -23,15 +24,19 @@ export default function ProtectedRoute({
   const logout = useLogout();
   const { data: me, isLoading, isError, error, refetch } = useMe();
 
+  // A dónde volver tras iniciar sesión: ruta + query (ej. /solicitar-proyecto?plan=web-gestion).
+  const returnTo = location.pathname + location.search;
   if (!getToken()) {
-    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+    saveReturnUrl(returnTo);
+    return <Navigate to="/login" replace state={{ from: returnTo }} />;
   }
   if (isLoading) {
     return <Message><p className="text-fg-subtle">{t("guard.verifying")}</p></Message>;
   }
   if (isError) {
     if (isAxiosError(error) && error.response?.status === 401) {
-      return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+      saveReturnUrl(returnTo);
+      return <Navigate to="/login" replace state={{ from: returnTo }} />;
     }
     return (
       <Message>
@@ -39,7 +44,7 @@ export default function ProtectedRoute({
           <p className="text-fg-muted">{t("guard.verifyFailed")}</p>
           <button
             onClick={() => refetch()}
-            className="mt-4 rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark"
+            className="btn-cta mt-4 rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark"
           >
             {t("guard.retry")}
           </button>
@@ -53,7 +58,7 @@ export default function ProtectedRoute({
         <div>
           <p className="text-fg-muted">{t("guard.forbidden")}</p>
           <div className="mt-4 flex justify-center gap-4 text-sm font-medium">
-            <Link to="/cuenta" className="text-accent hover:underline">{t("guard.goAccount")}</Link>
+            <Link viewTransition to="/cuenta" className="text-accent hover:underline">{t("guard.goAccount")}</Link>
             <button onClick={logout} className="text-accent hover:underline">{t("guard.logout")}</button>
           </div>
         </div>
