@@ -20,12 +20,12 @@ export default function ChatHistory({
   const now = useNow();
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <div className="p-3">
+    <div className="ajr-chat-history flex h-full min-h-0 flex-col">
+      <div className="ajr-chat-history-actions p-3">
         <button
           type="button"
           onClick={onNew}
-          className="flex w-full items-center justify-center gap-2 rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark"
+          className="ajr-chat-new-button flex w-full items-center justify-center gap-2 rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark"
         >
           <Plus className="h-4 w-4" aria-hidden />
           {t("chat.newChat")}

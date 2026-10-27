@@ -30,10 +30,10 @@ export default function NewChatForm({
     create.mutate({ title: title.trim(), message: message.trim() }, { onSuccess: (t) => onCreated(t.id) });
   }
 
-  const field = "mt-1 w-full rounded-md border bg-surface px-3 py-2 text-sm text-fg focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand";
+  const field = "ajr-chat-field mt-1 w-full rounded-md border px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand";
 
   return (
-    <form onSubmit={submit} noValidate className="flex h-full flex-col gap-4 overflow-y-auto p-4">
+    <form onSubmit={submit} noValidate className="ajr-chat-new-form flex h-full flex-col gap-4 overflow-y-auto p-4">
       <div>
         <label htmlFor="chat-title" className="block text-sm font-medium text-fg-muted">
           {t("chat.new.title")} <span className="text-red-500 dark:text-red-400">*</span>
@@ -84,14 +84,14 @@ export default function NewChatForm({
 
       <div className="mt-auto flex gap-2">
         {onCancel && (
-          <button type="button" onClick={onCancel} className="rounded-md border px-4 py-2 text-sm font-medium text-fg-muted hover:bg-surface-2">
+          <button type="button" onClick={onCancel} className="ajr-chat-cancel rounded-md border px-4 py-2 text-sm font-medium hover:bg-surface-2">
             {t("chat.new.cancel")}
           </button>
         )}
         <button
           type="submit"
           disabled={create.isPending}
-          className="flex-1 rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50"
+          className="ajr-chat-submit flex-1 rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50"
         >
           {create.isPending ? t("chat.new.starting") : t("chat.new.start")}
         </button>

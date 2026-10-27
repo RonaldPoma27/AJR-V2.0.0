@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, MessageCircle, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSupportTicket } from "@/api/support";
@@ -15,65 +15,92 @@ function ThreadTitle({ id }: { id: number }) {
   return <>{data?.title ?? t("chat.chatFallback")}</>;
 }
 
-/**
- * Burbuja de soporte (abajo a la derecha, azul oscuro institucional). Se abre como un panel con tres
- * vistas: historial de chats, chat nuevo (con título) y conversación.
- */
+const CHAT_MOTION_MS = 430;
+
+/** Burbuja de soporte con transición visual entre el lanzador y la ventana. */
 export default function ChatBubble() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [view, setView] = useState<View>({ name: "history" });
   const launcherRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const closeTimerRef = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+
+  const openChat = useCallback(() => {
+    if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
+    setMounted(true);
+    setOpen(true);
+  }, []);
+
+  const closeChat = useCallback(() => {
+    setOpen(false);
+    if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = window.setTimeout(() => {
+      setMounted(false);
+      closeTimerRef.current = null;
+      launcherRef.current?.focus();
+    }, CHAT_MOTION_MS);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setOpen(false);
-        launcherRef.current?.focus();
-      }
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeChat();
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
+  }, [open, closeChat]);
+
+  useEffect(() => {
+    if (open) {
+      const frame = window.requestAnimationFrame(() => closeRef.current?.focus());
+      return () => window.cancelAnimationFrame(frame);
+    }
+    return undefined;
   }, [open]);
+
+  useEffect(() => () => {
+    if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
+  }, []);
 
   const title =
     view.name === "history" ? t("chat.support") : view.name === "new" ? t("chat.newChat") : <ThreadTitle id={view.id} />;
 
   return (
     <>
-      {open && (
+      {mounted && (
         <section
           role="dialog"
           aria-label={t("chat.bubbleTitle")}
-          className="fixed bottom-24 right-4 z-50 flex h-[34rem] max-h-[calc(100vh-7rem)] w-[23rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-xl border bg-surface shadow-2xl sm:right-6"
+          aria-modal="false"
+          className={cn("ajr-chat-window fixed z-50 flex flex-col overflow-hidden", open ? "ajr-chat-window--open" : "ajr-chat-window--closing")}
         >
-          <header className="flex items-center gap-2 bg-slate-800 px-3 py-3 text-white dark:bg-slate-700">
+          <header className="ajr-chat-window-header">
             {view.name !== "history" && (
               <button
                 type="button"
                 onClick={() => setView({ name: "history" })}
                 aria-label={t("chat.backToHistory")}
-                className="rounded-md p-1 hover:bg-white/15"
+                className="ajr-chat-header-action"
               >
                 <ArrowLeft className="h-5 w-5" aria-hidden />
               </button>
             )}
-            <h2 className="min-w-0 flex-1 truncate text-sm font-semibold">{title}</h2>
+            <div className="ajr-chat-header-brand-mark" aria-hidden="true"><MessageCircle className="h-4 w-4" /></div>
+            <h2 className="ajr-chat-window-title">{title}</h2>
             <button
+              ref={closeRef}
               type="button"
-              onClick={() => {
-                setOpen(false);
-                launcherRef.current?.focus();
-              }}
+              onClick={closeChat}
               aria-label={t("chat.closeChat")}
-              className="rounded-md p-1 hover:bg-white/15"
+              className="ajr-chat-header-action"
             >
               <X className="h-5 w-5" aria-hidden />
             </button>
           </header>
 
-          <div className="flex min-h-0 flex-1 flex-col">
+          <div className="ajr-chat-window-body">
             {view.name === "history" && (
               <ChatHistory onNew={() => setView({ name: "new" })} onSelect={(id) => setView({ name: "thread", id })} />
             )}
@@ -93,21 +120,19 @@ export default function ChatBubble() {
       <button
         ref={launcherRef}
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => open ? closeChat() : openChat()}
         aria-expanded={open}
         aria-label={open ? t("chat.closeSupport") : t("chat.openSupport")}
-        className={cn(
-          "fixed bottom-5 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-slate-800 text-white shadow-lg transition-shadow hover:bg-slate-900 focus-visible:outline-offset-4 sm:right-6 dark:bg-slate-600 dark:hover:bg-slate-500",
-          open && "shadow-[0_0_16px_3px_rgb(56_189_248/0.55)] dark:shadow-[0_0_16px_3px_rgb(147_197_253/0.5)]"
-        )}
+        aria-hidden={open}
+        tabIndex={open ? -1 : 0}
+        data-open={open}
+        className="ajr-chat-launcher fixed z-50 flex items-center justify-center rounded-full text-white focus-visible:outline-offset-4"
       >
-        {open && (
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-0 animate-pulse-ring rounded-full bg-sky-400/50 dark:bg-blue-300/40"
-          />
-        )}
-        {open ? <X className="relative h-6 w-6" aria-hidden /> : <MessageCircle className="relative h-7 w-7" aria-hidden />}
+        <span className="ajr-chat-launcher-glow" aria-hidden="true" />
+        <span className="ajr-chat-launcher-icon" aria-hidden="true">
+          {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-7 w-7" />}
+        </span>
+        {!open && <span className="ajr-chat-launcher-hint">{t("chat.support")}</span>}
       </button>
     </>
   );

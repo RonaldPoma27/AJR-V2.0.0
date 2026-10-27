@@ -78,13 +78,13 @@ export default function ChatThread({
           : t("chat.thread.staffPlaceholder");
 
   return (
-    <div className={cn("flex min-h-0 flex-col", className)}>
+    <div className={cn("ajr-chat-thread flex min-h-0 flex-col", className)}>
       <div
         ref={listRef}
         role="log"
         aria-live="polite"
         aria-label={t("chat.thread.logLabel", { title: data.title })}
-        className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4"
+        className="ajr-chat-log min-h-0 flex-1 space-y-3 overflow-y-auto p-4"
       >
         {data.messages.map((m) => {
           const mine = customer ? m.from_customer : !m.from_customer;
@@ -93,15 +93,13 @@ export default function ChatThread({
             <div key={m.id} className={cn("flex flex-col", mine ? "items-end" : "items-start")}>
               <div
                 className={cn(
-                  "max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-3.5 py-2 text-sm",
-                  mine
-                    ? "rounded-br-sm bg-brand text-white"
-                    : "rounded-bl-sm bg-slate-200 text-slate-900 dark:bg-slate-600/40 dark:text-slate-50"
+                  "ajr-chat-message max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-3.5 py-2.5 text-sm",
+                  mine ? "ajr-chat-message--mine rounded-br-sm" : "ajr-chat-message--received rounded-bl-sm"
                 )}
               >
                 {m.content}
               </div>
-              <p className="mt-1 px-1 text-xs text-fg-subtle">
+              <p className="ajr-chat-meta mt-1 px-1 text-xs text-fg-subtle">
                 {author} · {formatDateTime(m.created_at)}
               </p>
             </div>
@@ -109,9 +107,9 @@ export default function ChatThread({
         })}
       </div>
 
-      <div className="border-t p-3">
+      <div className="ajr-chat-composer border-t p-3">
         {blocked && (
-          <p role="status" className="mb-2 rounded-md bg-amber-100 px-3 py-2 text-xs text-amber-900 dark:bg-amber-500/15 dark:text-amber-200">
+          <p role="status" className="ajr-chat-notice mb-2 rounded-md px-3 py-2 text-xs">
             {data.block_reason === "closed"
               ? t("chat.thread.blockedClosed")
               : t("chat.thread.blockedConsecutive", { count: MAX_CONSECUTIVE_MESSAGES })}
@@ -137,19 +135,19 @@ export default function ChatThread({
             rows={2}
             placeholder={placeholder}
             aria-label={t("chat.thread.writeLabel")}
-            className="min-h-[2.75rem] flex-1 resize-none rounded-md border bg-surface px-3 py-2 text-sm text-fg focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand disabled:cursor-not-allowed disabled:bg-surface-2 disabled:opacity-70"
+            className="ajr-chat-input min-h-[2.75rem] flex-1 resize-none rounded-md border px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand disabled:cursor-not-allowed disabled:opacity-70"
           />
           <button
             type="button"
             onClick={submit}
             disabled={blocked || !trimmed || send.isPending}
             aria-label={t("chat.thread.sendLabel")}
-            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-brand text-white hover:bg-brand-dark disabled:opacity-50"
+            className="ajr-chat-send inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-brand text-white hover:bg-brand-dark disabled:opacity-50"
           >
             <Send className="h-5 w-5" aria-hidden />
           </button>
         </div>
-        <div className="mt-1 flex justify-between text-xs text-fg-subtle">
+        <div className="ajr-chat-composer-meta mt-1 flex justify-between text-xs text-fg-subtle">
           <span>{t("chat.thread.keys")}</span>
           <span className={cn(text.length >= MAX_MESSAGE_LENGTH - 100 && "font-semibold text-amber-700 dark:text-amber-300")} aria-live="polite">
             {text.length}/{MAX_MESSAGE_LENGTH}
