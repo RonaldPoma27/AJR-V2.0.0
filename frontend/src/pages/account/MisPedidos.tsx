@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useMyOrders, type ClientOrder } from "@/api/orders";
 import OrderStepper from "@/components/ui/OrderStepper";
+import ProjectStepper from "@/components/ui/ProjectStepper";
+import { ORDER_TO_STEP } from "@/lib/projectSteps";
 import { formatDateTime } from "@/lib/format";
 import { ORDER_STATUS_LABELS, STATUS_BADGE } from "@/lib/status";
 import { timeAgo, useNow } from "@/lib/time";
@@ -26,7 +28,11 @@ function OrderCard({ order, now }: { order: ClientOrder; now: number }) {
       </div>
 
       <div className="my-6">
-        <OrderStepper status={order.status} />
+        {order.status === "descartado" ? (
+          <OrderStepper status={order.status} /> // muestra el aviso de pedido descartado
+        ) : (
+          <ProjectStepper currentStep={ORDER_TO_STEP[order.status]} />
+        )}
       </div>
 
       <p className="text-xs text-fg-subtle">{t("myOrders.lastUpdate", { time: timeAgo(order.updated_at, now) })}</p>
@@ -61,7 +67,7 @@ export default function MisPedidos() {
           <h1 className="text-2xl font-bold text-fg">{t("myOrders.title")}</h1>
           <p className="text-sm text-fg-subtle">{t("myOrders.subtitle")}</p>
         </div>
-        <Link to="/solicitar-proyecto" className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+        <Link viewTransition to="/solicitar-proyecto" className="btn-cta rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
           {t("myOrders.newOrder")}
         </Link>
       </div>
@@ -76,7 +82,7 @@ export default function MisPedidos() {
         <div className="rounded-lg border border-dashed p-10 text-center">
           <p className="font-medium text-fg">{t("myOrders.emptyTitle")}</p>
           <p className="mt-1 text-sm text-fg-subtle">{t("myOrders.emptyText")}</p>
-          <Link to="/solicitar-proyecto" className="mt-4 inline-block rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+          <Link viewTransition to="/solicitar-proyecto" className="btn-cta mt-4 inline-block rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
             {t("myOrders.requestProject")}
           </Link>
         </div>
