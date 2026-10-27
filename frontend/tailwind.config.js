@@ -6,8 +6,8 @@ export default {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
-      // Tokens semánticos: sus valores viven en index.css (:root = claro, .dark = oscuro).
-      // Usar estos nombres en vez de gray-*/white hace que el modo oscuro funcione solo.
+      // Tokens semánticos definidos para una interfaz oscura permanente.
+      // El tema claro fue eliminado del producto.
       colors: {
         app: token("app"), // fondo de la página
         surface: { DEFAULT: token("surface"), 2: token("surface-2") }, // tarjetas / paneles
