@@ -15,12 +15,12 @@ export default function Soporte() {
   const listVisibleOnMobile = view.name === "history";
 
   return (
-    <div className="mx-auto max-w-5xl p-4 md:p-8">
+    <div className="ajr-account-support mx-auto max-w-5xl p-4 md:p-8">
       <h1 className="text-2xl font-bold text-fg">{t("supportPage.title")}</h1>
       <p className="mb-4 text-sm text-fg-subtle">{t("supportPage.subtitle")}</p>
 
-      <div className="grid h-[calc(100vh-15rem)] min-h-[28rem] overflow-hidden rounded-lg border bg-surface md:grid-cols-[18rem_1fr]">
-        <div className={cn("min-h-0 border-r", !listVisibleOnMobile && "hidden md:block")}>
+      <div className="ajr-support-workspace grid h-[calc(100vh-15rem)] min-h-[28rem] overflow-hidden rounded-lg border md:grid-cols-[18rem_1fr]">
+        <div className={cn("ajr-support-history-panel min-h-0 border-r", !listVisibleOnMobile && "hidden md:block")}>
           <ChatHistory
             selectedId={view.name === "thread" ? view.id : null}
             onNew={() => setView({ name: "new" })}
@@ -28,7 +28,7 @@ export default function Soporte() {
           />
         </div>
 
-        <div className={cn("min-h-0 flex-col", listVisibleOnMobile ? "hidden md:flex" : "flex")}>
+        <div className={cn("ajr-support-conversation-panel min-h-0 flex-col", listVisibleOnMobile ? "hidden md:flex" : "flex")}>
           {view.name !== "history" && (
             <button
               type="button"
