@@ -3,7 +3,7 @@ import AppLayout from "@/components/layout/AppLayout";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Home from "@/pages/Home";
 import Portfolio from "@/pages/Portfolio";
-import OrderForm from "@/pages/OrderForm";
+import ProjectRequestForm from "@/pages/ProjectRequestForm";
 import TrabajaConNosotros from "@/pages/TrabajaConNosotros";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
@@ -28,7 +28,7 @@ export default function App() {
       <Route element={<AppLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/portfolio" element={<Portfolio />} />
-        <Route path="/solicitar-proyecto" element={<OrderForm />} />
+        <Route path="/solicitar-proyecto" element={<ProtectedRoute><ProjectRequestForm /></ProtectedRoute>} />
         <Route path="/trabaja-con-nosotros" element={<TrabajaConNosotros />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Register />} />
