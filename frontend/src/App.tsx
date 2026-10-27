@@ -11,6 +11,7 @@ import NotFound from "@/pages/NotFound";
 import MiCuenta from "@/pages/account/MiCuenta";
 import MisPedidos from "@/pages/account/MisPedidos";
 import Soporte from "@/pages/account/Soporte";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminOrders from "@/pages/admin/AdminOrders";
 import AdminApplications from "@/pages/admin/AdminApplications";
 import AdminSupport from "@/pages/admin/AdminSupport";
@@ -28,7 +29,7 @@ export default function App() {
       <Route element={<AppLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/portfolio" element={<Portfolio />} />
-        <Route path="/solicitar-proyecto" element={<OrderForm />} />
+        <Route path="/solicitar-proyecto" element={<ProtectedRoute><OrderForm /></ProtectedRoute>} />
         <Route path="/trabaja-con-nosotros" element={<TrabajaConNosotros />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Register />} />
@@ -39,7 +40,8 @@ export default function App() {
         <Route path="/cuenta/soporte" element={<ProtectedRoute roles={["USER"]}><Soporte /></ProtectedRoute>} />
 
         {/* Panel de Administración: ADMIN y TECHNICIAN (la papelera y la auditoría, solo ADMIN) */}
-        <Route path="/admin" element={<Navigate to="/admin/pedidos" replace />} />
+        <Route path="/admin" element={<Navigate to="/admin/resumen" replace />} />
+        <Route path="/admin/resumen" element={<ProtectedRoute roles={[...STAFF]}><AdminDashboard /></ProtectedRoute>} />
         <Route path="/admin/pedidos" element={<ProtectedRoute roles={[...STAFF]}><AdminOrders /></ProtectedRoute>} />
         <Route path="/admin/postulaciones" element={<ProtectedRoute roles={[...STAFF]}><AdminApplications /></ProtectedRoute>} />
         <Route path="/admin/soporte" element={<ProtectedRoute roles={[...STAFF]}><AdminSupport /></ProtectedRoute>} />
@@ -48,7 +50,7 @@ export default function App() {
         <Route path="/admin/papelera" element={<ProtectedRoute roles={["ADMIN"]}><AdminTrash /></ProtectedRoute>} />
         <Route path="/admin/auditoria" element={<ProtectedRoute roles={["ADMIN"]}><AdminAudit /></ProtectedRoute>} />
         <Route path="/admin/perfil" element={<Navigate to="/cuenta" replace />} />
-        <Route path="/admin/*" element={<Navigate to="/admin/pedidos" replace />} />
+        <Route path="/admin/*" element={<Navigate to="/admin/resumen" replace />} />
 
         <Route path="*" element={<NotFound />} />
       </Route>
