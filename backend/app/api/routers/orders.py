@@ -11,7 +11,7 @@ from app.crud import client_order as crud_order
 from app.crud import trash as crud_trash
 from app.crud import user as crud_user
 from app.models import OrderStatus
-from app.schemas.client_order import ClientOrderCreate, ClientOrderRead, ClientOrderUpdate
+from app.schemas.client_order import ClientOrderCreate, ClientOrderRead, ClientOrderUpdate, OrderStats
 from app.schemas.common import Page, Receipt
 
 router = APIRouter(prefix="/orders", tags=["orders"])
@@ -60,6 +60,12 @@ async def list_orders(
     """TECHNICIAN y ADMIN. Más recientes primero, con `total` y `counts` por estado.
     No incluye lo que está en la papelera."""
     return await crud_order.list_orders(db, status=status_filter, skip=skip, limit=limit)
+
+
+@router.get("/stats", response_model=OrderStats)
+async def order_stats(db: DBSession, _: StaffUser):
+    """TECHNICIAN y ADMIN: datos agregados para los gráficos del panel."""
+    return await crud_order.stats(db)
 
 
 @router.patch("/{order_id}", response_model=ClientOrderRead)
