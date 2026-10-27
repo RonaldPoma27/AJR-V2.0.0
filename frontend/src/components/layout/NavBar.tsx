@@ -18,7 +18,7 @@ const nosotrosItems = [
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
-    "text-sm font-medium text-gray-300 hover:text-white",
+    "nav-fx text-sm font-medium text-gray-300 hover:text-white",
     isActive && "text-white"
   );
 
@@ -131,11 +131,11 @@ function NosotrosMenu({ active }: { active: boolean }) {
         }}
         onKeyDown={handleButtonKeyDown}
         className={cn(
-          "flex items-center gap-1 text-sm font-medium text-gray-300 hover:text-white",
+          "nav-fx flex items-center gap-1 text-sm font-medium text-gray-300 hover:text-white",
           active && "text-white"
         )}
       >
-        {t("nav.about")}
+        <span className="nav-fx-text">{t("nav.about")}</span>
         <ChevronDown className={cn("h-4 w-4 transition-transform", open && "rotate-180")} aria-hidden />
       </button>
 
@@ -162,7 +162,7 @@ function NosotrosMenu({ active }: { active: boolean }) {
                   open ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"
                 )}
               >
-                <NavLink
+                <NavLink viewTransition
                   ref={(el) => {
                     itemRefs.current[index] = el;
                   }}
@@ -192,7 +192,7 @@ function NosotrosMenu({ active }: { active: boolean }) {
 function Logo() {
   const { t } = useTranslation();
   return (
-    <Link to="/" aria-label={t("nav.goHome")} className="relative block h-12 w-28 shrink-0 overflow-hidden rounded-sm bg-transparent">
+    <Link viewTransition to="/" aria-label={t("nav.goHome")} className="relative block h-12 w-28 shrink-0 overflow-hidden rounded-sm bg-transparent">
       <img
         src="/logo.png"
         alt="AJR Data"
@@ -250,8 +250,8 @@ export default function NavBar({
         {/* Desktop */}
         <div className="hidden items-center gap-6 md:flex">
           {mainLinks.map((link) => (
-            <NavLink key={link.to} to={link.to} end={link.end} className={linkClass}>
-              {t(link.labelKey)}
+            <NavLink viewTransition key={link.to} to={link.to} end={link.end} className={linkClass}>
+              <span className="nav-fx-text">{t(link.labelKey)}</span>
             </NavLink>
           ))}
           <NosotrosMenu active={nosotrosActive} />
@@ -263,10 +263,10 @@ export default function NavBar({
 
           {!hasSession && (
             <div className="hidden items-center gap-2 md:flex">
-              <Link to="/login" className={cn(authButtonBase, "border border-white/25 text-white hover:bg-white/10")}>
+              <Link viewTransition to="/login" className={cn(authButtonBase, "border border-white/25 text-white hover:bg-white/10")}>
                 {t("nav.login")}
               </Link>
-              <Link to="/registro" className={cn(authButtonBase, "bg-brand text-white hover:bg-brand-dark")}>
+              <Link viewTransition to="/registro" className={cn(authButtonBase, "bg-brand text-white hover:bg-brand-dark")}>
                 {t("nav.register")}
               </Link>
             </div>
@@ -316,7 +316,7 @@ export default function NavBar({
           <ul className="space-y-1">
             {mainLinks.map((link) => (
               <li key={link.to}>
-                <NavLink to={link.to} end={link.end} className={mobileLinkClass}>
+                <NavLink viewTransition to={link.to} end={link.end} className={mobileLinkClass}>
                   {t(link.labelKey)}
                 </NavLink>
               </li>
@@ -336,7 +336,7 @@ export default function NavBar({
                 <ul id="menu-mobile-nosotros" className="ml-3 space-y-1 border-l border-white/15 pl-3">
                   {nosotrosItems.map((item) => (
                     <li key={item.to}>
-                      <NavLink to={item.to} className={mobileLinkClass}>
+                      <NavLink viewTransition to={item.to} className={mobileLinkClass}>
                         {t(item.labelKey)}
                       </NavLink>
                     </li>
@@ -346,10 +346,10 @@ export default function NavBar({
             </li>
           </ul>
           <div className="mt-3 grid grid-cols-2 gap-2 border-t border-white/10 pt-3">
-            <Link to="/login" className={cn(authButtonBase, "border border-white/25 text-white hover:bg-white/10")}>
+            <Link viewTransition to="/login" className={cn(authButtonBase, "border border-white/25 text-white hover:bg-white/10")}>
               {t("nav.login")}
             </Link>
-            <Link to="/registro" className={cn(authButtonBase, "bg-brand text-white hover:bg-brand-dark")}>
+            <Link viewTransition to="/registro" className={cn(authButtonBase, "bg-brand text-white hover:bg-brand-dark")}>
               {t("nav.register")}
             </Link>
           </div>

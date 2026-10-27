@@ -6,16 +6,19 @@ import { cn } from "@/lib/utils";
 /** Interruptor sol/luna del modo oscuro. `onDark`: se dibuja sobre la barra siempre oscura. */
 export default function ThemeToggle({ className }: { className?: string }) {
   const { t } = useTranslation();
-  const { theme, toggle } = useTheme();
+  const { theme, toggle, locked } = useTheme();
   const dark = theme === "dark";
   return (
     <button
       type="button"
       onClick={toggle}
       aria-pressed={dark}
+      disabled={locked}
+      aria-busy={locked}
       aria-label={dark ? t("theme.toLight") : t("theme.toDark")}
       title={dark ? t("theme.light") : t("theme.dark")}
       className={cn(
+        "disabled:cursor-wait disabled:opacity-60",
         "inline-flex h-9 w-9 items-center justify-center rounded-md text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-gray-300 dark:hover:bg-white/10 dark:hover:text-white",
         className
       )}

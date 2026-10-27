@@ -6,6 +6,7 @@ import {
   FileText,
   Home,
   Image as ImageIcon,
+  LayoutDashboard,
   LifeBuoy,
   LogOut,
   MessagesSquare,
@@ -37,6 +38,7 @@ const USER_ITEMS: Item[] = [
 
 // "Panel de Administración" (ADMIN y TECHNICIAN).
 const PANEL_ITEMS: Item[] = [
+  { to: "/admin/resumen", labelKey: "sidebar.dashboard", icon: LayoutDashboard },
   { to: "/admin/pedidos", labelKey: "sidebar.orders", icon: ClipboardList },
   { to: "/admin/postulaciones", labelKey: "sidebar.applications", icon: FileText },
   { to: "/admin/soporte", labelKey: "sidebar.adminSupport", icon: MessagesSquare },
@@ -66,17 +68,18 @@ function NavGroup({ title, items }: { title?: string; items: Item[] }) {
       <ul className="space-y-0.5">
         {items.map(({ to, labelKey, icon: Icon, end }) => (
           <li key={to}>
-            <NavLink
+            <NavLink viewTransition
               to={to}
               end={end}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-fg-muted hover:bg-surface-2 hover:text-fg",
-                  isActive && "bg-brand/10 text-accent hover:bg-brand/10 hover:text-accent"
+                  // Borde lateral sólido: transparente en reposo, color institucional (accent: azul en claro, azul claro en oscuro) en la sección activa.
+                  "flex items-center gap-3 rounded-r-md border-l-[3px] border-transparent px-3 py-2 text-sm font-medium text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg",
+                  isActive && "border-accent bg-surface-2 text-accent hover:text-accent"
                 )
               }
             >
-              <Icon className="h-[18px] w-[18px] shrink-0" aria-hidden />
+              <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.5} aria-hidden />
               {t(labelKey)}
             </NavLink>
           </li>
@@ -132,7 +135,7 @@ function SidebarContent({ showPublicLinks }: { showPublicLinks: boolean }) {
           onClick={logout}
           className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-fg-muted hover:bg-surface-2 hover:text-fg"
         >
-          <LogOut className="h-[18px] w-[18px]" aria-hidden />
+          <LogOut className="h-[18px] w-[18px]" strokeWidth={1.5} aria-hidden />
           {t("sidebar.logout")}
         </button>
       </div>
@@ -184,12 +187,17 @@ export function SidebarDrawer({ open, onClose }: { open: boolean; onClose: () =>
         aria-label={t("sidebar.drawerLabel")}
         className={cn(
           "relative h-full w-72 max-w-[85vw] border-r shadow-xl transition-transform duration-200 ease-out",
-          "animate-gradient-x bg-gradient-to-r from-surface via-brand/15 to-surface bg-[length:200%_100%]",
-          "dark:via-brand/25",
+          "overflow-hidden bg-surface", // base 100% opaca: el degradado va encima y no deja ver la página
           open ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <SidebarContent showPublicLinks />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 animate-gradient-x bg-gradient-to-r from-surface via-surface-2 to-surface bg-[length:200%_100%]"
+        />
+        <div className="relative h-full">
+          <SidebarContent showPublicLinks />
+        </div>
       </div>
     </div>
   );

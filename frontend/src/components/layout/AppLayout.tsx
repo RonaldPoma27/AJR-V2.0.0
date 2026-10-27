@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { getToken, useMe } from "@/api/auth";
 import ChatBubble from "@/components/support/ChatBubble";
+import Toaster from "@/components/ui/Toaster";
 import AuroraBackground from "./AuroraBackground";
 import Footer from "./Footer";
 import NavBar from "./NavBar";
@@ -39,6 +40,7 @@ export default function AppLayout() {
       </div>
       {hasSession && <SidebarDrawer open={drawerOpen} onClose={closeDrawer} />}
       {showBubble && <ChatBubble />}
+      <Toaster />
     </div>
   );
 }
