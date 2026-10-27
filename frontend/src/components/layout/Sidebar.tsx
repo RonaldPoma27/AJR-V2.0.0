@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   Briefcase,
   ClipboardList,
@@ -7,12 +7,15 @@ import {
   Home,
   Image as ImageIcon,
   LifeBuoy,
+  LogIn,
   LogOut,
   MessagesSquare,
   Package,
   ScrollText,
   Trash2,
   User,
+  UserPlus,
+  X,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -95,7 +98,7 @@ function SidebarContent({ showPublicLinks }: { showPublicLinks: boolean }) {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center gap-3 border-b px-4 py-4">
+      <div className="flex items-center gap-3 border-b border-white/10 px-4 py-4 pr-14">
         {me ? (
           <>
             <span
@@ -140,54 +143,116 @@ function SidebarContent({ showPublicLinks }: { showPublicLinks: boolean }) {
   );
 }
 
-/** Desktop: columna fija a la izquierda. */
-export function SidebarDesktop() {
+/** Navegación para visitas sin iniciar sesión. */
+function PublicDrawerContent() {
+  const { t } = useTranslation();
   return (
-    <aside className="ajr-sidebar sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 border-r bg-surface md:block">
-      <SidebarContent showPublicLinks={false} />
-    </aside>
+    <div className="flex h-full flex-col">
+      <div className="border-b border-white/10 px-5 py-5 pr-14">
+        <p className="text-xs font-bold uppercase tracking-[0.24em] text-white">AJR DATA</p>
+        <p className="mt-1 text-sm text-white">Software · Datos · IA</p>
+      </div>
+      <nav aria-label={t("nav.main")} className="flex-1 overflow-y-auto px-2 pb-4">
+        <NavGroup title={t("sidebar.site")} items={PUBLIC_ITEMS} />
+      </nav>
+      <div className="grid gap-2 border-t border-white/10 p-3">
+        <Link to="/login" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:border-cyan-300/40 hover:bg-white/10">
+          <LogIn className="h-4 w-4" aria-hidden />{t("nav.login")}
+        </Link>
+        <Link to="/registro" className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 transition hover:brightness-110">
+          <UserPlus className="h-4 w-4" aria-hidden />{t("nav.register")}
+        </Link>
+      </div>
+    </div>
   );
 }
 
-/** Mobile: cajón deslizable desde la izquierda. */
-export function SidebarDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
+/** Drawer único para escritorio y móvil, tanto para el sitio público como para las cuentas. */
+export function SidebarDrawer({ open, onClose, hasSession }: { open: boolean; onClose: () => void; hasSession: boolean }) {
   const { t } = useTranslation();
   const { pathname } = useLocation();
+  const panelRef = useRef<HTMLDivElement>(null);
 
-  useEffect(onClose, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (open) onClose();
+    // Se cierra al navegar; el drawer no debe quedar abierto entre rutas.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const panel = panelRef.current;
+    const getFocusable = () => Array.from(panel?.querySelectorAll<HTMLElement>(
+      'a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
+    ) ?? []).filter((element) => !element.hasAttribute("hidden"));
+
+    requestAnimationFrame(() => (getFocusable()[0] ?? panel)?.focus());
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = getFocusable();
+      if (focusable.length === 0) {
+        event.preventDefault();
+        panel?.focus();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+      document.getElementById("ajr-sidebar-trigger")?.focus();
+    };
   }, [open, onClose]);
 
   return (
     <div
-      className={cn(
-        "fixed inset-x-0 bottom-0 top-16 z-30 transition-[visibility] duration-200 md:hidden",
-        open ? "visible" : "invisible"
-      )}
+      className={cn("fixed inset-0 z-[60] transition-[visibility] duration-200", open ? "visible" : "invisible pointer-events-none")}
+      aria-hidden={!open}
     >
       <button
         type="button"
         tabIndex={-1}
         aria-label={t("nav.closeMenu")}
         onClick={onClose}
-        className={cn("absolute inset-0 bg-black/50 transition-opacity duration-200", open ? "opacity-100" : "opacity-0")}
+        className={cn("absolute inset-0 bg-[#0B0F19] transition-opacity duration-200", open ? "opacity-100" : "opacity-0")}
       />
       <div
+        ref={panelRef}
         id="sidebar-drawer"
         role="dialog"
         aria-modal="true"
         aria-label={t("sidebar.drawerLabel")}
+        tabIndex={-1}
         className={cn(
-          "ajr-mobile-panel relative h-full w-72 max-w-[85vw] overflow-hidden border-r shadow-2xl transition-transform duration-300 ease-out",
+          "ajr-mobile-panel relative flex h-full w-[min(21rem,88vw)] max-w-full flex-col overflow-hidden border-r border-white/10 shadow-2xl transition-transform duration-300 ease-out",
           open ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <SidebarContent showPublicLinks />
+        <button
+          type="button"
+          aria-label={t("nav.closeMenu")}
+          onClick={onClose}
+          className="absolute right-3 top-3 z-10 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white transition hover:bg-white/10 focus-visible:outline-offset-2"
+        >
+          <X className="h-5 w-5" aria-hidden />
+        </button>
+        {hasSession ? <SidebarContent showPublicLinks /> : <PublicDrawerContent />}
       </div>
     </div>
   );

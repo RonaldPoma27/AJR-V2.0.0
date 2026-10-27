@@ -5,13 +5,13 @@ import ChatBubble from "@/components/support/ChatBubble";
 import AuroraBackground from "./AuroraBackground";
 import Footer from "./Footer";
 import NavBar from "./NavBar";
-import { SidebarDesktop, SidebarDrawer } from "./Sidebar";
+import { SidebarDrawer } from "./Sidebar";
 
 /**
  * Marco de todo el sitio.
  * - Sin sesión: NavBar + contenido + Footer (sitio público).
- * - Con sesión: layout empresarial, con la NavBar arriba y un Sidebar a la izquierda
- *   (en mobile el Sidebar es un cajón que se abre desde la NavBar).
+ * - Con sesión: el acceso a cuenta y administración vive en un drawer desde la NavBar,
+ *   tanto en escritorio como en móvil.
  * - Cualquier usuario con sesión (cliente, técnico o admin): burbuja de chat de soporte abajo a la derecha.
  */
 export default function AppLayout() {
@@ -27,17 +27,14 @@ export default function AppLayout() {
   return (
     <div className="ajr-app-shell relative isolate flex min-h-screen flex-col">
       <AuroraBackground />
-      <NavBar hasSession={hasSession} sidebarOpen={drawerOpen} onToggleSidebar={() => setDrawerOpen((v) => !v)} />
-      <div className="flex flex-1">
-        {hasSession && <SidebarDesktop />}
-        <div className="flex min-w-0 flex-1 flex-col">
-          <main className="app-main relative flex-1">
-            <Outlet />
-          </main>
-          <Footer />
-        </div>
+      <NavBar sidebarOpen={drawerOpen} onToggleSidebar={() => setDrawerOpen((v) => !v)} />
+      <div className="flex min-w-0 flex-1 flex-col">
+        <main className="app-main relative flex-1">
+          <Outlet />
+        </main>
+        <Footer />
       </div>
-      {hasSession && <SidebarDrawer open={drawerOpen} onClose={closeDrawer} />}
+      <SidebarDrawer open={drawerOpen} onClose={closeDrawer} hasSession={hasSession} />
       {showBubble && <ChatBubble />}
     </div>
   );
