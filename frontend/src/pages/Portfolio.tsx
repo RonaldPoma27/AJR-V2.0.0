@@ -70,14 +70,6 @@ function ProjectSection({ project }: { project: Project }) {
         </h2>
       </header>
 
-      {gallery.length > 0 && (
-        <div className="mt-6 grid items-start gap-4 sm:grid-cols-2">
-          {gallery.map((m, i) => (
-            <MediaItem key={m.id ?? i} media={m} title={project.title} wide={i === 0 && gallery.length > 1 || gallery.length === 1} />
-          ))}
-        </div>
-      )}
-
       <p className="mt-6 max-w-prose whitespace-pre-line leading-relaxed text-fg-muted">{project.description}</p>
 
       {project.project_url && (
@@ -85,6 +77,14 @@ function ProjectSection({ project }: { project: Project }) {
           {t("pubPortfolio.viewProject")} <ExternalLink className="h-4 w-4" aria-hidden />
           <span className="sr-only">{t("pubPortfolio.newTab")}</span>
         </a>
+      )}
+
+      {gallery.length > 0 && (
+        <div className="mt-8 grid items-start gap-4 sm:grid-cols-2">
+          {gallery.map((m, i) => (
+            <MediaItem key={m.id ?? i} media={m} title={project.title} wide={i === 0 && gallery.length > 1 || gallery.length === 1} />
+          ))}
+        </div>
       )}
     </article>
   );

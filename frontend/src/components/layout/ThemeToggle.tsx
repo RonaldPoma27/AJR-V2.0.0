@@ -13,11 +13,12 @@ export default function ThemeToggle({ className }: { className?: string }) {
       type="button"
       onClick={toggle}
       aria-pressed={dark}
-      aria-disabled={locked}
+      disabled={locked}
+      aria-busy={locked}
       aria-label={dark ? t("theme.toLight") : t("theme.toDark")}
       title={dark ? t("theme.light") : t("theme.dark")}
       className={cn(
-        locked && "cursor-wait",
+        "disabled:cursor-wait disabled:opacity-60",
         "inline-flex h-9 w-9 items-center justify-center rounded-md text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-gray-300 dark:hover:bg-white/10 dark:hover:text-white",
         className
       )}

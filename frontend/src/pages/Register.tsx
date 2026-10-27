@@ -9,6 +9,7 @@ import PasswordChecklist from "@/components/forms/PasswordChecklist";
 import Turnstile, { turnstileEnabled, type TurnstileHandle } from "@/components/Turnstile";
 import i18n from "@/i18n";
 import { getServerDetail } from "@/lib/errors";
+import { clearReturnUrl, readReturnUrl } from "@/lib/returnUrl";
 import { getPasswordError } from "@/lib/password";
 import { landingFor } from "./Login";
 
@@ -41,7 +42,7 @@ export default function Register() {
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
-  const from = (location.state as { from?: string } | null)?.from;
+  const from = (location.state as { from?: string } | null)?.from ?? readReturnUrl();
   const [form, setForm] = useState(initial);
   const [errors, setErrors] = useState<Errors>({});
   const [submitted, setSubmitted] = useState(false);
@@ -85,6 +86,7 @@ export default function Register() {
       queryClient.clear();
       const me = await fetchMe();
       queryClient.setQueryData(["me"], me);
+      clearReturnUrl();
       navigate(landingFor(me.role, from), { replace: true });
     } catch (err) {
       setServerError(getRegisterError(err));

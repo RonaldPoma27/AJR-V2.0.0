@@ -1,8 +1,8 @@
-# AJR Data 2.4
+# AJR Data 2.1
 
 Sitio y panel de **AJR Data**, consultora tecnológica para PyMEs.
 
-- **Frontend:** React 18 + Vite + TypeScript + Tailwind + React Router (URLs limpias, router de datos con View Transitions) + TanStack Query.
+- **Frontend:** React 18 + Vite + TypeScript + Tailwind + React Router (URLs limpias) + TanStack Query.
 - **Backend:** FastAPI + SQLAlchemy 2 async + PostgreSQL + Alembic.
 - **Deploy:** un solo servicio (monolito): el `Dockerfile` compila el frontend y FastAPI lo sirve junto con la API.
 
@@ -14,21 +14,6 @@ Sitio y panel de **AJR Data**, consultora tecnológica para PyMEs.
 ├── frontend/             # React
 └── backend/              # FastAPI (prestart.sh: migra, crea admin, arranca)
 ```
-
-## Qué trae la 2.4 (UX/UI)
-
-Todo es solo frontend (sin cambios de backend ni de dependencias) y con CSS/Tailwind nativo; los paneles y barras usan colores sólidos, sin transparencias.
-
-- **Tema claro/oscuro:** el interruptor ignora clics durante 650 ms tras cada cambio (`THEME_LOCK_MS` en `lib/theme.tsx`) para evitar parpadeos.
-- **Fondo dinámico** (`components/layout/AuroraBackground.tsx`): luces difusas tipo aurora, *scroll-driven storytelling* con `animation-timeline: scroll()` (sin soporte queda estático y estable) y partículas CSS: 12 en móvil y 36 más rápidas desde 1024 px.
-- **Sidebar:** íconos Lucide de trazo fino y marcador de sección activa con borde lateral sólido (`accent`, cambia entre claro y oscuro). En móvil es un cajón con slide de 200 ms y fondo opaco con degradado animado.
-- **NavBar:** corrección del botón de menú en móvil horizontal (`shrink-0` + `safe-area-inset`), panel lateral animado y desplegable "Nosotros" con transición de escala/translación.
-- **Botones principales:** clase `.btn-cta` (brillo que cruza el botón y escala 1.03 al pasar el mouse).
-- **Chat de soporte:** el panel entra desde abajo (`translateY` + `opacity`), la burbuja tiene un halo pulsante al abrirse y aparece un indicador animado «El equipo está escribiendo» mientras se espera respuesta.
-- **Aparición al entrar al viewport** con `IntersectionObserver` (`lib/useInView.ts`): `<Reveal>` para secciones, `<CountUp>` para números y la línea de progreso del `OrderStepper`.
-- **Scrollbar** fina que respeta el tema.
-- **Toasts** propios (sin dependencias): `toast.success()`, `toast.error()` y `toast.info()` desde `lib/toast.ts`; el `<Toaster />` está montado en `AppLayout`. Ya se usan en Mi cuenta, pedidos y postulaciones.
-- **Accesibilidad de movimiento:** con `prefers-reduced-motion` se detienen solo los bucles decorativos (aurora, degradado, partículas, halo) y las transiciones de página; las transiciones cortas se mantienen. Si en Windows están desactivados los "Efectos de animación", el navegador aplica ese modo.
 
 ## Qué trae la 2.1
 
@@ -131,10 +116,10 @@ Se crea solo al arrancar (`prestart.sh` corre `python -m app.scripts.create_admi
 - Es **idempotente**: si el email ya existe no lo toca (no pisa una contraseña cambiada desde el panel).
 - Si faltan variables, se saltea y el sitio arranca igual.
 - Nunca imprime la contraseña. Se aceptan `FIRST_ADMIN_EMAIL` / `FIRST_ADMIN_PASSWORD` (nombres de la versión anterior del backend).
-- Después de entrar, cambiá la clave desde **Mi cuenta**.
+- Después de entrar, cambiá la clave desde **Panel → Mi perfil**.
 - Manual: `docker compose exec app python -m app.scripts.create_admin`.
 
-Se ingresa desde **Iniciar sesión** en la barra superior (`/login`).
+Se ingresa desde el link **"Acceso equipo"** del pie de página (`/login`).
 
 ---
 
@@ -207,5 +192,5 @@ Frontend: `cd frontend && npm run build` (incluye `tsc -b`).
 
 - Pedidos y postulaciones (datos personales) solo los ve un usuario con rol **ADMIN**. `POST /api/auth/register` sigue siendo público pero solo crea usuarios sin acceso al panel (también tiene límite por IP); si no lo usás, podés quitar el router de registro.
 - El límite de envíos por IP vive **en memoria del proceso**: sirve con una sola instancia. Si se escala a varias, hay que moverlo a Redis.
-- El login tiene bloqueo por IP tras 5 contraseñas incorrectas (ver *Seguridad por IP y auditoría*); esos contadores también viven en memoria del proceso.
+- El login todavía no tiene límite de intentos por IP; conviene sumarlo si el panel queda expuesto a mucho tráfico.
 - La subida de CV como archivo no está implementada (el disco de Render es efímero): por ahora se pega un link de Drive/Dropbox. `models/job_application.py` deja el lugar preparado.

@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 /**
  * Fondo decorativo (no recibe clics ni lo leen los lectores de pantalla). Tres capas, todas con CSS puro:
  *  1. Luces difusas (aurora) que derivan solas.
@@ -52,9 +54,39 @@ const particles: ReadonlyArray<readonly [number, number, number, number, number]
 ];
 
 export default function AuroraBackground() {
+  const slowRef = useRef<HTMLDivElement>(null);
+  const fastRef = useRef<HTMLDivElement>(null);
+
+  // Parallax suave: al hacer scroll las capas suben a distinta velocidad (translateY). Se limita el
+  // desplazamiento al exceso de altura de cada capa (120 % / 145 %) para no dejar huecos.
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const y = window.scrollY;
+      const vh = window.innerHeight;
+      const slow = Math.min(y * 0.06, vh * 0.2);
+      const fast = Math.min(y * 0.16, vh * 0.45);
+      if (slowRef.current) slowRef.current.style.transform = `translateY(${-slow}px)`;
+      if (fastRef.current) fastRef.current.style.transform = `translateY(${-fast}px)`;
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update); // máx. una actualización por frame
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, []);
+
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <div className="story-layer story-slow absolute inset-x-0 top-0 h-[120%]">
+      <div ref={slowRef} className="story-slow will-change-transform absolute inset-x-0 top-0 h-[120%]">
         {blobs.map((b) => (
           <div
             key={b.delay}
@@ -64,7 +96,7 @@ export default function AuroraBackground() {
         ))}
       </div>
       <div className="story-tint absolute inset-0 bg-gradient-to-b from-transparent via-violet-400/10 to-sky-400/20 dark:via-indigo-500/10 dark:to-blue-500/20" />
-      <div className="story-layer story-fast absolute inset-x-0 top-0 h-[145%]">
+      <div ref={fastRef} className="story-fast will-change-transform absolute inset-x-0 top-0 h-[145%]">
         {particles.map(([x, y, size, dur, delay], i) => (
           <span
             key={i}

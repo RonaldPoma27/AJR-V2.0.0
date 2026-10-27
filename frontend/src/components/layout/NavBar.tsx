@@ -18,7 +18,7 @@ const nosotrosItems = [
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
-    "text-sm font-medium text-gray-300 hover:text-white",
+    "nav-fx text-sm font-medium text-gray-300 hover:text-white",
     isActive && "text-white"
   );
 
@@ -131,11 +131,11 @@ function NosotrosMenu({ active }: { active: boolean }) {
         }}
         onKeyDown={handleButtonKeyDown}
         className={cn(
-          "flex items-center gap-1 text-sm font-medium text-gray-300 hover:text-white",
+          "nav-fx flex items-center gap-1 text-sm font-medium text-gray-300 hover:text-white",
           active && "text-white"
         )}
       >
-        {t("nav.about")}
+        <span className="nav-fx-text">{t("nav.about")}</span>
         <ChevronDown className={cn("h-4 w-4 transition-transform", open && "rotate-180")} aria-hidden />
       </button>
 
@@ -251,7 +251,7 @@ export default function NavBar({
         <div className="hidden items-center gap-6 md:flex">
           {mainLinks.map((link) => (
             <NavLink viewTransition key={link.to} to={link.to} end={link.end} className={linkClass}>
-              {t(link.labelKey)}
+              <span className="nav-fx-text">{t(link.labelKey)}</span>
             </NavLink>
           ))}
           <NosotrosMenu active={nosotrosActive} />

@@ -1,0 +1,132 @@
+{
+  "pricing": {
+    "eyebrow": "Planes",
+    "title": "Elegí cómo empezar",
+    "subtitle": "Precios de referencia en dólares. Ajustamos el alcance a tu negocio y te pasamos una cotización cerrada.",
+    "from": "Desde",
+    "currency": "USD",
+    "popular": "Más elegido",
+    "cta": "Solicitar",
+    "plans": {
+      "presencia-digital": {
+        "name": "Presencia Digital",
+        "tagline": "Tu negocio visible y profesional en internet.",
+        "f1": "Sitio web de una página, listo para celulares",
+        "f2": "Formulario de contacto y botón de WhatsApp",
+        "f3": "Dominio y hosting configurados"
+      },
+      "web-gestion": {
+        "name": "Web + Gestión",
+        "tagline": "Tu sitio más un panel para administrar tu negocio.",
+        "f1": "Sitio de varias secciones",
+        "f2": "Panel de gestión de pedidos y clientes",
+        "f3": "Avisos por email automáticos"
+      },
+      "sistema-medida": {
+        "name": "Sistema a Medida",
+        "tagline": "Software pensado para cómo trabaja tu PyME.",
+        "f1": "Análisis y diseño a medida",
+        "f2": "Usuarios, roles y reportes",
+        "f3": "Integraciones y soporte continuo"
+      }
+    }
+  },
+  "requestForm": {
+    "title": "Solicitar un proyecto",
+    "subtitle": "Tres pasos cortos y te escribimos con una propuesta.",
+    "stepLabel": "Paso {{current}} de {{total}}",
+    "steps": {
+      "project": "Tu proyecto",
+      "business": "Tu negocio",
+      "detail": "Detalle"
+    },
+    "project": {
+      "plan": "¿Qué plan te interesa?",
+      "budget": "Presupuesto aproximado",
+      "timeline": "Plazo estimado",
+      "domain": "¿Ya tenés dominio y hosting?",
+      "yes": "Sí",
+      "no": "No",
+      "selectPlaceholder": "Elegí una opción"
+    },
+    "budgets": {
+      "lt-250": "Menos de USD 250",
+      "250-499": "USD 250 - 499",
+      "500-1499": "USD 500 - 1.499",
+      "gte-1500": "USD 1.500 o más"
+    },
+    "timelines": {
+      "1-2-semanas": "1-2 semanas",
+      "1-mes": "1 mes",
+      "2-3-meses": "2-3 meses",
+      "explorando": "Estoy explorando"
+    },
+    "errors": {
+      "plan": "Elegí un plan para continuar.",
+      "budget": "Elegí un presupuesto aproximado.",
+      "timeline": "Elegí un plazo estimado.",
+      "domain": "Contanos si ya tenés dominio y hosting."
+    },
+    "back": "Volver",
+    "next": "Continuar",
+    "sending": "Enviando...",
+    "submit": "Enviar pedido"
+  },
+  "projectStepper": {
+    "label": "Progreso del proyecto",
+    "steps": {
+      "analysis": "Análisis",
+      "design": "Diseño",
+      "development": "Desarrollo",
+      "review": "Revisión",
+      "delivered": "Entregado"
+    },
+    "done": "completado",
+    "current": "paso actual",
+    "pending": "pendiente"
+  },
+  "dashboard": {
+    "title": "Resumen",
+    "subtitle": "Pedidos y proyectos de un vistazo.",
+    "loading": "Cargando estadísticas…",
+    "loadError": "No pudimos cargar las estadísticas.",
+    "retry": "Reintentar",
+    "empty": "Todavía no hay datos para mostrar.",
+    "total": "Total",
+    "orders": "pedidos",
+    "noData": "Sin datos",
+    "charts": {
+      "monthly": {
+        "title": "Proyectos solicitados por mes",
+        "desc": "Pedidos recibidos en los últimos 12 meses."
+      },
+      "revenue": {
+        "title": "Ingresos estimados por tipo de servicio",
+        "desc": "Cantidad de pedidos de cada plan por su precio base (USD)."
+      },
+      "status": {
+        "title": "Proyectos activos por estado",
+        "desc": "Distribución según el avance de cada pedido."
+      },
+      "plans": {
+        "title": "Planes elegidos",
+        "desc": "Qué nivel de servicio piden los clientes."
+      },
+      "domain": {
+        "title": "Dominio y hosting",
+        "desc": "Clientes con dominio propio frente a los que necesitan que lo gestionemos."
+      }
+    },
+    "plans": {
+      "presencia-digital": "Presencia Digital",
+      "web-gestion": "Web + Gestión",
+      "sistema-medida": "Sistema a Medida",
+      "sin-plan": "Sin plan"
+    },
+    "domain": {
+      "si": "Con dominio propio",
+      "no": "Gestión de infraestructura",
+      "sin-dato": "Sin dato"
+    }
+  }
+}
