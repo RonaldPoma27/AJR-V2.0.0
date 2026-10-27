@@ -1,5 +1,6 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "./client";
+import type { BudgetKey, PlanKey, TimelineKey } from "@/lib/plans";
 import { PAGE_SIZE, type Paginated, type PageResult } from "./types";
 
 export type OrderStatus = "nuevo" | "en_revision" | "contactado" | "finalizado" | "descartado";
@@ -14,6 +15,10 @@ export interface ClientOrderCreate {
   contact_phone?: string;
   industry: string;
   problem_description: string;
+  plan?: PlanKey;
+  budget?: BudgetKey;
+  timeline?: TimelineKey;
+  has_domain?: boolean;
   /** Token de Cloudflare Turnstile (anti-bots). */
   turnstile_token?: string;
   /** Honeypot: tiene que ir vacío. Los bots lo completan. */
@@ -30,6 +35,10 @@ export interface ClientOrder {
   contact_phone: string | null;
   industry: string;
   problem_description: string;
+  plan: string | null;
+  budget: string | null;
+  timeline: string | null;
+  has_domain: boolean | null;
   status: OrderStatus;
   created_at: string;
   updated_at: string;
@@ -94,6 +103,24 @@ export function useTrashOrder() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
       queryClient.invalidateQueries({ queryKey: ["trash"] });
+    },
+  });
+}
+
+export interface OrderStats {
+  by_month: { month: string; count: number }[];
+  by_status: Record<OrderStatus, number>;
+  by_plan: Record<PlanKey | "sin-plan", number>;
+  by_domain: Record<"si" | "no" | "sin-dato", number>;
+}
+
+/** Staff: datos agregados para los gráficos del panel. */
+export function useOrderStats() {
+  return useQuery({
+    queryKey: ["orders", "stats"],
+    queryFn: async () => {
+      const { data } = await apiClient.get<OrderStats>("/orders/stats");
+      return data;
     },
   });
 }
