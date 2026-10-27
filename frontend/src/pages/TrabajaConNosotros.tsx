@@ -11,7 +11,6 @@ import {
   TextField,
 } from "@/components/forms/Fields";
 import { getFormErrorMessage } from "@/lib/errors";
-import { toast } from "@/lib/toast";
 
 const PERK_KEYS = ["custom", "ai", "learning", "remote"] as const;
 
@@ -131,13 +130,7 @@ export default function TrabajaConNosotros() {
         turnstile_token: token ?? undefined,
         website: honeypot,
       },
-      {
-        onSuccess: () => toast.success(t("jobForm.thanks")),
-        onError: (err) => {
-          turnstileRef.current?.reset();
-          toast.error(getFormErrorMessage(err, "application"));
-        },
-      }
+      { onError: () => turnstileRef.current?.reset() }
     );
   }
 
@@ -219,7 +212,7 @@ export default function TrabajaConNosotros() {
           <button
             type="submit"
             disabled={createApplication.isPending || (turnstileEnabled && !token)}
-            className="btn-cta w-full rounded-md bg-brand px-6 py-3 font-medium text-white hover:bg-brand-dark disabled:opacity-50"
+            className="w-full rounded-md bg-brand px-6 py-3 font-medium text-white hover:bg-brand-dark disabled:opacity-50"
           >
             {createApplication.isPending ? t("jobForm.sending") : t("jobForm.submit")}
           </button>

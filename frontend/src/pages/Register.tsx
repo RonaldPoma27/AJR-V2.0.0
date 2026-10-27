@@ -115,14 +115,14 @@ export default function Register() {
         <button
           type="submit"
           disabled={loading || (turnstileEnabled && !token)}
-          className="btn-cta w-full rounded-md bg-brand px-6 py-3 font-medium text-white hover:bg-brand-dark disabled:opacity-50"
+          className="w-full rounded-md bg-brand px-6 py-3 font-medium text-white hover:bg-brand-dark disabled:opacity-50"
         >
           {loading ? t("auth.register.submitting") : t("auth.register.submit")}
         </button>
       </form>
       <p className="mt-6 text-center text-sm text-fg-subtle">
         {t("auth.register.haveAccount")}{" "}
-        <Link viewTransition to="/login" state={{ from }} className="font-medium text-accent hover:underline">
+        <Link to="/login" state={{ from }} className="font-medium text-accent hover:underline">
           {t("auth.register.loginLink")}
         </Link>
       </p>

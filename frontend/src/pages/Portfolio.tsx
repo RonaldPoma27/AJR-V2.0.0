@@ -70,6 +70,8 @@ function ProjectSection({ project }: { project: Project }) {
         </h2>
       </header>
 
+      <p className="mt-4 max-w-prose whitespace-pre-line leading-relaxed text-fg-muted">{project.description}</p>
+
       {gallery.length > 0 && (
         <div className="mt-6 grid items-start gap-4 sm:grid-cols-2">
           {gallery.map((m, i) => (
@@ -77,8 +79,6 @@ function ProjectSection({ project }: { project: Project }) {
           ))}
         </div>
       )}
-
-      <p className="mt-6 max-w-prose whitespace-pre-line leading-relaxed text-fg-muted">{project.description}</p>
 
       {project.project_url && (
         <a href={project.project_url} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-1.5 font-medium text-accent hover:underline">
