@@ -8,6 +8,7 @@ import { TextField } from "@/components/forms/Fields";
 import Turnstile, { turnstileEnabled, type TurnstileHandle } from "@/components/Turnstile";
 import i18n from "@/i18n";
 import { getServerDetail } from "@/lib/errors";
+import { clearReturnUrl, readReturnUrl } from "@/lib/returnUrl";
 
 function getLoginErrorMessage(error: unknown): string {
   if (isAxiosError(error)) {
@@ -33,7 +34,7 @@ function getLoginErrorMessage(error: unknown): string {
 export function landingFor(role: UserRole, from?: string): string {
   const safe = from && from.startsWith("/") && !from.startsWith("//") ? from : undefined;
   if (safe && !(safe.startsWith("/admin") && !isStaff(role))) return safe;
-  return isStaff(role) ? "/admin/pedidos" : "/cuenta";
+  return isStaff(role) ? "/admin/resumen" : "/cuenta";
 }
 
 export default function Login() {
@@ -41,7 +42,7 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
-  const from = (location.state as { from?: string } | null)?.from;
+  const from = (location.state as { from?: string } | null)?.from ?? readReturnUrl();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -65,6 +66,7 @@ export default function Login() {
       queryClient.clear(); // que no queden datos de otra sesión
       const me = await fetchMe();
       queryClient.setQueryData(["me"], me);
+      clearReturnUrl();
       navigate(landingFor(me.role, from), { replace: true });
     } catch (err) {
       setError(getLoginErrorMessage(err));
@@ -89,14 +91,14 @@ export default function Login() {
         <button
           type="submit"
           disabled={loading || (turnstileEnabled && !token)}
-          className="w-full rounded-md bg-brand px-6 py-3 font-medium text-white hover:bg-brand-dark disabled:opacity-50"
+          className="btn-cta w-full rounded-md bg-brand px-6 py-3 font-medium text-white hover:bg-brand-dark disabled:opacity-50"
         >
           {loading ? t("auth.login.submitting") : t("auth.login.submit")}
         </button>
       </form>
       <p className="mt-6 text-center text-sm text-fg-subtle">
         {t("auth.login.noAccount")}{" "}
-        <Link to="/registro" state={{ from }} className="font-medium text-accent hover:underline">
+        <Link viewTransition to="/registro" state={{ from }} className="font-medium text-accent hover:underline">
           {t("auth.login.registerLink")}
         </Link>
       </p>
