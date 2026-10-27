@@ -11,6 +11,7 @@ import {
 import { getServerDetail } from "@/lib/errors";
 import { formatDateTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import TypingIndicator from "./TypingIndicator";
 
 /** Cuántos mensajes seguidos del cliente hay al final del hilo. */
 function trailingCustomerMessages(messages: SupportMessage[]): number {
@@ -45,7 +46,7 @@ export default function ChatThread({
   useEffect(() => {
     const el = listRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [messageCount, ticketId]);
+  }, [messageCount, ticketId, data?.block_reason]);
 
   if (isLoading) return <p className="p-4 text-sm text-fg-subtle">{t("chat.thread.loading")}</p>;
   if (isError || !data) {
@@ -107,6 +108,7 @@ export default function ChatThread({
             </div>
           );
         })}
+        {customer && data.block_reason === "awaiting_support" && <TypingIndicator />}
       </div>
 
       <div className="border-t p-3">
