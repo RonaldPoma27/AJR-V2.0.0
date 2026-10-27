@@ -46,7 +46,7 @@ export default function ChatBubble() {
         <section
           role="dialog"
           aria-label={t("chat.bubbleTitle")}
-          className="fixed bottom-24 right-4 z-50 flex animate-chat-in h-[34rem] max-h-[calc(100vh-7rem)] w-[23rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-xl border bg-surface shadow-2xl sm:right-6"
+          className="fixed bottom-24 right-4 z-50 flex h-[34rem] max-h-[calc(100vh-7rem)] w-[23rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-xl border bg-surface shadow-2xl sm:right-6"
         >
           <header className="flex items-center gap-2 bg-slate-800 px-3 py-3 text-white dark:bg-slate-700">
             {view.name !== "history" && (
