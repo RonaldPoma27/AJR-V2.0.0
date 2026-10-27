@@ -45,7 +45,7 @@ export default function PricingCards() {
         {plans.map((plan) => (
           <article
             key={plan.id}
-            className={`group relative flex flex-col rounded-2xl border bg-surface/80 p-6 shadow-xl backdrop-blur transition duration-300 hover:-translate-y-2 hover:ring-2 hover:ring-indigo-500/50 ${plan.featured ? "border-indigo-400/60 shadow-indigo-950/10 dark:border-indigo-400/50" : "border-line"}`}
+            className={`group relative flex flex-col rounded-2xl border bg-[#0E1523]/95 p-6 shadow-xl backdrop-blur transition duration-300 hover:-translate-y-2 hover:ring-2 hover:ring-indigo-500/50 ${plan.featured ? "border-cyan-300/50 shadow-indigo-950/30" : "border-white/10"}`}
           >
             {plan.featured && <span className="absolute -top-3 left-6 rounded-full bg-gradient-to-r from-cyan-500 to-violet-500 px-3 py-1 text-xs font-semibold text-white shadow-lg">{t("pubHome.popularPlan")}</span>}
             <h3 className="text-xl font-semibold text-fg">{t(`pubHome.pricingPlans.${plan.key}.name`)}</h3>
@@ -56,7 +56,7 @@ export default function PricingCards() {
             </ul>
             <Link
               to={`/solicitar-proyecto?plan=${plan.id}`}
-              className="mt-7 inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-dark focus-visible:outline-offset-4"
+              className="ajr-gradient-button mt-7 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 focus-visible:outline-offset-4"
             >
               {t("pubHome.requestPlan")} <ArrowUpRight className="h-4 w-4" aria-hidden />
             </Link>
