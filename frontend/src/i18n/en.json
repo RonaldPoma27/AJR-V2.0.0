@@ -41,6 +41,7 @@
       "TECHNICIAN": "Technician",
       "ADMIN": "Administrator"
     },
-    "audit": "Audit log"
+    "audit": "Audit log",
+    "dashboard": "Overview"
   }
 }
