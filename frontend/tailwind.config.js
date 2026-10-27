@@ -31,18 +31,6 @@ export default {
           "50%": { transform: "translate(-30px, 140px) scale(0.9)" },
           "75%": { transform: "translate(-50px, 50px) scale(1.1)" },
         },
-        "chat-in": {
-          from: { opacity: "0", transform: "translateY(16px)" },
-          to: { opacity: "1", transform: "translateY(0)" },
-        },
-        "typing-dot": {
-          "0%, 60%, 100%": { transform: "translateY(0)", opacity: "0.4" },
-          "30%": { transform: "translateY(-4px)", opacity: "1" },
-        },
-        "toast-in": {
-          from: { opacity: "0", transform: "translateY(12px) scale(0.98)" },
-          to: { opacity: "1", transform: "translateY(0) scale(1)" },
-        },
         "pulse-ring": {
           "0%": { transform: "scale(1)", opacity: "0.65" },
           "100%": { transform: "scale(1.35)", opacity: "0" },
@@ -52,9 +40,6 @@ export default {
         "gradient-x": "gradient-x 6s ease infinite",
         blob: "blob 18s ease-in-out infinite",
         "pulse-ring": "pulse-ring 1.8s ease-out infinite",
-        "chat-in": "chat-in 260ms cubic-bezier(0.16, 1, 0.3, 1) both",
-        "typing-dot": "typing-dot 1.2s ease-in-out infinite",
-        "toast-in": "toast-in 220ms cubic-bezier(0.16, 1, 0.3, 1) both",
       },
       borderColor: { DEFAULT: token("line") },
       divideColor: { DEFAULT: token("line") },
