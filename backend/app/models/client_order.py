@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, String, Text
+from sqlalchemy import Boolean, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import Base, SoftDeleteMixin, TimestampMixin
@@ -22,6 +22,11 @@ class ClientOrder(SoftDeleteMixin, TimestampMixin, Base):
     contact_phone: Mapped[str | None] = mapped_column(String(50))
     industry: Mapped[str] = mapped_column(String(120))  # rubro de la PyME
     problem_description: Mapped[str] = mapped_column(Text)
+    # v2.5: datos del formulario por pasos. Opcionales: los pedidos anteriores no los tienen.
+    plan: Mapped[str | None] = mapped_column(String(30))  # presencia-digital | web-gestion | sistema-medida
+    budget: Mapped[str | None] = mapped_column(String(20))  # lt-250 | 250-499 | 500-1499 | gte-1500
+    timeline: Mapped[str | None] = mapped_column(String(20))  # 1-2-semanas | 1-mes | 2-3-meses | explorando
+    has_domain: Mapped[bool | None] = mapped_column(Boolean)  # ¿ya tiene dominio/hosting?
     status: Mapped[OrderStatus] = mapped_column(
         value_enum(OrderStatus, "order_status"),
         default=OrderStatus.NUEVO,
