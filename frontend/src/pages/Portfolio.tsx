@@ -5,15 +5,15 @@ import { cn } from "@/lib/utils";
 
 function MediaItem({ media, title, wide }: { media: ProjectMedia; title: string; wide: boolean }) {
   const { t } = useTranslation();
-  const span = wide ? "sm:col-span-2" : "";
+  const span = wide ? "ajr-portfolio-media-wide" : "";
   const caption = media.caption && (
-    <figcaption className="mt-2 text-sm text-white">{media.caption}</figcaption>
+    <figcaption className="ajr-portfolio-caption">{media.caption}</figcaption>
   );
 
   if (media.media_type === "video") {
     return (
-      <figure className={span}>
-        <video controls preload="metadata" className="ajr-portfolio-media rounded-xl border border-white/10" aria-label={media.caption || t("pubPortfolio.videoLabel", { title })}>
+      <figure className={cn("ajr-portfolio-media-item", span)}>
+        <video controls preload="metadata" className="ajr-portfolio-media ajr-portfolio-video" aria-label={media.caption || t("pubPortfolio.videoLabel", { title })}>
           <source src={media.url} />
           <Trans i18nKey="pubPortfolio.videoFallback" components={{ 1: <a href={media.url} /> }} />
         </video>
@@ -27,12 +27,12 @@ function MediaItem({ media, title, wide }: { media: ProjectMedia; title: string;
         href={media.url}
         target="_blank"
         rel="noopener noreferrer"
-        className={cn("flex items-center gap-3 rounded-lg border bg-surface p-4 hover:border-brand", span)}
+        className={cn("ajr-portfolio-file ajr-portfolio-media-item", span)}
       >
         <FileText className="h-8 w-8 shrink-0 text-accent" aria-hidden />
         <span className="min-w-0 flex-1">
-          <span className="block truncate font-medium text-fg">{media.caption || t("pubPortfolio.fileFallback")}</span>
-          <span className="block truncate text-sm text-fg-subtle">{media.url}</span>
+          <span className="block truncate font-semibold text-fg">{media.caption || t("pubPortfolio.fileFallback")}</span>
+          <span className="mt-1 block truncate text-sm text-fg-subtle">{media.url}</span>
         </span>
         <Download className="h-5 w-5 shrink-0 text-fg-subtle" aria-hidden />
         <span className="sr-only">{t("pubPortfolio.newTab")}</span>
@@ -40,51 +40,63 @@ function MediaItem({ media, title, wide }: { media: ProjectMedia; title: string;
     );
   }
   return (
-    <figure className={span}>
-      <img src={media.url} alt={media.caption || title} loading="lazy" className="ajr-portfolio-media rounded-xl border border-white/10" />
+    <figure className={cn("ajr-portfolio-media-item", span)}>
+      <img src={media.url} alt={media.caption || title} loading="lazy" className="ajr-portfolio-media" />
       {caption}
     </figure>
   );
 }
 
-function ProjectSection({ project }: { project: Project }) {
+function ProjectSection({ project, featured }: { project: Project; featured: boolean }) {
   const { t } = useTranslation();
   const gallery = project.media;
   const done = project.status === "terminado";
   return (
-    <article aria-labelledby={`project-${project.id}`}>
-      <header>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-          <span
-            className={cn(
-              "rounded-full px-2.5 py-0.5 text-xs font-medium",
-              done ? "bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-300" : "bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300"
-            )}
-          >
+    <article
+      id={`portfolio-project-${project.id}`}
+      aria-labelledby={`project-${project.id}`}
+      className={cn("ajr-portfolio-project", featured && "ajr-portfolio-project--featured")}
+    >
+      {featured && (
+        <div className="ajr-portfolio-featured-label">
+          <span className="ajr-status-pulse" aria-hidden="true" />
+          {t("pubPortfolio.featured")}
+        </div>
+      )}
+      <header className="ajr-portfolio-project-header">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
+          <span className={cn("ajr-portfolio-status", done ? "ajr-portfolio-status--done" : "ajr-portfolio-status--progress")}>
+            <span aria-hidden="true" />
             {done ? t("pubPortfolio.done") : t("pubPortfolio.inProgress")}
           </span>
-          {project.client_name && <span className="text-white">{t("pubPortfolio.client", { name: project.client_name })}</span>}
+          {project.client_name && <span className="ajr-portfolio-client">{t("pubPortfolio.client", { name: project.client_name })}</span>}
         </div>
-        <h2 id={`project-${project.id}`} className="mt-3 text-2xl font-bold text-fg sm:text-3xl">
+        <h2 id={`project-${project.id}`} className="ajr-portfolio-project-title">
           {project.title}
         </h2>
       </header>
 
-      <p className="mt-4 max-w-prose whitespace-pre-line leading-relaxed text-white">{project.description}</p>
+      <div className="ajr-portfolio-project-copy">
+        <p className="ajr-portfolio-description">{project.description}</p>
+        {project.project_url && (
+          <a href={project.project_url} target="_blank" rel="noopener noreferrer" className="ajr-portfolio-link">
+            {t("pubPortfolio.viewProject")} <ExternalLink className="h-4 w-4" aria-hidden />
+            <span className="sr-only">{t("pubPortfolio.newTab")}</span>
+          </a>
+        )}
+      </div>
 
       {gallery.length > 0 && (
-        <div className="mt-6 grid items-start gap-4 sm:grid-cols-2">
-          {gallery.map((m, i) => (
-            <MediaItem key={m.id ?? i} media={m} title={project.title} wide={i === 0 && gallery.length > 1 || gallery.length === 1} />
+        <div className="ajr-portfolio-gallery" role="group" aria-label={t("pubPortfolio.mediaFor", { title: project.title })}>
+          {gallery.map((media, index) => (
+            <MediaItem
+              key={media.id ?? index}
+              media={media}
+              title={project.title}
+              wide={gallery.length === 1 || (index === 0 && gallery.length > 1)}
+            />
           ))}
         </div>
-      )}
-
-      {project.project_url && (
-        <a href={project.project_url} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-1.5 font-medium text-accent hover:underline">
-          {t("pubPortfolio.viewProject")} <ExternalLink className="h-4 w-4" aria-hidden />
-          <span className="sr-only">{t("pubPortfolio.newTab")}</span>
-        </a>
       )}
     </article>
   );
@@ -95,22 +107,29 @@ export default function Portfolio() {
   const { data: projects, isLoading, isError, refetch } = useProjects();
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-16">
-      <h1 className="text-3xl font-bold text-fg">{t("pubPortfolio.title")}</h1>
-      <p className="mt-2 text-fg-muted">{t("pubPortfolio.subtitle")}</p>
+    <div className="ajr-portfolio-page mx-auto max-w-7xl px-5 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
+      <header className="ajr-portfolio-hero">
+        <p className="ajr-section-eyebrow">{t("pubPortfolio.eyebrow")}</p>
+        <h1 className="ajr-section-title">{t("pubPortfolio.title")}</h1>
+        <p className="ajr-section-copy">{t("pubPortfolio.subtitle")}</p>
+        <span className="ajr-portfolio-hero-rule" aria-hidden="true" />
+      </header>
 
-      {isLoading && <p className="mt-8 text-white">{t("pubPortfolio.loading")}</p>}
+      {isLoading && <p className="ajr-portfolio-state" role="status">{t("pubPortfolio.loading")}</p>}
       {isError && (
-        <p role="alert" className="mt-8 text-red-600 dark:text-red-400">
-          {t("pubPortfolio.loadError")} <button onClick={() => refetch()} className="font-medium underline">{t("pubPortfolio.retry")}</button>
+        <p role="alert" className="ajr-portfolio-state ajr-portfolio-state--error">
+          {t("pubPortfolio.loadError")} <button onClick={() => refetch()} className="font-semibold underline underline-offset-4">{t("pubPortfolio.retry")}</button>
         </p>
       )}
-      {projects && projects.length === 0 && <p className="mt-8 text-white">{t("pubPortfolio.empty")}</p>}
+      {projects && projects.length === 0 && <p className="ajr-portfolio-state">{t("pubPortfolio.empty")}</p>}
 
-      {/* space-y-24 = 6rem ≈ 4 renglones de texto entre un proyecto y el siguiente. */}
-      <div className="mt-16 space-y-24">
-        {projects?.map((project) => <ProjectSection key={project.id} project={project} />)}
-      </div>
+      {projects && projects.length > 0 && (
+        <section className="ajr-portfolio-grid" aria-label={t("pubPortfolio.projectsLabel")}>
+          {projects.map((project, index) => (
+            <ProjectSection key={project.id} project={project} featured={index === 0} />
+          ))}
+        </section>
+      )}
     </div>
   );
 }
