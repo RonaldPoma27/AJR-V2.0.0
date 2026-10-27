@@ -1,6 +1,6 @@
 {
   "pubHome": {
-    "title": "Custom software that makes your SME more competitive",
+    "title": "Custom software that makes your SME <1>more competitive</1>",
     "intro": "At AJR Data we solve concrete weaknesses in your business with custom development — adding chatbots, AI agents and modern features instead of generic solutions.",
     "cta": "Request a project",
     "aboutTitle": "Who we are",
@@ -63,6 +63,34 @@
           "answer": "We can discuss your project’s infrastructure needs and determine which option best fits your situation."
         }
       }
+    },
+    "eyebrow": "Technology consulting · Custom development",
+    "portfolioCta": "Explore portfolio",
+    "heroNote": "Technology built around your business",
+    "aboutEyebrow": "The AJR approach",
+    "partnersEyebrow": "Collaborations",
+    "process": {
+      "eyebrow": "From idea to implementation",
+      "title": "A clear process, from start to finish",
+      "intro": "Every project starts with understanding the problem and ends with a solution prepared for real-world use.",
+      "steps": {
+        "listen": {
+          "title": "We listen",
+          "description": "We understand the context, the challenge, and the outcome you want to achieve."
+        },
+        "define": {
+          "title": "We define",
+          "description": "We prioritize needs, agree on scope, and map a realistic path forward."
+        },
+        "build": {
+          "title": "We build",
+          "description": "We develop and validate the solution with its real users in mind."
+        },
+        "deliver": {
+          "title": "We deliver",
+          "description": "We prepare the launch and clarify the next agreed steps."
+        }
+      }
     }
   },
   "pubPortfolio": {
@@ -79,7 +107,11 @@
     "done": "Completed",
     "inProgress": "In progress",
     "client": "Client: {{name}}",
-    "viewProject": "View the project"
+    "viewProject": "View the project",
+    "eyebrow": "Work and solutions",
+    "featured": "Featured project",
+    "mediaFor": "Visual material for {{title}}",
+    "projectsLabel": "Portfolio projects"
   },
   "pubNotFound": {
     "title": "This page doesn't exist",

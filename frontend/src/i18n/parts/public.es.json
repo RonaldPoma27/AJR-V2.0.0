@@ -1,6 +1,6 @@
 {
   "pubHome": {
-    "title": "Software a medida que hace más competitiva a tu PyME",
+    "title": "Software a medida que hace <1>más competitiva</1> a tu PyME",
     "intro": "En AJR Data resolvemos falencias concretas de tu negocio con desarrollo a medida — incorporando chatbots, agentes de IA y funcionalidades modernas en vez de soluciones genéricas.",
     "cta": "Solicitar un proyecto",
     "aboutTitle": "Quiénes somos",
@@ -63,6 +63,34 @@
           "answer": "Podemos conversar sobre las necesidades de infraestructura de tu proyecto y determinar qué alternativa se adapta mejor a tu caso."
         }
       }
+    },
+    "eyebrow": "Consultoría tecnológica · Desarrollo a medida",
+    "portfolioCta": "Explorar portfolio",
+    "heroNote": "Tecnología pensada alrededor de tu negocio",
+    "aboutEyebrow": "La mirada AJR",
+    "partnersEyebrow": "Colaboraciones",
+    "process": {
+      "eyebrow": "De la idea a la implementación",
+      "title": "Un proceso claro, de principio a fin",
+      "intro": "Cada proyecto empieza por entender el problema y termina con una solución preparada para su uso real.",
+      "steps": {
+        "listen": {
+          "title": "Escuchamos",
+          "description": "Entendemos el contexto, el problema y el resultado que querés conseguir."
+        },
+        "define": {
+          "title": "Definimos",
+          "description": "Ordenamos prioridades, acordamos el alcance y trazamos un camino realista."
+        },
+        "build": {
+          "title": "Construimos",
+          "description": "Desarrollamos y validamos la solución con foco en la experiencia de uso."
+        },
+        "deliver": {
+          "title": "Entregamos",
+          "description": "Preparamos la puesta en marcha y aclaramos los próximos pasos acordados."
+        }
+      }
     }
   },
   "pubPortfolio": {
@@ -79,7 +107,11 @@
     "done": "Terminado",
     "inProgress": "En progreso",
     "client": "Cliente: {{name}}",
-    "viewProject": "Ver el proyecto"
+    "viewProject": "Ver el proyecto",
+    "eyebrow": "Trabajo y soluciones",
+    "featured": "Proyecto destacado",
+    "mediaFor": "Material visual de {{title}}",
+    "projectsLabel": "Proyectos del portfolio"
   },
   "pubNotFound": {
     "title": "Esta página no existe",
