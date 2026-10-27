@@ -23,13 +23,14 @@ export default function AppLayout() {
 
   // En /cuenta/soporte el chat ya está a pantalla completa: la burbuja sobraría.
   const showBubble = Boolean(me) && !pathname.startsWith("/cuenta/soporte");
+  const isPublicVisualRoute = !pathname.startsWith("/admin") && !pathname.startsWith("/cuenta");
 
   return (
     <div className="ajr-app-shell relative isolate flex min-h-screen flex-col">
       <AuroraBackground />
       <NavBar sidebarOpen={drawerOpen} onToggleSidebar={() => setDrawerOpen((v) => !v)} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <main className="app-main relative flex-1">
+        <main className={`app-main relative flex-1 ${isPublicVisualRoute ? "ajr-public-route" : ""}`}>
           <Outlet />
         </main>
         <Footer />
