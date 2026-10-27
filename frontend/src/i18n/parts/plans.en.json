@@ -1,0 +1,132 @@
+{
+  "pricing": {
+    "eyebrow": "Plans",
+    "title": "Choose how to start",
+    "subtitle": "Reference prices in US dollars. We fit the scope to your business and send a fixed quote.",
+    "from": "From",
+    "currency": "USD",
+    "popular": "Most popular",
+    "cta": "Request",
+    "plans": {
+      "presencia-digital": {
+        "name": "Digital Presence",
+        "tagline": "Your business visible and professional online.",
+        "f1": "One-page website, mobile ready",
+        "f2": "Contact form and WhatsApp button",
+        "f3": "Domain and hosting set up"
+      },
+      "web-gestion": {
+        "name": "Web + Management",
+        "tagline": "Your site plus a panel to run your business.",
+        "f1": "Multi-section website",
+        "f2": "Order and customer management panel",
+        "f3": "Automatic email notifications"
+      },
+      "sistema-medida": {
+        "name": "Custom System",
+        "tagline": "Software built around how your business works.",
+        "f1": "Tailored analysis and design",
+        "f2": "Users, roles and reports",
+        "f3": "Integrations and ongoing support"
+      }
+    }
+  },
+  "requestForm": {
+    "title": "Request a project",
+    "subtitle": "Three short steps and we'll get back to you with a proposal.",
+    "stepLabel": "Step {{current}} of {{total}}",
+    "steps": {
+      "project": "Your project",
+      "business": "Your business",
+      "detail": "Details"
+    },
+    "project": {
+      "plan": "Which plan are you interested in?",
+      "budget": "Approximate budget",
+      "timeline": "Estimated timeline",
+      "domain": "Do you already have a domain and hosting?",
+      "yes": "Yes",
+      "no": "No",
+      "selectPlaceholder": "Choose an option"
+    },
+    "budgets": {
+      "lt-250": "Under USD 250",
+      "250-499": "USD 250 - 499",
+      "500-1499": "USD 500 - 1,499",
+      "gte-1500": "USD 1,500 or more"
+    },
+    "timelines": {
+      "1-2-semanas": "1-2 weeks",
+      "1-mes": "1 month",
+      "2-3-meses": "2-3 months",
+      "explorando": "Just exploring"
+    },
+    "errors": {
+      "plan": "Choose a plan to continue.",
+      "budget": "Choose an approximate budget.",
+      "timeline": "Choose an estimated timeline.",
+      "domain": "Tell us whether you already have a domain and hosting."
+    },
+    "back": "Back",
+    "next": "Continue",
+    "sending": "Sending...",
+    "submit": "Send request"
+  },
+  "projectStepper": {
+    "label": "Project progress",
+    "steps": {
+      "analysis": "Analysis",
+      "design": "Design",
+      "development": "Development",
+      "review": "Review",
+      "delivered": "Delivered"
+    },
+    "done": "completed",
+    "current": "current step",
+    "pending": "pending"
+  },
+  "dashboard": {
+    "title": "Overview",
+    "subtitle": "Orders and projects at a glance.",
+    "loading": "Loading statistics…",
+    "loadError": "We couldn't load the statistics.",
+    "retry": "Retry",
+    "empty": "There's no data to show yet.",
+    "total": "Total",
+    "orders": "orders",
+    "noData": "No data",
+    "charts": {
+      "monthly": {
+        "title": "Projects requested per month",
+        "desc": "Orders received over the last 12 months."
+      },
+      "revenue": {
+        "title": "Estimated revenue by service type",
+        "desc": "Number of orders per plan times its base price (USD)."
+      },
+      "status": {
+        "title": "Active projects by status",
+        "desc": "Distribution by each order's progress."
+      },
+      "plans": {
+        "title": "Plans chosen",
+        "desc": "Which service level customers ask for."
+      },
+      "domain": {
+        "title": "Domain and hosting",
+        "desc": "Customers with their own domain versus those who need us to manage it."
+      }
+    },
+    "plans": {
+      "presencia-digital": "Digital Presence",
+      "web-gestion": "Web + Management",
+      "sistema-medida": "Custom System",
+      "sin-plan": "No plan"
+    },
+    "domain": {
+      "si": "Own domain",
+      "no": "Infrastructure managed by us",
+      "sin-dato": "No data"
+    }
+  }
+}
