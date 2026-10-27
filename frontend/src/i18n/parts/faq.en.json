@@ -1,0 +1,68 @@
+{
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "The essentials to move from an idea to a digital project, with clear expectations from the start.",
+    "items": [
+      {
+        "id": "q1",
+        "title": "What kind of solutions does AJR Data develop?",
+        "content": "AJR Data works on technological solutions aimed at solving specific needs of each project. Depending on available services, they may include websites, custom applications or systems, integrations and automations. Each proposal is defined based on the client's objective, scope and priorities."
+      },
+      {
+        "id": "q2",
+        "title": "How can I start a project?",
+        "content": "You can start a request using the form available on the site. Tell us what you need, what problem you want to solve and what your priorities are. With that information, the scope can be evaluated and next steps can be defined."
+      },
+      {
+        "id": "q3",
+        "title": "How much does a website or custom system cost?",
+        "content": "The budget depends on complexity, functionality, integrations, design and the level of support required. To avoid misleading prices, the scope is defined first. If there are published and current plans or prices, they are shown clearly; otherwise, a formal evaluation is agreed upon."
+      },
+      {
+        "id": "q4",
+        "title": "How long does it take to complete a project?",
+        "content": "It depends on scope, availability of materials and necessary revisions. Once requirements are defined, a realistic schedule and work stages can be agreed upon. Fixed timelines are not promised without knowing the project in detail."
+      },
+      {
+        "id": "q5",
+        "title": "Can I request changes or new features later?",
+        "content": "Yes, improvements and new functionality can be evaluated according to project needs. Before starting, it's worth clarifying what's included in the initial scope and how post-delivery changes are budgeted."
+      },
+      {
+        "id": "q6",
+        "title": "Do I need to have a domain and hosting before starting?",
+        "content": "Not necessarily. During the request, you can clarify whether you already have a domain and hosting or if you need guidance to arrange them. The availability of management or contracting of these services is clarified based on what AJR Data actually offers."
+      },
+      {
+        "id": "q7",
+        "title": "Will I be able to see my project progress?",
+        "content": "If your account has project tracking enabled, you can check the status recorded for your work. Stages and updates reflect the actual progress reported by the team."
+      },
+      {
+        "id": "q8",
+        "title": "What information should I prepare to request a quote?",
+        "content": "It's useful to describe the project's objective, who will use it, main features, reference examples, an estimated budget and a desired date. You don't need all the details solved: the initial request helps organize the needs."
+      },
+      {
+        "id": "q9",
+        "title": "Does AJR Data provide maintenance or support after delivery?",
+        "content": "Support options depend on the service contracted and what was agreed for each project. Before sharing details, we verify what maintenance options AJR Data actually offers and describe them accurately."
+      },
+      {
+        "id": "q10",
+        "title": "How is project security and information handled?",
+        "content": "Information is handled carefully and used to manage the request and service. The site protects access according to existing permissions and maintains the implemented validations and protections."
+      },
+      {
+        "id": "q11",
+        "title": "Can I consult before committing to a project?",
+        "content": "Yes. You can use the available contact channel to explain your need and consult about initial steps. Scope, budget and conditions must be confirmed before making a commitment."
+      },
+      {
+        "id": "q12",
+        "title": "What happens after I submit my request?",
+        "content": "Your request is recorded and a clear confirmation is shown. After that, the team reviews the information and communicates next steps through available channels. The confirmation message matches the actual system behavior."
+      }
+    ]
+  }
+}

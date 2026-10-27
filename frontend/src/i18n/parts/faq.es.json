@@ -1,0 +1,68 @@
+{
+  "faq": {
+    "title": "Preguntas frecuentes",
+    "subtitle": "Lo esencial para pasar de una idea a un proyecto digital, con expectativas claras desde el inicio.",
+    "items": [
+      {
+        "id": "q1",
+        "title": "¿Qué tipo de soluciones desarrolla AJR Data?",
+        "content": "AJR Data trabaja en soluciones tecnológicas orientadas a resolver necesidades concretas de cada proyecto. Según los servicios disponibles, pueden incluir sitios web, aplicaciones o sistemas a medida, integraciones y automatizaciones. Cada propuesta se define a partir del objetivo, el alcance y las prioridades del cliente."
+      },
+      {
+        "id": "q2",
+        "title": "¿Cómo puedo empezar un proyecto?",
+        "content": "Podés iniciar una solicitud desde el formulario disponible en el sitio. Contanos qué necesitás, qué problema querés resolver y cuáles son tus prioridades. Con esa información se puede evaluar el alcance y definir los próximos pasos."
+      },
+      {
+        "id": "q3",
+        "title": "¿Cuánto cuesta una página web o un sistema a medida?",
+        "content": "El presupuesto depende de la complejidad, las funcionalidades, las integraciones, el diseño y el nivel de soporte requerido. Para evitar valores engañosos, primero se define el alcance. Si hay planes o precios publicados y vigentes, se muestran con claridad; de lo contrario, se acuerda una evaluación formal."
+      },
+      {
+        "id": "q4",
+        "title": "¿Cuánto tiempo lleva completar un proyecto?",
+        "content": "Depende del alcance, la disponibilidad de los materiales y las revisiones necesarias. Una vez definidos los requisitos se puede acordar una planificación realista y las etapas de trabajo. No se prometen plazos fijos sin conocer el proyecto en detalle."
+      },
+      {
+        "id": "q5",
+        "title": "¿Puedo solicitar cambios o nuevas funcionalidades más adelante?",
+        "content": "Sí, se pueden evaluar mejoras y nuevas funcionalidades según las necesidades del proyecto. Antes de comenzar, conviene aclarar qué incluye el alcance inicial y cómo se presupuestan los cambios posteriores."
+      },
+      {
+        "id": "q6",
+        "title": "¿Necesito tener un dominio y hosting antes de comenzar?",
+        "content": "No necesariamente. Durante la solicitud se puede aclarar si ya contás con dominio y alojamiento o si necesitás orientación para resolverlos. La disponibilidad de gestión o contratación de estos servicios se aclara según lo que AJR Data realmente ofrece."
+      },
+      {
+        "id": "q7",
+        "title": "¿Voy a poder ver el avance de mi proyecto?",
+        "content": "Si tu cuenta tiene habilitado el seguimiento de proyectos, podrás consultar el estado que se haya registrado para tu trabajo. Las etapas y actualizaciones reflejan el avance real informado por el equipo."
+      },
+      {
+        "id": "q8",
+        "title": "¿Qué información conviene preparar para pedir un presupuesto?",
+        "content": "Es útil contar el objetivo del proyecto, quiénes lo van a utilizar, las funcionalidades principales, ejemplos de referencia, un presupuesto estimado y una fecha deseada. No hace falta tener todos los detalles resueltos: la solicitud inicial sirve para ordenar las necesidades."
+      },
+      {
+        "id": "q9",
+        "title": "¿AJR Data brinda mantenimiento o soporte después de la entrega?",
+        "content": "Las opciones de soporte dependen del servicio contratado y de lo acordado para cada proyecto. Antes de publicar detalles, se verifica qué modalidades de mantenimiento ofrece realmente AJR Data y se describen con precisión."
+      },
+      {
+        "id": "q10",
+        "title": "¿Cómo se gestionan la seguridad y la información del proyecto?",
+        "content": "La información se maneja con cuidado y se utiliza para gestionar la solicitud y el servicio. El sitio protege los accesos según los permisos existentes y mantiene las validaciones y protecciones implementadas."
+      },
+      {
+        "id": "q11",
+        "title": "¿Puedo consultar antes de comprometerme con un proyecto?",
+        "content": "Sí. Podés utilizar el canal de contacto disponible para explicar tu necesidad y consultar los pasos iniciales. El alcance, el presupuesto y las condiciones se deben confirmar antes de asumir un compromiso."
+      },
+      {
+        "id": "q12",
+        "title": "¿Qué pasa después de enviar mi solicitud?",
+        "content": "La solicitud queda registrada y se muestra una confirmación clara. Después, el equipo revisa la información y comunica los pasos siguientes por los canales disponibles. El mensaje de confirmación corresponde al comportamiento real del sistema."
+      }
+    ]
+  }
+}
