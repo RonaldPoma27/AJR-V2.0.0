@@ -4,7 +4,6 @@ import { ChevronDown, Menu, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import LanguageSwitch from "./LanguageSwitch";
-import ThemeToggle from "./ThemeToggle";
 
 const mainLinks = [
   { to: "/", labelKey: "nav.home", end: true },
@@ -259,7 +258,6 @@ export default function NavBar({
 
         <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
           <LanguageSwitch />
-          <ThemeToggle />
 
           {!hasSession && (
             <div className="hidden items-center gap-2 md:flex">
