@@ -6,6 +6,7 @@ import {
   FileText,
   Home,
   Image as ImageIcon,
+  LayoutDashboard,
   LifeBuoy,
   LogOut,
   MessagesSquare,
@@ -37,6 +38,7 @@ const USER_ITEMS: Item[] = [
 
 // "Panel de Administración" (ADMIN y TECHNICIAN).
 const PANEL_ITEMS: Item[] = [
+  { to: "/admin/resumen", labelKey: "sidebar.dashboard", icon: LayoutDashboard },
   { to: "/admin/pedidos", labelKey: "sidebar.orders", icon: ClipboardList },
   { to: "/admin/postulaciones", labelKey: "sidebar.applications", icon: FileText },
   { to: "/admin/soporte", labelKey: "sidebar.adminSupport", icon: MessagesSquare },
