@@ -153,5 +153,20 @@
     "loading": "Cargando…",
     "loadError": "No pudimos cargar la papelera.",
     "empty": "La papelera está vacía."
+  },
+  "dashboardCharts": {
+    "title": "Resumen visual",
+    "note": "El reparto por estado usa los totales del servidor. La evolución mensual, los ingresos estimados, los planes y el dominio/hosting se calculan sobre los pedidos visibles en esta página; los pedidos históricos no incluyen necesariamente esos detalles.",
+    "monthlyRequests": "Proyectos solicitados por mes (muestra visible)",
+    "estimatedRevenue": "Ingresos estimados por tipo de servicio (USD)",
+    "statusDistribution": "Pedidos por estado (total del servidor)",
+    "planDistribution": "Planes elegidos (muestra visible)",
+    "hostingDistribution": "Dominio y hosting (muestra visible)",
+    "noPlan": "Sin plan registrado",
+    "hostingNeeded": "Requiere gestión",
+    "hostingNotNeeded": "No requiere gestión",
+    "hostingUnknown": "Sin respuesta",
+    "noData": "Sin datos para mostrar",
+    "ringAlt": "{{title}}: {{total}} registros"
   }
 }

@@ -153,5 +153,20 @@
     "loading": "Loading…",
     "loadError": "We couldn't load the trash.",
     "empty": "The trash is empty."
+  },
+  "dashboardCharts": {
+    "title": "Visual overview",
+    "note": "Status distribution uses server totals. Monthly requests, estimated revenue, plans, and domain/hosting use the orders visible on this page; historical orders may not include those details.",
+    "monthlyRequests": "Project requests by month (visible sample)",
+    "estimatedRevenue": "Estimated revenue by service type (USD)",
+    "statusDistribution": "Requests by status (server total)",
+    "planDistribution": "Selected plans (visible sample)",
+    "hostingDistribution": "Domain and hosting (visible sample)",
+    "noPlan": "No plan recorded",
+    "hostingNeeded": "Management needed",
+    "hostingNotNeeded": "No management needed",
+    "hostingUnknown": "No response",
+    "noData": "No data to display",
+    "ringAlt": "{{title}}: {{total}} records"
   }
 }

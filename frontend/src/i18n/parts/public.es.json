@@ -5,7 +5,38 @@
     "cta": "Solicitar un proyecto",
     "aboutTitle": "Quiénes somos",
     "aboutText": "Somos una consultora tecnológica enfocada en ayudar a PyMEs a resolver problemas puntuales de su negocio mediante software, diferenciándonos con ideas más modernas que la competencia de nuestros clientes.",
-    "partnersTitle": "Con quiénes trabajamos"
+    "partnersTitle": "Con quiénes trabajamos",
+    "pricingEyebrow": "Servicios",
+    "pricingTitle": "Planes para empezar",
+    "pricingIntro": "Valores iniciales de referencia. Cada propuesta se ajusta al alcance y la complejidad del proyecto.",
+    "popularPlan": "Más elegido",
+    "startingAt": "Desde",
+    "requestPlan": "Solicitar",
+    "pricingPlans": {
+      "presence": {
+        "name": "Presencia Digital",
+        "description": "Una base profesional para que tu negocio tenga una presencia clara en internet."
+      },
+      "management": {
+        "name": "Web + Gestión",
+        "description": "Una web con herramientas para organizar consultas y tareas habituales."
+      },
+      "custom": {
+        "name": "Sistema a Medida",
+        "description": "Una solución adaptada a un proceso específico de tu negocio."
+      }
+    },
+    "pricingFeatures": {
+      "website": "Sitio web informativo",
+      "responsive": "Diseño adaptable a móviles",
+      "contact": "Contacto directo",
+      "presence": "Todo lo de Presencia Digital",
+      "forms": "Formularios y flujos de gestión",
+      "launch": "Acompañamiento de puesta en marcha",
+      "analysis": "Análisis del proceso",
+      "customFeatures": "Funcionalidades personalizadas",
+      "implementation": "Plan de implementación"
+    }
   },
   "pubPortfolio": {
     "title": "Portfolio",
@@ -54,17 +85,54 @@
     "industry": "Rubro de tu negocio",
     "description": "Describí el problema a resolver",
     "sending": "Enviando...",
-    "submit": "Enviar pedido"
+    "submit": "Enviar pedido",
+    "plan": "Plan de interés",
+    "planNone": "Todavía no elegí un plan",
+    "plans": {
+      "presencia": "Presencia Digital (desde USD 100)",
+      "gestion": "Web + Gestión (desde USD 250)",
+      "sistema": "Sistema a Medida (desde USD 450)"
+    },
+    "budget": "Presupuesto aproximado",
+    "budgetOptions": {
+      "under250": "Menos de USD 250",
+      "250to499": "USD 250 - 499",
+      "500to1499": "USD 500 - 1.499",
+      "1500plus": "USD 1.500 o más"
+    },
+    "deadline": "Plazo estimado",
+    "deadlineOptions": {
+      "oneToTwo": "1-2 semanas",
+      "oneMonth": "1 mes",
+      "twoToThree": "2-3 meses",
+      "exploring": "Estoy explorando"
+    },
+    "hosting": "¿Necesitás ayuda con dominio y hosting?",
+    "yes": "Sí",
+    "no": "No",
+    "extrasHeading": "Detalles para orientar la propuesta"
   },
   "jobForm": {
     "heroTitle": "Formá parte de la familia AJR",
     "heroIntro": "Somos un equipo chico que resuelve problemas reales de PyMEs con software a medida: desde sistemas de gestión hasta asistentes con IA que le devuelven horas de trabajo a un negocio. Nos importa más entender bien el problema que usar la última moda, y nos gusta hacerlo en buena compañía.",
     "heroOutro": "Si disfrutás construir cosas útiles, preguntar “¿para qué?” y crecer con gente que te banca cuando algo se traba, contanos quién sos. Todas las postulaciones las lee una persona del equipo.",
     "perks": {
-      "custom": { "title": "Desarrollo a medida", "text": "Nada de plantillas: cada proyecto arranca escuchando cómo trabaja el negocio." },
-      "ai": { "title": "IA aplicada", "text": "Chatbots, agentes y automatizaciones que las PyMEs usan desde el primer día." },
-      "learning": { "title": "Aprendizaje continuo", "text": "Tiempo y espacio para probar tecnologías nuevas y equivocarnos en compañía." },
-      "remote": { "title": "Remoto y flexible", "text": "Trabajás desde donde rindas mejor, con acuerdos claros y sin microgestión." }
+      "custom": {
+        "title": "Desarrollo a medida",
+        "text": "Nada de plantillas: cada proyecto arranca escuchando cómo trabaja el negocio."
+      },
+      "ai": {
+        "title": "IA aplicada",
+        "text": "Chatbots, agentes y automatizaciones que las PyMEs usan desde el primer día."
+      },
+      "learning": {
+        "title": "Aprendizaje continuo",
+        "text": "Tiempo y espacio para probar tecnologías nuevas y equivocarnos en compañía."
+      },
+      "remote": {
+        "title": "Remoto y flexible",
+        "text": "Trabajás desde donde rindas mejor, con acuerdos claros y sin microgestión."
+      }
     },
     "areas": {
       "backend": "Desarrollo Backend",

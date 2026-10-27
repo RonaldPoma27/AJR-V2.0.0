@@ -67,7 +67,10 @@
     "showDetail": "View order details",
     "problem": "Problem to solve",
     "contact": "Contact: {{name}} · {{email}}",
-    "contactPhone": " · {{phone}}"
+    "contactPhone": " · {{phone}}",
+    "projectProgress": "Project progress",
+    "discardedProgress": "This request was dismissed and will not continue through the development stages.",
+    "progressNote": "These stages are an estimate based on the overall request status. The current system records the request status, not the detailed progress of each phase."
   },
   "supportPage": {
     "title": "Support",
@@ -108,8 +111,7 @@
       "writeLabel": "Write a message",
       "sendLabel": "Send message",
       "keys": "Enter sends · Shift+Enter new line",
-      "sendError": "We couldn't send the message. Please try again.",
-      "typing": "The team is typing"
+      "sendError": "We couldn't send the message. Please try again."
     },
     "new": {
       "title": "Chat title",
@@ -135,5 +137,15 @@
     "question": "Are you sure?",
     "confirm": "Confirm",
     "cancel": "Cancel"
+  },
+  "projectStepper": {
+    "label": "Project progress",
+    "steps": {
+      "analysis": "Analysis",
+      "design": "Design",
+      "development": "Development",
+      "review": "Review",
+      "delivered": "Delivered"
+    }
   }
 }

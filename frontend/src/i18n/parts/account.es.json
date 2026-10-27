@@ -67,7 +67,10 @@
     "showDetail": "Ver detalle del pedido",
     "problem": "Problema a resolver",
     "contact": "Contacto: {{name}} · {{email}}",
-    "contactPhone": " · {{phone}}"
+    "contactPhone": " · {{phone}}",
+    "projectProgress": "Progreso del proyecto",
+    "discardedProgress": "Este pedido fue descartado y no continuará por las etapas de desarrollo.",
+    "progressNote": "Etapas orientativas a partir del estado general del pedido. El sistema actual registra el estado de la solicitud, no el avance detallado de cada fase."
   },
   "supportPage": {
     "title": "Soporte",
@@ -108,8 +111,7 @@
       "writeLabel": "Escribir un mensaje",
       "sendLabel": "Enviar mensaje",
       "keys": "Enter envía · Shift+Enter nueva línea",
-      "sendError": "No pudimos enviar el mensaje. Probá de nuevo.",
-      "typing": "El equipo está escribiendo"
+      "sendError": "No pudimos enviar el mensaje. Probá de nuevo."
     },
     "new": {
       "title": "Título del chat",
@@ -135,5 +137,15 @@
     "question": "¿Seguro?",
     "confirm": "Confirmar",
     "cancel": "Cancelar"
+  },
+  "projectStepper": {
+    "label": "Progreso del proyecto",
+    "steps": {
+      "analysis": "Análisis",
+      "design": "Diseño",
+      "development": "Desarrollo",
+      "review": "Revisión",
+      "delivered": "Entregado"
+    }
   }
 }
