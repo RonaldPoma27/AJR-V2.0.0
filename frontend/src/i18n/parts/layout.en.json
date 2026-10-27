@@ -7,12 +7,6 @@
     "goAccount": "Go to my account",
     "logout": "Log out"
   },
-  "theme": {
-    "toLight": "Switch to light mode",
-    "toDark": "Switch to dark mode",
-    "light": "Light mode",
-    "dark": "Dark mode"
-  },
   "meta": {
     "title": "AJR Data — Tech Consultancy"
   }

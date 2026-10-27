@@ -36,6 +36,33 @@
       "analysis": "Análisis del proceso",
       "customFeatures": "Funcionalidades personalizadas",
       "implementation": "Plan de implementación"
+    },
+    "faq": {
+      "eyebrow": "Respuestas claras",
+      "title": "Preguntas frecuentes",
+      "intro": "Algunas respuestas para que sepas qué esperar antes de empezar.",
+      "items": {
+        "scope": {
+          "question": "¿Cómo empieza un proyecto con AJR Data?",
+          "answer": "Primero conversamos sobre el problema de tu negocio, los objetivos y las prioridades. Con esa información podemos evaluar el alcance y proponer próximos pasos."
+        },
+        "custom": {
+          "question": "¿Desarrollan soluciones a medida?",
+          "answer": "Sí. Buscamos entender cómo trabaja cada negocio para diseñar una solución acorde a sus procesos, evitando agregar complejidad innecesaria."
+        },
+        "pricing": {
+          "question": "¿Los precios publicados son definitivos?",
+          "answer": "No. Son valores iniciales de referencia. La propuesta final depende del alcance, las integraciones y la complejidad del proyecto."
+        },
+        "communication": {
+          "question": "¿Cómo puedo seguir el avance de mi solicitud?",
+          "answer": "Con una cuenta podés revisar tus pedidos y utilizar el canal de soporte disponible en la plataforma para comunicarte con el equipo."
+        },
+        "hosting": {
+          "question": "¿Pueden ayudarme con el dominio y el hosting?",
+          "answer": "Podemos conversar sobre las necesidades de infraestructura de tu proyecto y determinar qué alternativa se adapta mejor a tu caso."
+        }
+      }
     }
   },
   "pubPortfolio": {
