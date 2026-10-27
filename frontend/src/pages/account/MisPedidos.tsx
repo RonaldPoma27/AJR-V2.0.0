@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useMyOrders, type ClientOrder } from "@/api/orders";
 import OrderStepper from "@/components/ui/OrderStepper";
+import ProjectStepper from "@/components/ui/ProjectStepper";
+import { ORDER_TO_STEP } from "@/lib/projectSteps";
 import { formatDateTime } from "@/lib/format";
 import { ORDER_STATUS_LABELS, STATUS_BADGE } from "@/lib/status";
 import { timeAgo, useNow } from "@/lib/time";
@@ -26,7 +28,11 @@ function OrderCard({ order, now }: { order: ClientOrder; now: number }) {
       </div>
 
       <div className="my-6">
-        <OrderStepper status={order.status} />
+        {order.status === "descartado" ? (
+          <OrderStepper status={order.status} /> // muestra el aviso de pedido descartado
+        ) : (
+          <ProjectStepper currentStep={ORDER_TO_STEP[order.status]} />
+        )}
       </div>
 
       <p className="text-xs text-fg-subtle">{t("myOrders.lastUpdate", { time: timeAgo(order.updated_at, now) })}</p>
