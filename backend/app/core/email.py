@@ -128,6 +128,12 @@ def send_order_emails(order: dict[str, Any]) -> None:
         ("Rubro", order["industry"]),
         ("Problema a resolver", order["problem_description"]),
     ]
+    # Datos opcionales del formulario por pasos (v2.5).
+    for label, key in (("Plan", "plan"), ("Presupuesto", "budget"), ("Plazo", "timeline")):
+        if order.get(key):
+            rows.append((label, str(order[key])))
+    if order.get("has_domain") is not None:
+        rows.append(("Dominio/hosting propio", "Sí" if order["has_domain"] else "No"))
     admin_email = settings.notify_email
     if admin_email:
         subject = "Nuevo pedido de proyecto"
