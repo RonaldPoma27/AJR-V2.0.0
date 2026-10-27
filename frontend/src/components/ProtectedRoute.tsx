@@ -21,17 +21,18 @@ export default function ProtectedRoute({
   const { t } = useTranslation();
   const location = useLocation();
   const logout = useLogout();
+  const returnTo = `${location.pathname}${location.search}${location.hash}`;
   const { data: me, isLoading, isError, error, refetch } = useMe();
 
   if (!getToken()) {
-    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+    return <Navigate to="/login" replace state={{ from: returnTo }} />;
   }
   if (isLoading) {
     return <Message><p className="text-fg-subtle">{t("guard.verifying")}</p></Message>;
   }
   if (isError) {
     if (isAxiosError(error) && error.response?.status === 401) {
-      return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+      return <Navigate to="/login" replace state={{ from: returnTo }} />;
     }
     return (
       <Message>
@@ -39,7 +40,7 @@ export default function ProtectedRoute({
           <p className="text-fg-muted">{t("guard.verifyFailed")}</p>
           <button
             onClick={() => refetch()}
-            className="btn-cta mt-4 rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark"
+            className="mt-4 rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark"
           >
             {t("guard.retry")}
           </button>
@@ -53,7 +54,7 @@ export default function ProtectedRoute({
         <div>
           <p className="text-fg-muted">{t("guard.forbidden")}</p>
           <div className="mt-4 flex justify-center gap-4 text-sm font-medium">
-            <Link viewTransition to="/cuenta" className="text-accent hover:underline">{t("guard.goAccount")}</Link>
+            <Link to="/cuenta" className="text-accent hover:underline">{t("guard.goAccount")}</Link>
             <button onClick={logout} className="text-accent hover:underline">{t("guard.logout")}</button>
           </div>
         </div>
