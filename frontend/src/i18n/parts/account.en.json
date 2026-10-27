@@ -108,7 +108,8 @@
       "writeLabel": "Write a message",
       "sendLabel": "Send message",
       "keys": "Enter sends · Shift+Enter new line",
-      "sendError": "We couldn't send the message. Please try again."
+      "sendError": "We couldn't send the message. Please try again.",
+      "typing": "The team is typing"
     },
     "new": {
       "title": "Chat title",
