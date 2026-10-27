@@ -7,13 +7,13 @@ function MediaItem({ media, title, wide }: { media: ProjectMedia; title: string;
   const { t } = useTranslation();
   const span = wide ? "sm:col-span-2" : "";
   const caption = media.caption && (
-    <figcaption className="mt-2 text-sm text-fg-subtle">{media.caption}</figcaption>
+    <figcaption className="mt-2 text-sm text-white">{media.caption}</figcaption>
   );
 
   if (media.media_type === "video") {
     return (
       <figure className={span}>
-        <video controls preload="metadata" className="w-full rounded-lg bg-black" aria-label={media.caption || t("pubPortfolio.videoLabel", { title })}>
+        <video controls preload="metadata" className="ajr-portfolio-media rounded-xl border border-white/10" aria-label={media.caption || t("pubPortfolio.videoLabel", { title })}>
           <source src={media.url} />
           <Trans i18nKey="pubPortfolio.videoFallback" components={{ 1: <a href={media.url} /> }} />
         </video>
@@ -41,7 +41,7 @@ function MediaItem({ media, title, wide }: { media: ProjectMedia; title: string;
   }
   return (
     <figure className={span}>
-      <img src={media.url} alt={media.caption || title} loading="lazy" className="w-full rounded-lg border bg-surface-2" />
+      <img src={media.url} alt={media.caption || title} loading="lazy" className="ajr-portfolio-media rounded-xl border border-white/10" />
       {caption}
     </figure>
   );
@@ -63,14 +63,14 @@ function ProjectSection({ project }: { project: Project }) {
           >
             {done ? t("pubPortfolio.done") : t("pubPortfolio.inProgress")}
           </span>
-          {project.client_name && <span className="text-fg-subtle">{t("pubPortfolio.client", { name: project.client_name })}</span>}
+          {project.client_name && <span className="text-white">{t("pubPortfolio.client", { name: project.client_name })}</span>}
         </div>
         <h2 id={`project-${project.id}`} className="mt-3 text-2xl font-bold text-fg sm:text-3xl">
           {project.title}
         </h2>
       </header>
 
-      <p className="mt-4 max-w-prose whitespace-pre-line leading-relaxed text-fg-muted">{project.description}</p>
+      <p className="mt-4 max-w-prose whitespace-pre-line leading-relaxed text-white">{project.description}</p>
 
       {gallery.length > 0 && (
         <div className="mt-6 grid items-start gap-4 sm:grid-cols-2">
@@ -99,13 +99,13 @@ export default function Portfolio() {
       <h1 className="text-3xl font-bold text-fg">{t("pubPortfolio.title")}</h1>
       <p className="mt-2 text-fg-muted">{t("pubPortfolio.subtitle")}</p>
 
-      {isLoading && <p className="mt-8 text-fg-subtle">{t("pubPortfolio.loading")}</p>}
+      {isLoading && <p className="mt-8 text-white">{t("pubPortfolio.loading")}</p>}
       {isError && (
         <p role="alert" className="mt-8 text-red-600 dark:text-red-400">
           {t("pubPortfolio.loadError")} <button onClick={() => refetch()} className="font-medium underline">{t("pubPortfolio.retry")}</button>
         </p>
       )}
-      {projects && projects.length === 0 && <p className="mt-8 text-fg-subtle">{t("pubPortfolio.empty")}</p>}
+      {projects && projects.length === 0 && <p className="mt-8 text-white">{t("pubPortfolio.empty")}</p>}
 
       {/* space-y-24 = 6rem ≈ 4 renglones de texto entre un proyecto y el siguiente. */}
       <div className="mt-16 space-y-24">
