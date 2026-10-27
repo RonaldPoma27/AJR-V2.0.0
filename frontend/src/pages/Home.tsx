@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { usePartners } from "@/api/partners";
+import PricingCards from "@/components/PricingCards";
 import Reveal from "@/components/ui/Reveal";
 
 export default function Home() {
@@ -24,7 +25,11 @@ export default function Home() {
         </Link>
       </section>
 
-      <Reveal className="mt-20">
+      <div className="mt-24">
+        <PricingCards />
+      </div>
+
+      <Reveal className="mt-24">
         <section>
           <h2 className="text-center text-2xl font-semibold text-fg">
             {t("pubHome.aboutTitle")}
