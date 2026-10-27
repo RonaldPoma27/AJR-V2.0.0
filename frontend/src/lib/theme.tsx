@@ -14,7 +14,7 @@ function readInitialTheme(): Theme {
 }
 
 /** Tiempo (ms) que el interruptor ignora clics tras un cambio: evita parpadeos por clics repetidos. */
-export const THEME_LOCK_MS = 650;
+export const THEME_LOCK_MS = 1000;
 
 interface ThemeContextValue {
   theme: Theme;
@@ -42,16 +42,26 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const lockedRef = useRef(false);
   const timer = useRef<number>();
 
-  useEffect(() => () => window.clearTimeout(timer.current), []);
+  useEffect(
+    () => () => {
+      window.clearTimeout(timer.current);
+      document.documentElement.classList.remove("theme-anim");
+    },
+    []
+  );
 
   const toggle = useCallback(() => {
     if (lockedRef.current) return;
     lockedRef.current = true;
     setLocked(true);
+    // Durante el bloqueo, todos los colores se funden en ~1 s (ver `.theme-anim` en index.css).
+    const root = document.documentElement;
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) root.classList.add("theme-anim");
     setTheme((t) => (t === "dark" ? "light" : "dark"));
     timer.current = window.setTimeout(() => {
       lockedRef.current = false;
       setLocked(false);
+      document.documentElement.classList.remove("theme-anim");
     }, THEME_LOCK_MS);
   }, []);
   const value = useMemo(() => ({ theme, toggle, locked }), [theme, toggle, locked]);
