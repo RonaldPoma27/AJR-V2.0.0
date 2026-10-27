@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useMyOrders, type ClientOrder } from "@/api/orders";
-import OrderStepper from "@/components/ui/OrderStepper";
+import ProjectStepper from "@/components/ui/ProjectStepper";
 import { formatDateTime } from "@/lib/format";
 import { ORDER_STATUS_LABELS, STATUS_BADGE } from "@/lib/status";
 import { timeAgo, useNow } from "@/lib/time";
@@ -25,8 +25,14 @@ function OrderCard({ order, now }: { order: ClientOrder; now: number }) {
         </span>
       </div>
 
-      <div className="my-6">
-        <OrderStepper status={order.status} />
+      <div className="my-6 rounded-lg bg-surface-2/70 p-4">
+        <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-fg-subtle">{t("myOrders.projectProgress")}</p>
+        {order.status === "descartado" ? (
+          <p role="status" className="text-sm text-fg-muted">{t("myOrders.discardedProgress")}</p>
+        ) : (
+          <ProjectStepper currentStep={order.status === "finalizado" ? 5 : order.status === "contactado" ? 2 : 1} />
+        )}
+        <p className="mt-3 text-xs leading-relaxed text-fg-subtle">{t("myOrders.progressNote")}</p>
       </div>
 
       <p className="text-xs text-fg-subtle">{t("myOrders.lastUpdate", { time: timeAgo(order.updated_at, now) })}</p>
@@ -61,7 +67,7 @@ export default function MisPedidos() {
           <h1 className="text-2xl font-bold text-fg">{t("myOrders.title")}</h1>
           <p className="text-sm text-fg-subtle">{t("myOrders.subtitle")}</p>
         </div>
-        <Link viewTransition to="/solicitar-proyecto" className="btn-cta rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+        <Link to="/solicitar-proyecto" className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
           {t("myOrders.newOrder")}
         </Link>
       </div>
@@ -76,7 +82,7 @@ export default function MisPedidos() {
         <div className="rounded-lg border border-dashed p-10 text-center">
           <p className="font-medium text-fg">{t("myOrders.emptyTitle")}</p>
           <p className="mt-1 text-sm text-fg-subtle">{t("myOrders.emptyText")}</p>
-          <Link viewTransition to="/solicitar-proyecto" className="btn-cta mt-4 inline-block rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+          <Link to="/solicitar-proyecto" className="mt-4 inline-block rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
             {t("myOrders.requestProject")}
           </Link>
         </div>
