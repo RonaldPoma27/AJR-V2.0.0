@@ -152,7 +152,7 @@ function Editor({ project, onClose }: { project: Project | null; onClose: () => 
       {save.isError && <p role="alert" className="text-sm text-red-600 dark:text-red-400">{getServerDetail(save.error) ?? t("adminPortfolio.saveError")}</p>}
 
       <div className="flex gap-3">
-        <button type="submit" disabled={save.isPending} className="btn-cta rounded-md bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50">{save.isPending ? t("adminPortfolio.saving") : t("adminPortfolio.save")}</button>
+        <button type="submit" disabled={save.isPending} className="rounded-md bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50">{save.isPending ? t("adminPortfolio.saving") : t("adminPortfolio.save")}</button>
         <button type="button" onClick={onClose} className="rounded-md border px-5 py-2.5 text-sm font-medium text-fg-muted hover:bg-surface-2">{t("adminPortfolio.cancel")}</button>
       </div>
     </form>
@@ -176,7 +176,7 @@ export default function AdminPortfolio() {
           <p className="text-sm text-fg-subtle">{t("adminPortfolio.subtitle")}</p>
         </div>
         {editing === null && (
-          <button type="button" onClick={() => setEditing("new")} className="btn-cta inline-flex items-center gap-2 rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+          <button type="button" onClick={() => setEditing("new")} className="inline-flex items-center gap-2 rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
             <Plus className="h-4 w-4" aria-hidden /> {t("adminPortfolio.newProject")}
           </button>
         )}
