@@ -1,70 +1,28 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useContext, useEffect } from "react";
 
-export type Theme = "light" | "dark";
-const STORAGE_KEY = "ajrdata_theme";
-
-function readInitialTheme(): Theme {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved === "light" || saved === "dark") return saved;
-  } catch {
-    /* localStorage bloqueado: seguimos con el tema del sistema */
-  }
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-}
-
-/** Tiempo (ms) que el interruptor ignora clics tras un cambio: evita parpadeos por clics repetidos. */
 export const THEME_LOCK_MS = 1000;
 
 interface ThemeContextValue {
-  theme: Theme;
+  theme: "dark";
   toggle: () => void;
-  /** true mientras el interruptor está bloqueado. */
   locked: boolean;
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-/** Maneja la clase `dark` en <html> (Tailwind `darkMode: ["class"]`) y recuerda la elección. */
+/** Tema oscuro permanente. Hydra 3.0 elimina soporte para tema claro. */
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(readInitialTheme);
-
+  // Asegurar que la clase 'dark' esté en html desde el inicio
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-    try {
-      localStorage.setItem(STORAGE_KEY, theme);
-    } catch {
-      /* ignorar */
-    }
-  }, [theme]);
-
-  const [locked, setLocked] = useState(false);
-  const lockedRef = useRef(false);
-  const timer = useRef<number>();
-
-  useEffect(
-    () => () => {
-      window.clearTimeout(timer.current);
-      document.documentElement.classList.remove("theme-anim");
-    },
-    []
-  );
-
-  const toggle = useCallback(() => {
-    if (lockedRef.current) return;
-    lockedRef.current = true;
-    setLocked(true);
-    // Durante el bloqueo, todos los colores se funden en ~1 s (ver `.theme-anim` en index.css).
-    const root = document.documentElement;
-    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) root.classList.add("theme-anim");
-    setTheme((t) => (t === "dark" ? "light" : "dark"));
-    timer.current = window.setTimeout(() => {
-      lockedRef.current = false;
-      setLocked(false);
-      document.documentElement.classList.remove("theme-anim");
-    }, THEME_LOCK_MS);
+    document.documentElement.classList.add("dark");
   }, []);
-  const value = useMemo(() => ({ theme, toggle, locked }), [theme, toggle, locked]);
+
+  // Valor inmutable: siempre dark, toggle no hace nada, nunca locked
+  const value: ThemeContextValue = {
+    theme: "dark",
+    toggle: () => {}, // no-op
+    locked: false,
+  };
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
