@@ -1,22 +1,22 @@
-# AJR DATA — Laniakea 3.1
+# AJR DATA — `ajrdata-v3.2-rea`
 
 **AJR DATA** es una plataforma web para una consultora tecnológica orientada a PyMEs. Combina una web pública y portfolio con un espacio de clientes, gestión de pedidos, soporte y un panel interno para el equipo.
 
-La versión **Laniakea 3.1** profundiza la identidad **Dark Premium Tech** de AJR Data sobre la base **Hydra 3.0**. Esta documentación conserva la descripción general de la plataforma y agrega un changelog específico de los cambios visuales de la versión 3.1. Esta entrega se concentra en el frontend: mejora la composición del inicio, la tipografía, el portfolio y la experiencia visual del chat sin redefinir las rutas ni sustituir la API o el esquema de la base de datos.
+La entrega **`ajrdata-v3.2-rea`** amplía la base visual heredada de Laniakea 3.1 con una funcionalidad de seguridad full-stack: alta, verificación, consulta, cambio y eliminación de un correo electrónico de respaldo. Incorpora persistencia mediante Alembic, endpoints autenticados, controles de reautenticación, límites de solicitudes, traducciones ES/EN y una pantalla de seguridad de cuenta. El correo de respaldo es independiente del correo principal y **no se habilita para recuperar contraseñas en esta versión**.
 
 Repositorio: [RonaldPoma27/AJR-V2.0.0](https://github.com/RonaldPoma27/AJR-V2.0.0)  
-Rama anterior: [ajrdata-3.0-hydra](https://github.com/RonaldPoma27/AJR-V2.0.0/tree/ajrdata-3.0-hydra)  
-Rama de esta versión: [ajrdata-3.1-laniakea](https://github.com/RonaldPoma27/AJR-V2.0.0/tree/ajrdata-3.1-laniakea)  
-Versión de esta entrega: **AJR Data Laniakea 3.1 — frontend visual**
+Rama base inspeccionada: [ajrdata-3.1-laniakea](https://github.com/RonaldPoma27/AJR-V2.0.0/tree/ajrdata-3.1-laniakea)  
+Versión de esta entrega: **`ajrdata-v3.2-rea`**
 
 ---
 
 ## Contenido
 
+- [Cambios incorporados en `ajrdata-v3.2-rea`](#cambios-incorporados-en-ajrdata-v32-rea)
 - [Cambios de Laniakea 3.1 respecto de Hydra 3.0](#cambios-incorporados-en-laniakea-31-respecto-de-hydra-30)
-- [Qué incluye Laniakea 3.1](#qué-incluye-laniakea-31)
+- [Base visual heredada de Laniakea 3.1](#base-visual-heredada-de-laniakea-31)
 - [Archivos visuales destacados](#archivos-visuales-destacados)
-- [Verificaciones de Laniakea 3.1](#verificaciones-de-laniakea-31)
+- [Verificaciones históricas de Laniakea 3.1](#verificaciones-históricas-de-laniakea-31)
 - [Funcionalidades de la plataforma](#funcionalidades-de-la-plataforma)
 - [Tecnologías](#tecnologías)
 - [Estructura del repositorio](#estructura-del-repositorio)
@@ -25,6 +25,81 @@ Versión de esta entrega: **AJR Data Laniakea 3.1 — frontend visual**
 - [Variables de entorno](#variables-de-entorno)
 - [Deploy en Render](#deploy-en-render)
 - [Verificaciones antes de publicar](#verificaciones-antes-de-publicar)
+
+## Cambios incorporados en `ajrdata-v3.2-rea`
+
+### Correo electrónico de respaldo
+
+La cuenta dispone de una nueva pantalla en **`/cuenta/seguridad`** para administrar un correo alternativo. Esta dirección se mantiene separada del correo principal y no reemplaza la identidad principal de inicio de sesión.
+
+- **Consulta de estado:** muestra si no está configurado, si está pendiente de verificación o si ya fue verificado.
+- **Alta y cambio:** pide la contraseña actual, envía un código de seis dígitos por SMTP y mantiene el correo verificado anterior activo hasta verificar el nuevo.
+- **Verificación:** códigos generados con `secrets`, almacenados solo como HMAC-SHA256 ligado al usuario, al desafío y a la dirección, con vencimiento configurable y uso único.
+- **Protección contra abuso:** límites persistentes en PostgreSQL por usuario, dirección de destino e IP; espera mínima entre solicitudes y hasta cinco intentos por código por defecto. Los límites son configurables mediante variables de entorno.
+- **Reenvío y eliminación:** requieren reautenticación con la contraseña actual; los desafíos abiertos se invalidan al reenviar o eliminar.
+- **Avisos de seguridad:** si SMTP real está configurado, se avisa al correo principal después de verificar, cambiar o eliminar el método. Los fallos del aviso no revierten una operación ya confirmada.
+- **Auditoría prudente:** se registran los eventos sin el código, el HMAC ni la dirección de respaldo. Las tablas sensibles se excluyen del registro ORM genérico.
+- **Integridad:** una migración incremental `0006_backup_email` agrega las tablas y restricciones necesarias sin modificar revisiones anteriores. Las direcciones verificadas son únicas globalmente; las pendientes no reservan una dirección de forma permanente ni bloquean el registro de otra cuenta antes de demostrar control del correo.
+- **Internacionalización y accesibilidad:** la interfaz incluye español e inglés, estados de carga/error/éxito, confirmación antes de eliminar y controles adaptables a móvil.
+
+### Endpoints agregados
+
+Todos los endpoints operan exclusivamente sobre el usuario autenticado; el frontend no envía un `user_id` para seleccionar la cuenta.
+
+| Método | Endpoint | Función |
+|---|---|---|
+| `GET` | `/api/security/backup-email` | Consultar estado del correo de respaldo |
+| `POST` | `/api/security/backup-email/request` | Solicitar alta o cambio; requiere correo y contraseña actual |
+| `POST` | `/api/security/backup-email/verify` | Verificar el código de seis dígitos |
+| `POST` | `/api/security/backup-email/resend` | Reenviar código; requiere contraseña actual |
+| `DELETE` | `/api/security/backup-email` | Eliminar correo de respaldo; requiere contraseña actual en el cuerpo JSON |
+
+La API responde con errores de validación, conflicto, autenticación, límites o indisponibilidad SMTP de acuerdo con las convenciones del backend. No se considera enviado un código cuando el servicio de correo falla.
+
+### Migración y actualización
+
+Esta versión agrega la revisión Alembic `0006_backup_email`, cuya revisión previa es `0005_order_plan_fields`. En el entorno configurado del backend se aplica con:
+
+```bash
+alembic upgrade head
+```
+
+Antes de desplegar en producción, confirmá la revisión actual de la base y hacé un respaldo. No edites migraciones históricas ya aplicadas.
+
+### Variables de entorno para el correo de respaldo
+
+| Variable | Predeterminado | Función |
+|---|---:|---|
+| `BACKUP_EMAIL_CODE_SECRET` | Derivado de `SECRET_KEY` si queda vacío | Secreto dedicado opcional de al menos 32 caracteres; usar uno aleatorio distinto en producción es recomendable |
+| `BACKUP_EMAIL_CODE_TTL_MINUTES` | `10` | Vigencia del código; aceptado de 1 a 60 minutos |
+| `BACKUP_EMAIL_MAX_ATTEMPTS` | `5` | Intentos de verificación permitidos por desafío |
+| `BACKUP_EMAIL_RESEND_COOLDOWN_SECONDS` | `60` | Tiempo mínimo entre solicitudes/reenvíos |
+| `BACKUP_EMAIL_MAX_REQUESTS_USER_PER_HOUR` | `5` | Límite horario por usuario |
+| `BACKUP_EMAIL_MAX_REQUESTS_EMAIL_PER_HOUR` | `5` | Límite horario por dirección destino |
+| `BACKUP_EMAIL_MAX_REQUESTS_IP_PER_HOUR` | `20` | Límite horario por IP |
+| `BACKUP_EMAIL_CHALLENGE_RETENTION_HOURS` | `24` | Retención máxima configurada de desafíos; la limpieza se ejecuta con la tarea periódica existente |
+
+**SMTP real es obligatorio para entregar códigos.** `EMAIL_BACKEND=console` registra los cuerpos completos de los emails de desarrollo y por eso el flujo de seguridad lo rechaza expresamente. Sin `EMAIL_BACKEND=smtp`, `SMTP_HOST` y un remitente SMTP (`SMTP_FROM` o `SMTP_USER`) configurados, la solicitud falla de forma explícita y no activa el correo pendiente. Las notificaciones informativas se omiten si no existe SMTP real.
+
+### Límite funcional importante
+
+El correo verificado queda almacenado como método alternativo de contacto, pero **no sirve para restablecer contraseñas, desactivar MFA ni omitir la autenticación**. La recuperación de cuenta por correo de respaldo no se implementó ni debe anunciarse como disponible en `ajrdata-v3.2-rea`.
+
+### Verificaciones de esta entrega
+
+Comprobaciones ejecutadas en el entorno de preparación del ZIP:
+
+- **Compilación sintáctica backend:** `python -m compileall -q app alembic/versions tests` — aprobada.
+- **Pruebas unitarias:** `python -m unittest tests.test_backup_email_security` — 9 pruebas aprobadas. Cubren códigos de seis dígitos, HMAC contextual, validación de schemas, unicidad parcial y comportamiento de envío/logs con transporte SMTP simulado.
+- **Internacionalización:** `python3 frontend/check_i18n.py` — aprobado; ES/EN mantiene claves correspondientes.
+- **Archivos de traducción:** parseo JSON de los archivos raíz y de cuenta — aprobado.
+- **Historial de migraciones:** `alembic heads` — `0006_backup_email` aparece como cabeza única.
+- **Generación offline de SQL:** `alembic upgrade head --sql` — se generó el SQL de toda la cadena y se verificaron las tablas/índices nuevos. **Esto no ejecuta la migración en una base real.**
+- **Parseo TS/TSX:** 71 archivos sin errores sintácticos mediante TypeScript `transpileModule`. Esta comprobación no resuelve imports ni reemplaza el typecheck de `tsc`.
+
+**Validaciones pendientes por limitaciones del entorno:** no se pudo completar `npm ci` porque el paquete requerido no estaba en la caché y el registro npm no era accesible. Por eso `npm run build`, `npm run lint` y el typecheck completo no se consideran aprobados. Tampoco se ejecutaron los endpoints contra una base PostgreSQL real, no se aplicó la migración a datos existentes y no se envió correo a través de un servidor SMTP real. Las pruebas de email usan un transporte SMTP simulado. Antes de desplegar, completá esas validaciones en el entorno del proyecto y revisá los logs de la migración.
+
+---
 
 ## Cambios incorporados en Laniakea 3.1 respecto de Hydra 3.0
 
@@ -50,7 +125,7 @@ Esta sección complementa la documentación de **Hydra 3.0**. Describe las incor
 - No se cambian los flujos de autenticación, permisos o envío de mensajes intencionalmente; se recomienda validarlos de nuevo después del build.
 - No se aplica glassmorphism a la navbar ni al panel lateral.
 
-## Qué incluye Laniakea 3.1
+## Base visual heredada de Laniakea 3.1
 
 Laniakea 3.1 conserva la identidad visual oscura de Hydra 3.0 y suma una composición más expresiva, tipografía con mayor personalidad y una experiencia más cuidada para portfolio y soporte. El alcance de esta entrega es visual y frontend-only.
 
@@ -106,7 +181,7 @@ La implementación modifica componentes existentes. Esta lista describe los arch
 | `frontend/src/components/layout/ThemeToggle.tsx` | Eliminado por no tener referencias activas en el frontend de esta base y ser incompatible con el tema oscuro permanente. |
 | `README.md` | Documentación de Laniakea 3.1 y continuidad de las guías generales heredadas de Hydra 3.0. |
 
-## Verificaciones de Laniakea 3.1
+## Verificaciones históricas de Laniakea 3.1
 
 Las comprobaciones ejecutadas sobre esta entrega:
 
@@ -136,6 +211,7 @@ Las funcionalidades descritas aquí proceden de la documentación y el código d
 ### Espacio del cliente
 
 - **Mi cuenta** (`/cuenta`).
+- **Seguridad de cuenta** (`/cuenta/seguridad`): administración del correo de respaldo, independiente del correo principal; no habilita recuperación de contraseña.
 - **Mis pedidos** (`/cuenta/pedidos`).
 - **Soporte** (`/cuenta/soporte`).
 - Solicitud de proyectos con ruta protegida (`/solicitar-proyecto`).
@@ -201,6 +277,7 @@ Las ramas usan nombres inspirados en cuerpos celestes. El cuadro siguiente reún
 
 | Versión / nombre | Rama | Resumen documentado |
 |---|---|---|
+| **3.2 — `ajrdata-v3.2-rea`** | Entrega local basada en `ajrdata-3.1-laniakea` | Gestión segura del correo de respaldo: modelos, servicios, endpoints, migración `0006_backup_email`, pantalla `/cuenta/seguridad`, ES/EN y pruebas dirigidas. La recuperación de contraseña por correo de respaldo no está implementada. |
 | **3.1 — Laniakea** | [`ajrdata-3.1-laniakea`](https://github.com/RonaldPoma27/AJR-V2.0.0/tree/ajrdata-3.1-laniakea) | Continuación visual frontend-only de Hydra 3.0: Space Grotesk + Inter, hero dividido, aurora/grilla, proceso de cuatro etapas, portfolio Bento/editorial y transición animada de burbuja a ventana de chat. La rama objetivo es `ajrdata-3.1-laniakea`; esta entrega no redefine rutas ni contratos de API. |
 | **3.0 — Hydra** | [`ajrdata-3.0-hydra`](https://github.com/RonaldPoma27/AJR-V2.0.0/tree/ajrdata-3.0-hydra) | Rediseño frontend Dark Premium Tech: modo oscuro permanente, drawer unificado, textos de alto contraste, degradados de marca, FAQ acordeón y ajustes responsive. Es la versión base de la que parte Laniakea 3.1. |
 | **2.4.1A — Phobos** | [`ajrdata-v2.4.1a-phobos`](https://github.com/RonaldPoma27/AJR-V2.0.0/tree/ajrdata-v2.4.1a-phobos) | Hover con degradado en la navbar, parallax de la aurora, transición del tema con bloqueo de clics, tarjetas de planes, redirección protegida con persistencia del plan, formulario por pasos, stepper, gráficos y cambios de orden en el portfolio. La documentación histórica también menciona campos nuevos de pedidos en la base; verificar la migración real antes de desplegar. |
@@ -330,6 +407,10 @@ Usá `.env.example` como referencia oficial para la rama que vas a ejecutar. La 
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`, `SMTP_TLS` | Configuración de envío de correo. |
 | `ADMIN_NOTIFY_EMAIL` | Destino de los avisos del sistema. |
 | `PUBLIC_BASE_URL` | URL pública usada para enlaces dentro de correos. |
+| `BACKUP_EMAIL_CODE_SECRET` | Secreto opcional dedicado al HMAC de códigos; si se omite, se deriva de `SECRET_KEY`. |
+| `BACKUP_EMAIL_CODE_TTL_MINUTES`, `BACKUP_EMAIL_MAX_ATTEMPTS`, `BACKUP_EMAIL_RESEND_COOLDOWN_SECONDS` | Vencimiento, intentos y frecuencia de códigos de correo de respaldo. |
+| `BACKUP_EMAIL_MAX_REQUESTS_USER_PER_HOUR`, `BACKUP_EMAIL_MAX_REQUESTS_EMAIL_PER_HOUR`, `BACKUP_EMAIL_MAX_REQUESTS_IP_PER_HOUR` | Límites de solicitudes persistidos en PostgreSQL. |
+| `BACKUP_EMAIL_CHALLENGE_RETENTION_HOURS` | Ventana de retención de desafíos y registros para rate limit. |
 | `TRASH_RETENTION_DAYS`, `TRASH_PURGE_INTERVAL_MINUTES`, `SCHEDULER_ENABLED` | Configuración de retención y limpieza de la papelera. |
 | `EMAIL_BACKEND` | Proveedor de correo; `console` permite probar mediante logs en desarrollo. |
 
