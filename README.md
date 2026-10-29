@@ -1,17 +1,61 @@
-# AJR DATA — `ajrdata-v3.2-rea`
+# AJR DATA — `ajrdata-v3.3-morpheo`
 
 **AJR DATA** es una plataforma web para una consultora tecnológica orientada a PyMEs. Combina una web pública y portfolio con un espacio de clientes, gestión de pedidos, soporte y un panel interno para el equipo.
 
-La entrega **`ajrdata-v3.2-rea`** amplía la base visual heredada de Laniakea 3.1 con una funcionalidad de seguridad full-stack: alta, verificación, consulta, cambio y eliminación de un correo electrónico de respaldo. Incorpora persistencia mediante Alembic, endpoints autenticados, controles de reautenticación, límites de solicitudes, traducciones ES/EN y una pantalla de seguridad de cuenta. El correo de respaldo es independiente del correo principal y **no se habilita para recuperar contraseñas en esta versión**.
+La entrega **`ajrdata-v3.3-scrumban`** parte de `ajrdata-v3.2-rea`, conserva su funcionalidad de seguridad y añade un módulo de gestión ágil de proyectos. La entrega base incluye una funcionalidad de seguridad full-stack: alta, verificación, consulta, cambio y eliminación de un correo electrónico de respaldo. Incorpora persistencia mediante Alembic, endpoints autenticados, controles de reautenticación, límites de solicitudes, traducciones ES/EN y una pantalla de seguridad de cuenta. El correo de respaldo es independiente del correo principal y **no se habilita para recuperar contraseñas en esta versión**.
 
 Repositorio: [RonaldPoma27/AJR-V2.0.0](https://github.com/RonaldPoma27/AJR-V2.0.0)  
 Rama base inspeccionada: [ajrdata-3.1-laniakea](https://github.com/RonaldPoma27/AJR-V2.0.0/tree/ajrdata-3.1-laniakea)  
-Versión de esta entrega: **`ajrdata-v3.2-rea`**
+Versión base heredada: **`ajrdata-v3.2-rea`**  
+Versión de esta entrega: **`ajrdata-v3.3-morpheo`**  
+Rama de trabajo de referencia: **`ajrdata-3.2-rea`**
+
+---
+
+## Cambios incorporados en `ajrdata-v3.3-morpheo`
+
+### Módulo Proyectos ágiles
+
+Se agrega **Proyectos ágiles** dentro de la navegación administrativa existente (`/admin/proyectos-agiles`). La interfaz utiliza los componentes y tokens de color de AJR DATA (`bg-app`, `bg-surface`, `text-fg`, `text-fg-muted`, `border-line`, `bg-brand` y `text-accent`), respeta los temas claro/oscuro y mantiene el diseño adaptable. El HTML de referencia aportado se usa como guía funcional, no como sustitución de la identidad visual del sitio.
+
+El módulo incluye:
+
+- Proyectos con clave, descripción, estado y duración configurable de sprint entre 1 y 4 semanas.
+- Vistas de resumen, backlog reordenable mediante arrastrar y soltar, tablero Scrumban con cambio de estado y posición de tarjetas, épicas/HU, sprints, cronología, equipo e importación.
+- Épicas, historias de usuario, tareas, bugs y subtareas; criterios de aceptación, prioridad, puntos, fecha límite, épica asociada, responsable individual y rol funcional responsable.
+- Roles por proyecto: Scrum Master, Product Owner, Developer y Observer. Se conservan los roles globales de autenticación existentes; el backend autoriza las operaciones según rol de proyecto.
+- Sprints planificados/activos/completados y longitud de sprint de una a cuatro semanas. Al cerrar un sprint se puede transferir la misma tarjeta pendiente al siguiente sprint o devolverla al backlog, conservando su identificador e historial de participación.
+- Comentarios e historial de actividad por tarjeta.
+- Importación en dos pasos (previsualización y confirmación) desde CSV/XLSX y desde enlaces de hojas de Google Sheets accesibles por exportación CSV; valida filas y relaciones, admite omitir/actualizar registros existentes y limita el tamaño/filas de importación.
+
+### Migración `0007_agile_projects`
+
+La revisión `0007_agile_projects` depende de `0006_backup_email` y crea las tablas de proyectos ágiles, miembros, sprints, tarjetas, participación de tarjetas en sprints, historial y comentarios. En el entorno del backend se actualiza con:
+
+```bash
+alembic upgrade head
+```
+
+Antes de producción, hacer una copia de seguridad y probar la migración contra una copia de la base de datos actual. La generación offline de SQL valida la cadena de migraciones, pero no sustituye la ejecución sobre PostgreSQL.
+
+### Importación de Google Sheets
+
+La conexión inicial admite hojas con permisos de lectura por enlace y descarga CSV desde dominios de Google permitidos. **Las hojas privadas no quedan conectadas automáticamente**: requieren implementar autenticación OAuth de Google, que no se incluye en esta entrega. Como alternativa, se puede descargar la hoja y subir el archivo XLSX/CSV.
+
+### Verificaciones de `ajrdata-v3.3-scrumban`
+
+- Sintaxis Python del backend y migraciones: aprobada con `python -m compileall -q backend/app backend/alembic/versions`.
+- Pruebas de schemas ágiles: 6 aprobadas; pruebas existentes de seguridad del correo de respaldo: 9 aprobadas (15 en total).
+- Validación de internacionalización ES/EN: aprobada con `python frontend/check_i18n.py`.
+- Parseo sintáctico de 73 archivos TS/TSX mediante el compilador de TypeScript: sin diagnósticos sintácticos.
+- Cadena Alembic: generación offline de `upgrade head --sql` aprobada; no se ejecutó contra una base PostgreSQL real.
+- **Pendiente antes de producción:** `npm run build`, lint/typecheck completo y pruebas integradas de endpoints contra PostgreSQL. No se pudieron validar porque `npm ci` no terminó en este entorno y no hay dependencias frontend instaladas.
 
 ---
 
 ## Contenido
 
+- [Cambios incorporados en `ajrdata-v3.3-morpheo`](#cambios-incorporados-en-ajrdata-v33-scrumban)
 - [Cambios incorporados en `ajrdata-v3.2-rea`](#cambios-incorporados-en-ajrdata-v32-rea)
 - [Cambios de Laniakea 3.1 respecto de Hydra 3.0](#cambios-incorporados-en-laniakea-31-respecto-de-hydra-30)
 - [Base visual heredada de Laniakea 3.1](#base-visual-heredada-de-laniakea-31)
@@ -64,6 +108,8 @@ Esta versión agrega la revisión Alembic `0006_backup_email`, cuya revisión pr
 alembic upgrade head
 ```
 
+Antes de desplegar en producción, confirmá la revisión actual de la base y hacé un respaldo. No edites migraciones históricas ya aplicadas.
+
 ### Variables de entorno para el correo de respaldo
 
 | Variable | Predeterminado | Función |
@@ -85,7 +131,7 @@ El correo verificado queda almacenado como método alternativo de contacto, pero
 
 ### Verificaciones de esta entrega
 
-Comprobaciones ejecutadas en el entorno de preparación:
+Comprobaciones ejecutadas en el entorno de preparación del ZIP:
 
 - **Compilación sintáctica backend:** `python -m compileall -q app alembic/versions tests` — aprobada.
 - **Pruebas unitarias:** `python -m unittest tests.test_backup_email_security` — 9 pruebas aprobadas. Cubren códigos de seis dígitos, HMAC contextual, validación de schemas, unicidad parcial y comportamiento de envío/logs con transporte SMTP simulado.
@@ -94,7 +140,9 @@ Comprobaciones ejecutadas en el entorno de preparación:
 - **Historial de migraciones:** `alembic heads` — `0006_backup_email` aparece como cabeza única.
 - **Generación offline de SQL:** `alembic upgrade head --sql` — se generó el SQL de toda la cadena y se verificaron las tablas/índices nuevos. **Esto no ejecuta la migración en una base real.**
 - **Parseo TS/TSX:** 71 archivos sin errores sintácticos mediante TypeScript `transpileModule`. Esta comprobación no resuelve imports ni reemplaza el typecheck de `tsc`.
-- 
+
+**Validaciones pendientes por limitaciones del entorno:** no se pudo completar `npm ci` porque el paquete requerido no estaba en la caché y el registro npm no era accesible. Por eso `npm run build`, `npm run lint` y el typecheck completo no se consideran aprobados. Tampoco se ejecutaron los endpoints contra una base PostgreSQL real, no se aplicó la migración a datos existentes y no se envió correo a través de un servidor SMTP real. Las pruebas de email usan un transporte SMTP simulado. Antes de desplegar, completá esas validaciones en el entorno del proyecto y revisá los logs de la migración.
+
 ---
 
 ## Cambios incorporados en Laniakea 3.1 respecto de Hydra 3.0
