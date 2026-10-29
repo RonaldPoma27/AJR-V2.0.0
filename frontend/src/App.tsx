@@ -19,6 +19,7 @@ import AdminPortfolio from "@/pages/admin/AdminPortfolio";
 import AdminTeam from "@/pages/admin/AdminTeam";
 import AdminTrash from "@/pages/admin/AdminTrash";
 import AdminAudit from "@/pages/admin/AdminAudit";
+import AdminAgileProjects from "@/pages/admin/AdminAgileProjects";
 
 const STAFF = ["ADMIN", "TECHNICIAN"] as const;
 
@@ -47,6 +48,7 @@ export default function App() {
         <Route path="/admin/soporte" element={<ProtectedRoute roles={[...STAFF]}><AdminSupport /></ProtectedRoute>} />
         <Route path="/admin/portfolio" element={<ProtectedRoute roles={[...STAFF]}><AdminPortfolio /></ProtectedRoute>} />
         <Route path="/admin/equipo" element={<ProtectedRoute roles={[...STAFF]}><AdminTeam /></ProtectedRoute>} />
+        <Route path="/admin/proyectos-agiles" element={<ProtectedRoute roles={[...STAFF]}><AdminAgileProjects /></ProtectedRoute>} />
         <Route path="/admin/papelera" element={<ProtectedRoute roles={["ADMIN"]}><AdminTrash /></ProtectedRoute>} />
         <Route path="/admin/auditoria" element={<ProtectedRoute roles={["ADMIN"]}><AdminAudit /></ProtectedRoute>} />
         <Route path="/admin/perfil" element={<Navigate to="/cuenta" replace />} />
