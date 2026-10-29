@@ -1,4 +1,5 @@
 from app.models.audit import AuditLog, IpBlock
+from app.models.agile import AgileMembership, AgileProject, AgileSprint, AgileSprintItem, AgileWorkItem, AgileWorkItemComment, AgileWorkItemHistory
 from app.models.base import Base
 from app.models.backup_email import BackupEmail, BackupEmailChallenge
 from app.models.client_order import ClientOrder
@@ -20,6 +21,13 @@ from app.models.ticket import Ticket, TicketComment, TicketUpdate
 from app.models.user import User
 
 __all__ = [
+    "AgileMembership",
+    "AgileProject",
+    "AgileSprint",
+    "AgileSprintItem",
+    "AgileWorkItem",
+    "AgileWorkItemComment",
+    "AgileWorkItemHistory",
     "ApplicationStatus",
     "AuditLog",
     "BackupEmail",
