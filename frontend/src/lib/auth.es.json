@@ -1,0 +1,58 @@
+{
+  "auth": {
+    "fields": {
+      "email": "Email",
+      "password": "Contraseña",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "confirmPassword": "Repetí la contraseña"
+    },
+    "login": {
+      "title": "Iniciar sesión",
+      "subtitle": "Ingresá para seguir tus pedidos y escribirnos por soporte.",
+      "submit": "Ingresar",
+      "submitting": "Ingresando...",
+      "noAccount": "¿No tenés cuenta?",
+      "registerLink": "Registrate"
+    },
+    "register": {
+      "title": "Crear cuenta",
+      "subtitle": "Con tu cuenta podés pedir proyectos, seguir su avance y escribirnos por soporte.",
+      "submit": "Crear cuenta",
+      "submitting": "Creando cuenta...",
+      "haveAccount": "¿Ya tenés cuenta?",
+      "loginLink": "Iniciá sesión"
+    },
+    "errors": {
+      "server": "No pudimos conectar con el servidor. Probá de nuevo en unos minutos.",
+      "badCredentials": "Email o contraseña incorrectos.",
+      "tooMany": "Demasiados intentos. Esperá un momento y probá de nuevo.",
+      "loginFailed": "No pudimos iniciar sesión (código {{status}}).",
+      "unexpected": "Ocurrió un error inesperado. Probá de nuevo.",
+      "firstNameRequired": "Escribí tu nombre.",
+      "lastNameRequired": "Escribí tu apellido.",
+      "emailInvalid": "Revisá el email: parece que tiene un error.",
+      "passwordMismatch": "Las contraseñas no coinciden.",
+      "invalidData": "Revisá los datos: alguno no es válido.",
+      "registerFailed": "No pudimos crear tu cuenta (código {{status}})."
+    }
+  },
+  "password": {
+    "requirements": "Requisitos de la contraseña",
+    "met": "cumplido",
+    "pending": "pendiente",
+    "rules": {
+      "length": "8 caracteres o más",
+      "upper": "Una mayúscula",
+      "digit": "Un número",
+      "special": "Un carácter especial (! ? # $ %…)"
+    },
+    "errors": {
+      "tooLong": "Es demasiado larga (máximo 72 bytes).",
+      "minLength": "Tiene que tener al menos 8 caracteres.",
+      "upper": "Tiene que incluir al menos una mayúscula.",
+      "digit": "Tiene que incluir al menos un número.",
+      "special": "Tiene que incluir al menos un carácter especial (por ejemplo ! ? # $ %)."
+    }
+  }
+}
