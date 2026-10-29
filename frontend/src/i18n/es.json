@@ -42,7 +42,8 @@
       "ADMIN": "Administrador"
     },
     "audit": "Auditoría",
-    "accountSecurity": "Seguridad de la cuenta"
+    "accountSecurity": "Seguridad de la cuenta",
+    "agileProjects": "Proyectos ágiles"
   },
   "theme": {
     "toLight": "Cambiar a tema claro",

@@ -42,7 +42,8 @@
       "ADMIN": "Administrator"
     },
     "audit": "Audit log",
-    "accountSecurity": "Account security"
+    "accountSecurity": "Account security",
+    "agileProjects": "Agile projects"
   },
   "theme": {
     "toLight": "Switch to light theme",
