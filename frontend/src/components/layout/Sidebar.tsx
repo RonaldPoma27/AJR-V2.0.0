@@ -6,6 +6,7 @@ import {
   FileText,
   Home,
   Image as ImageIcon,
+  Layers,
   LifeBuoy,
   LogIn,
   LogOut,
@@ -49,6 +50,7 @@ const PANEL_ITEMS: Item[] = [
   { to: "/admin/soporte", labelKey: "sidebar.adminSupport", icon: MessagesSquare },
   { to: "/admin/portfolio", labelKey: "sidebar.portfolio", icon: ImageIcon },
   { to: "/admin/equipo", labelKey: "sidebar.team", icon: Users },
+  { to: "/admin/proyectos-agiles", labelKey: "sidebar.agileProjects", icon: Layers },
 ];
 const TRASH_ITEM: Item = { to: "/admin/papelera", labelKey: "sidebar.trash", icon: Trash2 };
 const AUDIT_ITEM: Item = { to: "/admin/auditoria", labelKey: "sidebar.audit", icon: ScrollText };
