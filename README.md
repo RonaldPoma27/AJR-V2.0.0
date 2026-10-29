@@ -2,7 +2,7 @@
 
 **AJR DATA** es una plataforma web para una consultora tecnológica orientada a PyMEs. Combina una web pública y portfolio con un espacio de clientes, gestión de pedidos, soporte y un panel interno para el equipo.
 
-La entrega **`ajrdata-v3.3-scrumban`** parte de `ajrdata-v3.2-rea`, conserva su funcionalidad de seguridad y añade un módulo de gestión ágil de proyectos. La entrega base incluye una funcionalidad de seguridad full-stack: alta, verificación, consulta, cambio y eliminación de un correo electrónico de respaldo. Incorpora persistencia mediante Alembic, endpoints autenticados, controles de reautenticación, límites de solicitudes, traducciones ES/EN y una pantalla de seguridad de cuenta. El correo de respaldo es independiente del correo principal y **no se habilita para recuperar contraseñas en esta versión**.
+La entrega **`ajrdata-v3.3-morpheo`** parte de `ajrdata-v3.2-rea`, conserva su funcionalidad de seguridad y añade un módulo de gestión ágil de proyectos. La entrega base incluye una funcionalidad de seguridad full-stack: alta, verificación, consulta, cambio y eliminación de un correo electrónico de respaldo. Incorpora persistencia mediante Alembic, endpoints autenticados, controles de reautenticación, límites de solicitudes, traducciones ES/EN y una pantalla de seguridad de cuenta. El correo de respaldo es independiente del correo principal y **no se habilita para recuperar contraseñas en esta versión**.
 
 Repositorio: [RonaldPoma27/AJR-V2.0.0](https://github.com/RonaldPoma27/AJR-V2.0.0)  
 Rama base inspeccionada: [ajrdata-3.1-laniakea](https://github.com/RonaldPoma27/AJR-V2.0.0/tree/ajrdata-3.1-laniakea)  
