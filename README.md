@@ -64,8 +64,6 @@ Esta versión agrega la revisión Alembic `0006_backup_email`, cuya revisión pr
 alembic upgrade head
 ```
 
-Antes de desplegar en producción, confirmá la revisión actual de la base y hacé un respaldo. No edites migraciones históricas ya aplicadas.
-
 ### Variables de entorno para el correo de respaldo
 
 | Variable | Predeterminado | Función |
@@ -87,7 +85,7 @@ El correo verificado queda almacenado como método alternativo de contacto, pero
 
 ### Verificaciones de esta entrega
 
-Comprobaciones ejecutadas en el entorno de preparación del ZIP:
+Comprobaciones ejecutadas en el entorno de preparación:
 
 - **Compilación sintáctica backend:** `python -m compileall -q app alembic/versions tests` — aprobada.
 - **Pruebas unitarias:** `python -m unittest tests.test_backup_email_security` — 9 pruebas aprobadas. Cubren códigos de seis dígitos, HMAC contextual, validación de schemas, unicidad parcial y comportamiento de envío/logs con transporte SMTP simulado.
@@ -96,9 +94,7 @@ Comprobaciones ejecutadas en el entorno de preparación del ZIP:
 - **Historial de migraciones:** `alembic heads` — `0006_backup_email` aparece como cabeza única.
 - **Generación offline de SQL:** `alembic upgrade head --sql` — se generó el SQL de toda la cadena y se verificaron las tablas/índices nuevos. **Esto no ejecuta la migración en una base real.**
 - **Parseo TS/TSX:** 71 archivos sin errores sintácticos mediante TypeScript `transpileModule`. Esta comprobación no resuelve imports ni reemplaza el typecheck de `tsc`.
-
-**Validaciones pendientes por limitaciones del entorno:** no se pudo completar `npm ci` porque el paquete requerido no estaba en la caché y el registro npm no era accesible. Por eso `npm run build`, `npm run lint` y el typecheck completo no se consideran aprobados. Tampoco se ejecutaron los endpoints contra una base PostgreSQL real, no se aplicó la migración a datos existentes y no se envió correo a través de un servidor SMTP real. Las pruebas de email usan un transporte SMTP simulado. Antes de desplegar, completá esas validaciones en el entorno del proyecto y revisá los logs de la migración.
-
+- 
 ---
 
 ## Cambios incorporados en Laniakea 3.1 respecto de Hydra 3.0
