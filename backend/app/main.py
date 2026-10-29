@@ -16,6 +16,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s [%(name)s] %(messa
 from app.api.deps import DBSession
 from app.api.routers import (
     applications,
+    agile,
     audit,
     security,
     auth,
@@ -79,6 +80,7 @@ async def app_error_handler(_: Request, exc: AppError) -> JSONResponse:
 # --------------------------------------------------------------------------- API (/api)
 api = APIRouter(prefix="/api")
 api.include_router(auth.router)
+api.include_router(agile.router)
 api.include_router(audit.router)
 api.include_router(users.router)
 api.include_router(security.router)
