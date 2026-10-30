@@ -1,0 +1,57 @@
+{
+  "security": {
+    "title": "Seguridad de la cuenta",
+    "intro": "Administrá tu correo de respaldo sin modificar el correo principal.",
+    "back": "Volver a mi cuenta",
+    "loading": "Cargando seguridad…",
+    "refresh": "Actualizar estado",
+    "manage": "Agregar o cambiar correo",
+    "email": "Nuevo correo de respaldo",
+    "password": "Contraseña actual",
+    "passwordHint": "Necesaria para agregar, reenviar o eliminar. Nunca se guarda en este dispositivo.",
+    "add": "Enviar código",
+    "change": "Verificar un nuevo correo",
+    "resend": "Reenviar código",
+    "wait": "Podés solicitar otro código en {{seconds}} s.",
+    "verifyTitle": "Confirmá tu correo",
+    "code": "Código de 6 dígitos",
+    "verify": "Verificar código",
+    "removeTitle": "Eliminar correo de respaldo",
+    "removeWarning": "Se eliminarán el correo de respaldo y cualquier verificación pendiente. Te quedarás sin este método alternativo. Tu correo principal no cambia.",
+    "confirmRemove": "Confirmo que quiero eliminar el correo de respaldo y cancelar la verificación pendiente.",
+    "remove": "Eliminar y cancelar pendientes",
+    "saving": "Procesando…",
+    "verifiedAt": "Verificado el {{date}}",
+    "pendingAddress": "Verificación pendiente: {{email}}",
+    "previousActive": "Tu correo verificado anterior sigue vigente hasta confirmar el nuevo.",
+    "expiresAt": "El código vence el {{date}}",
+    "attempts": "Intentos disponibles: {{count}}",
+    "futureRecovery": "La recuperación de contraseña por correo de respaldo todavía no está disponible en esta versión.",
+    "noticeFailed": "El cambio se guardó, pero no pudimos enviar el aviso a tu correo principal.",
+    "states": {
+      "not_configured": "Sin correo de respaldo",
+      "pending": "Pendiente de verificación",
+      "verified": "Correo de respaldo verificado"
+    },
+    "success": {
+      "request": "Enviamos el código al correo propuesto. Revisá también spam.",
+      "resend": "Enviamos un nuevo código. El anterior ya no es válido.",
+      "verify": "Correo de respaldo verificado.",
+      "remove": "El correo de respaldo y los códigos pendientes se eliminaron."
+    },
+    "errors": {
+      "connection": "No pudimos confirmar la operación por un problema de conexión. Revisá el estado antes de repetirla.",
+      "generic": "No pudimos completar la operación. Actualizá el estado y reintentá.",
+      "backup_address_unavailable": "No se puede usar esa dirección. Debe ser distinta al correo principal y no estar en uso.",
+      "backup_password_incorrect": "La contraseña actual no es correcta.",
+      "backup_no_challenge": "No hay una verificación pendiente. Actualizá el estado o solicitá un código.",
+      "backup_cooldown": "Esperá antes de solicitar otro código.",
+      "backup_rate_limited": "Alcanzaste el límite de operaciones. Esperá hasta una hora antes de reintentar.",
+      "backup_mail_unavailable": "No pudimos enviar el correo. El estado anterior se conserva. Intentá más tarde.",
+      "backup_code_expired": "El código venció. Solicitá uno nuevo.",
+      "backup_attempts_exhausted": "Se agotaron los intentos. Solicitá un nuevo código cuando esté disponible.",
+      "backup_code_invalid": "El código no es correcto.",
+      "backup_invalid_input": "Revisá el correo, la contraseña y el formato del código."
+    }
+  }
+}
