@@ -51,7 +51,7 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    version="ajrdata-v3.3-morpheo",
+    version="ajrdata-3.5-hercules",
     lifespan=lifespan,
     docs_url="/api/docs",
     redoc_url=None,
