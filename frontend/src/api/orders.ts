@@ -4,6 +4,17 @@ import { PAGE_SIZE, type Paginated, type PageResult } from "./types";
 
 export type OrderStatus = "nuevo" | "en_revision" | "contactado" | "finalizado" | "descartado";
 
+export interface OrderRegretRequest {
+  order_id: number;
+  contact_email: string;
+}
+
+export interface OrderRegretReceipt {
+  request_code: string;
+  requested_at: string;
+  message: string;
+}
+
 /** Camino "feliz" de un pedido (lo dibuja el Stepper). `descartado` queda fuera: es un desvío. */
 export const ORDER_FLOW: OrderStatus[] = ["nuevo", "en_revision", "contactado", "finalizado"];
 
@@ -33,6 +44,8 @@ export interface ClientOrder {
   status: OrderStatus;
   created_at: string;
   updated_at: string;
+  regret_requested_at?: string | null;
+  regret_code?: string | null;
 }
 
 /** Requiere sesión: el pedido queda asociado al cliente logueado. */
@@ -68,6 +81,24 @@ export function useUpdateOrderStatus() {
       return data;
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+  });
+}
+
+/**
+ * Público: recepción de una solicitud de arrepentimiento.
+ * El endpoint no exige sesión; la API solo verifica el pedido y el email asociado.
+ */
+export function useSubmitOrderRegret() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: OrderRegretRequest): Promise<OrderRegretReceipt> => {
+      const { data } = await apiClient.post<OrderRegretReceipt>("/orders/regret", payload);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders", "mine"] });
       queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
   });
