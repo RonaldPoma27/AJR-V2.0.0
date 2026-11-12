@@ -10,6 +10,7 @@ export default defineConfig({
     },
   },
   server: {
+    fs: { allow: [path.resolve(__dirname), path.resolve(__dirname, "../docs")], strict: true },
     // El backend ahora vive bajo /api (sin reescribir la ruta).
     proxy: {
       "/api": {
