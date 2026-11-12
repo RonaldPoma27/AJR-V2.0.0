@@ -1910,3 +1910,418 @@ h4,
     transform: none !important;
   }
 }
+
+/* --------------------------------------------------------------------------
+   AJR DATA 3.4 — TANATOS / unified visual refinement
+   Visual-only layer: keeps existing routes, components, data and workflows.
+   -------------------------------------------------------------------------- */
+:root {
+  --ajr-ink: 5 10 22;
+  --ajr-panel: 10 18 34;
+  --ajr-panel-raised: 15 27 48;
+  --ajr-border: 91 119 158;
+  --ajr-cyan: 34 211 238;
+  --ajr-blue: 59 130 246;
+  --ajr-violet: 139 92 246;
+  --ajr-font-display: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --ajr-font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--ajr-font-body);
+  font-feature-settings: "ss01" on, "cv11" on;
+  letter-spacing: -0.012em;
+  background-color: #070d1b;
+  background-image:
+    radial-gradient(ellipse at 8% 0%, rgb(14 165 233 / 0.10), transparent 34rem),
+    radial-gradient(ellipse at 92% 18%, rgb(124 58 237 / 0.095), transparent 38rem),
+    linear-gradient(180deg, #070d1b 0%, #0a1222 48%, #080e1b 100%);
+}
+.font-display, h1, h2, h3, h4, .ajr-section-title, .ajr-home-title {
+  font-family: var(--ajr-font-display);
+  letter-spacing: -0.035em;
+}
+
+.ajr-app-shell { min-height: 100vh; }
+.ajr-navbar {
+  background: linear-gradient(105deg, rgb(5 10 22 / 0.96), rgb(11 20 38 / 0.94) 52%, rgb(7 13 27 / 0.96));
+  border-bottom-color: rgb(125 163 210 / 0.16) !important;
+  box-shadow: 0 12px 42px rgb(0 0 0 / 0.26), 0 1px 0 rgb(34 211 238 / 0.06);
+  backdrop-filter: blur(22px) saturate(145%);
+  -webkit-backdrop-filter: blur(22px) saturate(145%);
+}
+.ajr-navbar nav { height: 4.5rem; }
+.ajr-brand-mark { text-decoration: none; }
+.ajr-brand-logo { filter: drop-shadow(0 0 12px rgb(34 211 238 / 0.20)); }
+.ajr-brand-mark:hover .ajr-brand-logo { filter: drop-shadow(0 0 17px rgb(34 211 238 / 0.38)); }
+.ajr-brand-mark span span:first-child { text-shadow: 0 0 22px rgb(34 211 238 / 0.12); }
+
+/* Shared premium surface language across public, account and admin routes. */
+.app-main {
+  color: #eaf2ff;
+  isolation: isolate;
+}
+.app-main > :first-child { transform-origin: 50% 0; }
+.app-main h1:not(.ajr-home-title) { line-height: 1.08; }
+.app-main h2, .app-main h3 { text-wrap: balance; }
+.app-main .rounded-lg.border.bg-surface,
+.app-main .rounded-xl.border.bg-surface,
+.app-main .rounded-2xl.border.bg-surface,
+.app-main .rounded-md.border.bg-surface,
+.app-main [class*="rounded-"][class*="border"]:not(button):not(input):not(textarea):not(select) {
+  border-color: rgb(119 151 194 / 0.17);
+}
+.app-main .rounded-lg.border.bg-surface,
+.app-main .rounded-xl.border.bg-surface,
+.app-main .rounded-2xl.border.bg-surface {
+  background-image: linear-gradient(145deg, rgb(17 31 54 / 0.74), rgb(9 17 32 / 0.86));
+  box-shadow: 0 18px 48px rgb(0 0 0 / 0.19), inset 0 1px 0 rgb(255 255 255 / 0.035);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.app-main .rounded-lg.border.bg-surface:hover,
+.app-main .rounded-xl.border.bg-surface:hover,
+.app-main .rounded-2xl.border.bg-surface:hover {
+  border-color: rgb(34 211 238 / 0.32);
+  box-shadow: 0 22px 54px rgb(0 0 0 / 0.24), 0 0 28px rgb(34 211 238 / 0.045), inset 0 1px 0 rgb(255 255 255 / 0.055);
+}
+
+/* Inputs and data-heavy controls: clearer focus and more comfortable geometry. */
+.app-main input:not([type="checkbox"]):not([type="radio"]),
+.app-main textarea,
+.app-main select {
+  min-height: 2.65rem;
+  border-color: rgb(133 159 195 / 0.22);
+  border-radius: 0.78rem;
+  background-color: rgb(7 15 29 / 0.82);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.18);
+}
+.app-main input:focus,
+.app-main textarea:focus,
+.app-main select:focus {
+  border-color: rgb(34 211 238 / 0.68) !important;
+  box-shadow: 0 0 0 3px rgb(34 211 238 / 0.12), 0 0 22px rgb(34 211 238 / 0.055) !important;
+}
+.app-main table { border-collapse: separate; border-spacing: 0; }
+.app-main thead th {
+  color: #b8c9e2;
+  font-family: var(--ajr-font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+.app-main tbody tr { transition: background-color 180ms ease; }
+.app-main tbody tr:hover { background-color: rgb(34 211 238 / 0.045); }
+
+/* Button feedback: crisp rather than over-glowing. */
+.app-main button, .app-main a { -webkit-tap-highlight-color: transparent; }
+.app-main button:not(:disabled):active,
+.app-main a[class*="bg-brand"]:active { transform: translateY(0) scale(0.985); }
+.app-main button:disabled { cursor: not-allowed; }
+
+/* Home hero becomes more editorial and atmospheric without changing its content. */
+.ajr-home-hero-grid { align-items: center; }
+.ajr-home-hero-copy { position: relative; z-index: 1; }
+.ajr-home-title { font-weight: 800; }
+.ajr-home-eyebrow, .ajr-section-eyebrow {
+  letter-spacing: 0.19em;
+  font-weight: 800;
+}
+.ajr-hero-visual-shell {
+  border: 1px solid rgb(103 164 222 / 0.22);
+  background: radial-gradient(ellipse at 50% 42%, rgb(14 165 233 / 0.13), transparent 58%), linear-gradient(145deg, rgb(13 27 50 / 0.82), rgb(5 12 25 / 0.92));
+  box-shadow: 0 30px 90px rgb(0 0 0 / 0.32), 0 0 55px rgb(34 211 238 / 0.075), inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+.ajr-home-section, .ajr-faq-item, .ajr-process-card {
+  border-color: rgb(117 153 196 / 0.19);
+  box-shadow: 0 20px 58px rgb(0 0 0 / 0.19), inset 0 1px 0 rgb(255 255 255 / 0.035);
+}
+.ajr-home-section:hover, .ajr-process-card:hover {
+  transform: translateY(-3px);
+  border-color: rgb(34 211 238 / 0.36);
+}
+.ajr-process-card { background: linear-gradient(145deg, rgb(16 30 52 / 0.92), rgb(8 16 30 / 0.94)); }
+.ajr-faq-item { background: linear-gradient(145deg, rgb(14 26 46 / 0.95), rgb(8 15 29 / 0.96)); }
+
+/* Sidebar drawer: richer active state and consistent visual depth. */
+.ajr-mobile-panel, .ajr-mobile-menu {
+  border-color: rgb(119 151 194 / 0.18) !important;
+  box-shadow: 24px 0 80px rgb(0 0 0 / 0.42);
+}
+.ajr-nav-link { border: 1px solid transparent; border-radius: 0.78rem; }
+.ajr-nav-link[aria-current="page"] {
+  border-color: rgb(34 211 238 / 0.18);
+  background: linear-gradient(100deg, rgb(6 182 212 / 0.16), rgb(59 130 246 / 0.10)) !important;
+  box-shadow: inset 3px 0 0 rgb(34 211 238), 0 7px 22px rgb(0 0 0 / 0.14);
+}
+
+/* Scrollbars are subtle but visible on dark surfaces. */
+* { scrollbar-color: rgb(71 105 148 / 0.7) rgb(7 13 25 / 0.8); scrollbar-width: thin; }
+*::-webkit-scrollbar { width: 9px; height: 9px; }
+*::-webkit-scrollbar-track { background: rgb(7 13 25 / 0.8); }
+*::-webkit-scrollbar-thumb { border: 2px solid rgb(7 13 25 / 0.8); border-radius: 999px; background: linear-gradient(180deg, #2563eb, #0891b2); }
+
+@keyframes tanatos-glow-breathe {
+  0%, 100% { opacity: 0.48; transform: scale(0.98); }
+  50% { opacity: 0.82; transform: scale(1.035); }
+}
+@keyframes tanatos-soft-rise {
+  from { opacity: 0; transform: translateY(13px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.ajr-home-hero::before { animation: tanatos-glow-breathe 10s ease-in-out infinite; }
+.app-main > :first-child { animation: tanatos-soft-rise 520ms cubic-bezier(.2,.72,.24,1) both; }
+
+@media (max-width: 767px) {
+  .ajr-navbar nav { height: 4.15rem; }
+  .ajr-brand-mark { width: 8.5rem; }
+  .ajr-brand-logo { width: 2.7rem; height: 2.7rem; }
+  .ajr-brand-mark span span:first-child { font-size: 0.86rem; }
+  .ajr-brand-mark span span:last-child { font-size: 0.48rem; letter-spacing: 0.16em; }
+  .app-main .rounded-lg.border.bg-surface,
+  .app-main .rounded-xl.border.bg-surface,
+  .app-main .rounded-2xl.border.bg-surface { backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .ajr-home-hero::before, .app-main > :first-child { animation: none !important; }
+  .app-main *, .ajr-navbar *, .ajr-nav-link { transition-duration: 0.01ms !important; }
+}
+
+
+/* ========================================================================
+   AJR DATA 3.4 — TANATOS / visual re-architecture of every non-home view
+   The home route is intentionally excluded from this layer. This stylesheet
+   changes presentation and layout only; existing React state, handlers,
+   links, forms and API bindings remain the source of behavior.
+   ======================================================================== */
+:root {
+  --tanatos-display: "Plus Jakarta Sans", "DM Sans", Inter, system-ui, sans-serif;
+  --tanatos-body: "DM Sans", Inter, system-ui, sans-serif;
+  --tanatos-mono: "Space Grotesk", ui-monospace, monospace;
+  --tanatos-glass: rgb(10 20 39 / .72);
+  --tanatos-glass-strong: rgb(8 16 32 / .9);
+  --tanatos-stroke: rgb(123 164 210 / .18);
+  --tanatos-glow: 0 22px 70px rgb(0 0 0 / .28), 0 0 0 1px rgb(65 155 225 / .035);
+}
+
+/* The public landing page stays outside this redesign. */
+.ajr-internal-route {
+  isolation: isolate;
+  padding: clamp(.75rem, 2vw, 1.75rem) clamp(.75rem, 2.2vw, 2rem) clamp(2rem, 4vw, 4rem);
+  background:
+    radial-gradient(ellipse at 4% 4%, rgb(14 165 233 / .075), transparent 34rem),
+    radial-gradient(ellipse at 96% 22%, rgb(124 58 237 / .075), transparent 38rem),
+    linear-gradient(180deg, rgb(7 13 27 / .38), rgb(5 10 22 / .12));
+  font-family: var(--tanatos-body);
+}
+.ajr-internal-route::before {
+  position: absolute; z-index: -1; pointer-events: none; content: "";
+  inset: 0 0 auto; height: min(34rem, 58vh);
+  background: linear-gradient(180deg, rgb(20 54 94 / .13), transparent 78%);
+  mask-image: linear-gradient(#000, transparent);
+}
+.ajr-internal-route > :first-child {
+  width: min(100%, 1540px);
+  margin-inline: auto;
+  animation: tanatos-view-enter .62s cubic-bezier(.18,.72,.2,1) both;
+}
+.ajr-internal-route h1,
+.ajr-internal-route h2,
+.ajr-internal-route h3,
+.ajr-internal-route legend {
+  font-family: var(--tanatos-display);
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+.ajr-internal-route h1 {
+  font-size: clamp(1.8rem, 3vw, 2.65rem);
+  line-height: 1.12;
+  font-weight: 800;
+  background: linear-gradient(105deg, #f8fbff 12%, #9beaff 62%, #b9a5ff 100%);
+  color: transparent; background-clip: text; -webkit-background-clip: text;
+  filter: drop-shadow(0 8px 24px rgb(14 165 233 / .12));
+}
+.ajr-internal-route h2 { font-weight: 750; }
+.ajr-internal-route p { text-wrap: pretty; }
+.ajr-internal-route :is(input,textarea,select) {
+  min-height: 2.8rem;
+  border-radius: .8rem;
+  border-color: rgb(120 157 202 / .24);
+  background-color: rgb(5 13 28 / .72);
+  color: #eef7ff;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .025);
+}
+.ajr-internal-route textarea { min-height: 7rem; }
+.ajr-internal-route :is(input,textarea,select):hover { border-color: rgb(56 189 248 / .42); }
+.ajr-internal-route :is(input,textarea,select):focus {
+  border-color: rgb(34 211 238 / .8);
+  box-shadow: 0 0 0 3px rgb(34 211 238 / .12), 0 0 26px rgb(14 165 233 / .08);
+}
+.ajr-internal-route label { color: #d8e7fa; font-weight: 600; }
+.ajr-internal-route :is(button,a) { -webkit-tap-highlight-color: transparent; }
+.ajr-internal-route button:not(:disabled) { cursor: pointer; }
+
+/* New visual language for panels: framed glass surfaces and depth. */
+.ajr-internal-route :is(.rounded-lg.border.bg-surface,.rounded-xl.border.bg-surface,.rounded-md.border.bg-surface,
+  form.rounded-lg.border, form.rounded-xl.border, .ajr-support-workspace, .ajr-agile-panel) {
+  position: relative;
+  border-color: var(--tanatos-stroke) !important;
+  border-radius: 1.15rem !important;
+  background: linear-gradient(145deg, rgb(15 29 51 / .91), rgb(7 15 30 / .88)) !important;
+  box-shadow: var(--tanatos-glow);
+  backdrop-filter: blur(18px);
+}
+.ajr-internal-route :is(.rounded-lg.border.bg-surface,.rounded-xl.border.bg-surface,form.rounded-lg.border)::before {
+  position: absolute; pointer-events: none; content: "";
+  inset: 0 12% auto; height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(103 232 249 / .48), rgb(167 139 250 / .38), transparent);
+}
+.ajr-internal-route :is(.rounded-lg.border.bg-surface,.rounded-xl.border.bg-surface,form.rounded-lg.border) {
+  transition: transform .24s ease, border-color .24s ease, box-shadow .24s ease;
+}
+.ajr-internal-route :is(.rounded-lg.border.bg-surface,.rounded-xl.border.bg-surface,form.rounded-lg.border):hover {
+  border-color: rgb(83 190 240 / .38) !important;
+  box-shadow: 0 25px 65px rgb(0 0 0 / .34), 0 0 32px rgb(14 165 233 / .075);
+}
+.ajr-internal-route :is(ul,ol) > li.rounded-lg.border,
+.ajr-internal-route :is(ul,ol) > li.rounded-xl.border {
+  border-color: rgb(110 151 198 / .18) !important;
+  border-radius: 1rem !important;
+  background: linear-gradient(125deg, rgb(15 29 52 / .94), rgb(8 17 34 / .94)) !important;
+  box-shadow: 0 12px 32px rgb(0 0 0 / .18);
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+.ajr-internal-route :is(ul,ol) > li.rounded-lg.border:hover,
+.ajr-internal-route :is(ul,ol) > li.rounded-xl.border:hover {
+  transform: translateY(-2px);
+  border-color: rgb(34 211 238 / .38) !important;
+  box-shadow: 0 18px 42px rgb(0 0 0 / .28), 0 0 24px rgb(34 211 238 / .055);
+}
+.ajr-internal-route :is(button[class*="bg-brand"],a[class*="bg-brand"]) {
+  border: 1px solid rgb(125 211 252 / .22);
+  border-radius: .85rem;
+  background-image: linear-gradient(110deg, #0891b2, #2563eb 58%, #6d55d8);
+  box-shadow: 0 10px 28px rgb(37 99 235 / .24), inset 0 1px 0 rgb(255 255 255 / .2);
+  transition: transform .2s ease, filter .2s ease, box-shadow .2s ease;
+}
+.ajr-internal-route :is(button[class*="bg-brand"],a[class*="bg-brand"]):hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.12) saturate(1.1);
+  box-shadow: 0 16px 34px rgb(37 99 235 / .3), 0 0 25px rgb(34 211 238 / .1);
+}
+.ajr-internal-route :is(button[class*="border"],a[class*="border"]) { border-radius: .8rem; }
+.ajr-internal-route table { border-collapse: separate; border-spacing: 0 .45rem; }
+.ajr-internal-route thead th {
+  color: #8daacb; font: 700 .69rem var(--tanatos-mono);
+  letter-spacing: .11em; text-transform: uppercase;
+}
+.ajr-internal-route tbody tr { background: rgb(13 27 48 / .78); }
+.ajr-internal-route tbody td { border-block: 1px solid rgb(120 157 202 / .12); }
+.ajr-internal-route tbody td:first-child { border-left: 1px solid rgb(120 157 202 / .12); border-radius: .75rem 0 0 .75rem; }
+.ajr-internal-route tbody td:last-child { border-right: 1px solid rgb(120 157 202 / .12); border-radius: 0 .75rem .75rem 0; }
+.ajr-internal-route :is(.text-xs.tabular-nums,.tabular-nums) { font-family: var(--tanatos-mono); }
+
+/* Recompose list-oriented admin pages into wider workspaces. */
+.ajr-internal-route[data-route^="/admin/"] > div[class*="max-w-4xl"],
+.ajr-internal-route[data-route^="/admin/"] > div[class*="max-w-3xl"],
+.ajr-internal-route[data-route^="/admin/"] > div[class*="max-w-5xl"] {
+  width: min(100%, 1480px); max-width: 1480px !important;
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(1rem, 2vw, 1.5rem);
+}
+.ajr-internal-route[data-route="/admin/pedidos"] > div > :first-child,
+.ajr-internal-route[data-route="/admin/postulaciones"] > div > :first-child,
+.ajr-internal-route[data-route="/admin/soporte"] > div > :first-child,
+.ajr-internal-route[data-route="/admin/equipo"] > div > :first-child,
+.ajr-internal-route[data-route="/admin/auditoria"] > div > :first-child,
+.ajr-internal-route[data-route="/admin/papelera"] > div > :first-child { grid-column: 1 / -1; }
+.ajr-internal-route[data-route="/admin/pedidos"] > div > :nth-child(2) { grid-column: 1 / -1; }
+.ajr-internal-route[data-route="/admin/pedidos"] > div > ul,
+.ajr-internal-route[data-route="/admin/postulaciones"] > div > ul,
+.ajr-internal-route[data-route="/admin/soporte"] > div > ul,
+.ajr-internal-route[data-route="/admin/auditoria"] > div > ul { grid-column: 1 / -1; }
+.ajr-internal-route[data-route="/admin/pedidos"] > div > ul { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; }
+.ajr-internal-route[data-route="/admin/pedidos"] > div > ul > li { margin-top: 0; }
+.ajr-internal-route[data-route="/admin/auditoria"] > div > ul { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .8rem; }
+.ajr-internal-route[data-route="/admin/auditoria"] > div > ul > li { margin-top: 0; border: 1px solid var(--tanatos-stroke); border-radius: 1rem; background: linear-gradient(135deg,rgb(13 27 48 / .92),rgb(7 15 29 / .92)); }
+.ajr-internal-route[data-route="/admin/equipo"] form { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: end; gap: 1rem; }
+.ajr-internal-route[data-route="/admin/equipo"] form h2,
+.ajr-internal-route[data-route="/admin/equipo"] form p { grid-column: 1 / -1; }
+.ajr-internal-route[data-route="/admin/equipo"] form button { align-self: end; }
+
+/* Account: two-column settings console, while retaining every original form. */
+.ajr-internal-route[data-route^="/cuenta"] > div[class*="max-w-"] { max-width: 1320px !important; }
+.ajr-internal-route[data-route="/cuenta"] form { padding: clamp(1.1rem,2vw,2rem); }
+.ajr-internal-route[data-route="/cuenta"] form h2 { padding-bottom: .85rem; border-bottom: 1px solid rgb(120 157 202 / .16); }
+.ajr-internal-route[data-route="/cuenta/pedidos"] ul { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; }
+.ajr-internal-route[data-route="/cuenta/pedidos"] ul > li { margin-top: 0; }
+.ajr-internal-route[data-route="/cuenta/soporte"] .ajr-support-workspace { min-height: min(74vh, 850px); border-radius: 1.3rem !important; }
+
+/* Authentication: centered, editorial card with a decorative side rail. */
+.ajr-internal-route[data-route="/login"] > div,
+.ajr-internal-route[data-route="/registro"] > div {
+  width: min(100%, 880px); max-width: 880px !important;
+  margin: clamp(1rem,4vh,3rem) auto;
+  padding: clamp(1.4rem,4vw,3.2rem);
+  border: 1px solid rgb(123 164 210 / .2);
+  border-radius: 1.5rem;
+  background: linear-gradient(120deg,rgb(11 23 43 / .96),rgb(7 14 29 / .94));
+  box-shadow: 0 32px 90px rgb(0 0 0 / .38), 0 0 60px rgb(14 165 233 / .055);
+  position: relative; overflow: hidden;
+}
+.ajr-internal-route[data-route="/login"] > div::before,
+.ajr-internal-route[data-route="/registro"] > div::before {
+  content: ""; position: absolute; inset: 0 0 auto; height: 3px;
+  background: linear-gradient(90deg,#06b6d4,#3b82f6,#8b5cf6);
+}
+.ajr-internal-route[data-route="/login"] form,
+.ajr-internal-route[data-route="/registro"] form { margin-top: 1.6rem; }
+
+/* Portfolio and support get a gallery/workspace rather than a generic list. */
+.ajr-internal-route[data-route="/portfolio"] .ajr-portfolio-project { border-radius: 1.35rem; border: 1px solid var(--tanatos-stroke); background: linear-gradient(145deg,rgb(13 27 49 / .92),rgb(6 14 28 / .92)); box-shadow: var(--tanatos-glow); }
+.ajr-internal-route[data-route="/portfolio"] .ajr-portfolio-project--featured { border-color: rgb(34 211 238 / .34); box-shadow: 0 24px 70px rgb(0 0 0 / .32),0 0 42px rgb(14 165 233 / .08); }
+.ajr-internal-route[data-route="/portfolio"] .ajr-portfolio-gallery { gap: .9rem; }
+.ajr-internal-route[data-route="/portfolio"] .ajr-portfolio-media { border-radius: .9rem; }
+.ajr-internal-route[data-route="/admin/proyectos-agiles"] .ajr-agile-workspace { max-width: none; }
+
+/* Distinct route-level identity accents. */
+.ajr-internal-route[data-route^="/admin"] { --route-accent: 34 211 238; }
+.ajr-internal-route[data-route^="/cuenta"] { --route-accent: 96 165 250; }
+.ajr-internal-route[data-route="/login"],
+.ajr-internal-route[data-route="/registro"] { --route-accent: 167 139 250; }
+.ajr-internal-route[data-route] :is(.text-accent,[class*="text-cyan-"]) { text-shadow: 0 0 18px rgb(var(--route-accent) / .12); }
+
+@keyframes tanatos-view-enter {
+  from { opacity: 0; transform: translate3d(0,16px,0) scale(.995); filter: blur(3px); }
+  to { opacity: 1; transform: translate3d(0,0,0) scale(1); filter: blur(0); }
+}
+@media (min-width: 1100px) {
+  .ajr-internal-route[data-route="/admin/pedidos"] > div,
+  .ajr-internal-route[data-route="/admin/auditoria"] > div { grid-template-columns: repeat(12,minmax(0,1fr)); }
+  .ajr-internal-route[data-route="/admin/pedidos"] > div > :nth-child(2) { grid-column: 1 / -1; }
+  .ajr-internal-route[data-route="/admin/pedidos"] > div > :nth-child(3) { grid-column: 1 / -1; }
+  .ajr-internal-route[data-route="/admin/pedidos"] > div > ul { grid-column: 1 / -1; }
+}
+@media (max-width: 900px) {
+  .ajr-internal-route[data-route="/admin/pedidos"] > div > ul,
+  .ajr-internal-route[data-route="/admin/auditoria"] > div > ul,
+  .ajr-internal-route[data-route="/cuenta/pedidos"] ul { grid-template-columns: minmax(0,1fr); }
+}
+@media (max-width: 640px) {
+  .ajr-internal-route { padding: .65rem .65rem 2rem; }
+  .ajr-internal-route > :first-child { animation-duration: .42s; }
+  .ajr-internal-route[data-route="/login"] > div,
+  .ajr-internal-route[data-route="/registro"] > div { border-radius: 1.1rem; padding: 1.25rem; }
+  .ajr-internal-route[data-route="/admin/equipo"] form { grid-template-columns: minmax(0,1fr); }
+  .ajr-internal-route[data-route="/admin/equipo"] form button { width: 100%; }
+  .ajr-internal-route[data-route="/cuenta/soporte"] .ajr-support-workspace { min-height: calc(100dvh - 12rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ajr-internal-route > :first-child { animation: none !important; }
+  .ajr-internal-route :is(.rounded-lg.border.bg-surface,.rounded-xl.border.bg-surface,form.rounded-lg.border,
+    ul > li.rounded-lg.border,ul > li.rounded-xl.border,button,a) { transition: none !important; }
+  .ajr-internal-route :is(ul,ol) > li.rounded-lg.border:hover,
+  .ajr-internal-route :is(ul,ol) > li.rounded-xl.border:hover { transform: none; }
+}
