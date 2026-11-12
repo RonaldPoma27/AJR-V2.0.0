@@ -1,6 +1,22 @@
-# Actualización 3.3 MORPHEO sobre REA
+# AJR DATA 3.4 — TANATOS
 
-Módulo ágil integrado de forma selectiva. Ver [guía, pruebas y despliegue](docs/MORPHEO.md) y [archivos cambiados](docs/MORPHEO_FILES.md). Se conservan las instrucciones originales de REA debajo.
+**Base:** AJR DATA 3.3 MORPHEO. **Entrega:** renovación visual frontend-only.
+
+TANATOS cambia profundamente la presentación y la distribución de las vistas internas sin alterar las funciones del producto. La portada `/` conserva su composición y distribución original; solo recibe los refinamientos globales ya existentes y mejoras visuales discretas. Las demás vistas usan una nueva capa de composición, superficies, jerarquía, navegación visual, tipografía y movimiento.
+
+- [README de cambios 3.3 → 3.4](docs/TANATOS_3.4_VISUAL_CHANGELOG.md)
+- [Arquitectura y pruebas de MORPHEO](docs/MORPHEO.md)
+- [Historial de diseño](docs/HISTORIAL_LANIAKEA_3.1.md)
+
+## Resumen de TANATOS
+
+- Rediseño visual de vistas internas públicas, autenticación, cuenta, soporte y administración.
+- Nuevas composiciones responsive: listados densos pasan a paneles y grillas cuando corresponde; auditoría, pedidos y cuenta tienen distribuciones diferenciadas.
+- Formularios, tarjetas, tablas, navegación, estados y superficies con una identidad visual común Premium Enterprise + Futuristic Cyber + Modern Luxury.
+- Tipografías DM Sans, Plus Jakarta Sans y Space Grotesk.
+- Fondos híbridos azul noche con auroras, capas de profundidad, bordes translúcidos y animaciones de entrada/interacción.
+- La ruta `/` y su distribución se mantienen expresamente fuera del nuevo sistema de layout.
+- Solo se modificó el frontend: no se cambiaron endpoints, API clients, backend, base de datos, autenticación, permisos ni reglas de negocio.
 
 # AJR DATA — `ajrdata-v3.2-rea`
 
