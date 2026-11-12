@@ -1,5 +1,6 @@
-from sqlalchemy import ForeignKey, String, Text
+from sqlalchemy import DateTime, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
+from datetime import datetime
 
 from app.models.base import Base, SoftDeleteMixin, TimestampMixin
 from app.models.enums import OrderStatus, value_enum
@@ -22,6 +23,9 @@ class ClientOrder(SoftDeleteMixin, TimestampMixin, Base):
     contact_phone: Mapped[str | None] = mapped_column(String(50))
     industry: Mapped[str] = mapped_column(String(120))  # rubro de la PyME
     problem_description: Mapped[str] = mapped_column(Text)
+    # Derecho de arrepentimiento: referencia auditable, independiente del estado operativo.
+    regret_requested_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    regret_code: Mapped[str | None] = mapped_column(String(40), unique=True, nullable=True, index=True)
     status: Mapped[OrderStatus] = mapped_column(
         value_enum(OrderStatus, "order_status"),
         default=OrderStatus.NUEVO,
