@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { ChevronDown, Scale } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
 import { useCreateApplication } from "@/api/applications";
@@ -11,7 +12,6 @@ import {
   TextField,
 } from "@/components/forms/Fields";
 import { getFormErrorMessage } from "@/lib/errors";
-import { toast } from "@/lib/toast";
 
 const PERK_KEYS = ["custom", "ai", "learning", "remote"] as const;
 
@@ -39,6 +39,56 @@ const AVAILABILITY = [
 
 const MIN_MOTIVATION = 30;
 const MAX_MOTIVATION = 3000;
+
+
+const EMPLOYMENT_KEYS = ["indefinite", "fixedTerm", "eventual", "partTime", "seasonal", "freelance", "remote"] as const;
+
+function EmploymentModalities() {
+  const { t } = useTranslation();
+  const [openItem, setOpenItem] = useState<string | null>("indefinite");
+
+  return (
+    <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6" aria-labelledby="employment-title">
+      <div className="mb-6 max-w-3xl">
+        <div className="mb-3 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">
+          <Scale className="h-4 w-4" aria-hidden="true" />{t("jobForm.modalities.eyebrow")}
+        </div>
+        <h2 id="employment-title" className="text-2xl font-bold tracking-tight text-white sm:text-3xl">{t("jobForm.modalities.title")}</h2>
+        <p className="mt-3 text-sm leading-7 text-slate-300">{t("jobForm.modalities.intro")}</p>
+      </div>
+      <div className="grid gap-3 md:grid-cols-2">
+        {EMPLOYMENT_KEYS.map((key, index) => {
+          const isOpen = openItem === key;
+          const panelId = `employment-panel-${key}`;
+          return (
+            <article key={key} className="ajr-employment-card" data-open={isOpen}>
+              <h3>
+                <button type="button" className="ajr-employment-trigger" aria-expanded={isOpen} aria-controls={panelId} onClick={() => setOpenItem(isOpen ? null : key)}>
+                  <span className="flex min-w-0 items-center gap-3 text-left">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-cyan-300/20 bg-cyan-300/[0.08] text-xs font-bold text-cyan-100">0{index + 1}</span>
+                    <span className="min-w-0">
+                      <span className="block text-sm font-semibold text-white">{t(`jobForm.modalities.items.${key}.title`)}</span>
+                      <span className="mt-0.5 block text-xs text-slate-400">{t(`jobForm.modalities.items.${key}.basis`)}</span>
+                    </span>
+                  </span>
+                  <ChevronDown className={`h-4 w-4 shrink-0 text-cyan-200 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} aria-hidden="true" />
+                </button>
+              </h3>
+              <div id={panelId} hidden={!isOpen} className="ajr-employment-content"><p>{t(`jobForm.modalities.items.${key}.description`)}</p></div>
+            </article>
+          );
+        })}
+      </div>
+      <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-xs leading-6 text-slate-400">
+        <p>{t("jobForm.modalities.note")}</p>
+        <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+          <a href="https://www.argentina.gob.ar/normativa/nacional/25552/actualizacion" target="_blank" rel="noreferrer noopener" className="font-semibold text-cyan-200 underline underline-offset-4">Texto actualizado de la LCT</a>
+          <a href="https://www.argentina.gob.ar/normativa/nacional/ley-27555-341093/texto" target="_blank" rel="noreferrer noopener" className="font-semibold text-cyan-200 underline underline-offset-4">Ley de Teletrabajo 27.555</a>
+        </p>
+      </div>
+    </section>
+  );
+}
 
 /* ------------------------------------------------------------------ formulario */
 const initialForm = {
@@ -131,13 +181,7 @@ export default function TrabajaConNosotros() {
         turnstile_token: token ?? undefined,
         website: honeypot,
       },
-      {
-        onSuccess: () => toast.success(t("jobForm.thanks")),
-        onError: (err) => {
-          turnstileRef.current?.reset();
-          toast.error(getFormErrorMessage(err, "application"));
-        },
-      }
+      { onError: () => turnstileRef.current?.reset() }
     );
   }
 
@@ -172,6 +216,8 @@ export default function TrabajaConNosotros() {
           </ul>
         </div>
       </section>
+
+      <EmploymentModalities />
 
       {/* Formulario */}
       <section className="mx-auto max-w-xl px-6 py-14">
@@ -219,7 +265,7 @@ export default function TrabajaConNosotros() {
           <button
             type="submit"
             disabled={createApplication.isPending || (turnstileEnabled && !token)}
-            className="btn-cta w-full rounded-md bg-brand px-6 py-3 font-medium text-white hover:bg-brand-dark disabled:opacity-50"
+            className="w-full rounded-md bg-brand px-6 py-3 font-medium text-white hover:bg-brand-dark disabled:opacity-50"
           >
             {createApplication.isPending ? t("jobForm.sending") : t("jobForm.submit")}
           </button>
