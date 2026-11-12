@@ -1,10 +1,7 @@
-"""Tareas periódicas en segundo plano (APScheduler, dentro del mismo proceso de FastAPI).
+"""Tareas periódicas: outbox de correo transaccional y limpieza de papelera.
 
-Hoy hay una sola: vaciar la papelera. Cada TRASH_PURGE_INTERVAL_MINUTES elimina de verdad los
-pedidos y postulaciones que llevan más de TRASH_RETENTION_DAYS días en la papelera.
-
-Nota de escala: el scheduler vive en el proceso. Con varias instancias/workers el job corre en
-cada una; es seguro porque el DELETE es idempotente, solo se repite trabajo.
+El outbox usa bloqueos de fila SKIP LOCKED para coordinar varias instancias PostgreSQL.
+La limpieza es idempotente y puede ejecutarse desde cada proceso.
 """
 import logging
 from datetime import datetime, timedelta, timezone
@@ -16,6 +13,7 @@ from app.core.config import settings
 from app.core.database import AsyncSessionLocal
 from app.crud import trash as crud_trash
 from app.crud import backup_email as crud_backup
+from app.core.outbox import deliver_email_outbox_job
 
 logger = logging.getLogger("scheduler")
 
@@ -41,6 +39,15 @@ def start_scheduler() -> None:
         logger.info("SCHEDULER_ENABLED=false: no se inician las tareas periódicas.")
         return
     scheduler.add_job(
+        deliver_email_outbox_job,
+        IntervalTrigger(minutes=1),
+        id="deliver_email_outbox",
+        replace_existing=True,
+        max_instances=1,
+        coalesce=True,
+        next_run_time=datetime.now(timezone.utc) + timedelta(seconds=35),
+    )
+    scheduler.add_job(
         purge_trash_job,
         IntervalTrigger(minutes=settings.TRASH_PURGE_INTERVAL_MINUTES),
         id=PURGE_JOB_ID,
@@ -51,7 +58,7 @@ def start_scheduler() -> None:
     )
     scheduler.start()
     logger.info(
-        "Scheduler iniciado: papelera cada %s min (retención %s días).",
+        "Scheduler iniciado: outbox de correo cada 1 min; papelera cada %s min (retención %s días).",
         settings.TRASH_PURGE_INTERVAL_MINUTES,
         settings.TRASH_RETENTION_DAYS,
     )
