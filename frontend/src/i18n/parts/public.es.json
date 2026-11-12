@@ -243,7 +243,50 @@
     "availabilityLabel": "Disponibilidad",
     "consent": "Acepto que AJR Data trate mis datos personales para evaluar mi postulación y contactarme. Puedo pedir que los borren escribiéndonos.",
     "sending": "Enviando...",
-    "submit": "Enviar postulación"
+    "submit": "Enviar postulación",
+    "modalities": {
+      "eyebrow": "Marco de contratación",
+      "title": "Modalidades de colaboración y contratación",
+      "intro": "Las oportunidades pueden cubrir distintas necesidades del equipo. La modalidad se define según la tarea real, su duración y la forma de organización del trabajo; no por el nombre que se le asigne.",
+      "items": {
+        "indefinite": {
+          "title": "Contrato por tiempo indeterminado",
+          "basis": "LCT, artículos 90 y 91; período de prueba, artículo 92 bis",
+          "description": "Es la regla general de la Ley de Contrato de Trabajo cuando existe una relación laboral dependiente. No tiene una fecha de finalización predeterminada y se mantiene hasta que ocurra una causa legal de extinción. El período de prueba general es de seis meses; las convenciones colectivas pueden ampliarlo hasta ocho meses en empresas de seis a cien trabajadores y hasta un año en empresas de hasta cinco trabajadores, dentro de las condiciones del artículo 92 bis. La relación debe registrarse desde su inicio. No puede utilizarse el período de prueba más de una vez con la misma persona ni de manera abusiva para cubrir puestos permanentes. Durante ese período subsisten los derechos y obligaciones laborales y de seguridad social que establece la ley."
+        },
+        "fixedTerm": {
+          "title": "Contrato de trabajo a plazo fijo",
+          "basis": "LCT, artículos 90 y 93 a 95",
+          "description": "Puede utilizarse cuando el plazo está expresamente fijado por escrito y las características de la tarea o actividad justifican razonablemente una duración determinada. No puede superar cinco años. La sucesión de contratos sin una necesidad que la justifique puede convertir la relación en tiempo indeterminado. Para la finalización deben respetarse el preaviso de entre uno y dos meses previsto por el artículo 94 —salvo la excepción legal para contratos inferiores a un mes— y las consecuencias establecidas en los artículos 94 y 95."
+        },
+        "eventual": {
+          "title": "Contrato de trabajo eventual",
+          "basis": "LCT, artículos 99 y 100",
+          "description": "Responde a resultados concretos, servicios extraordinarios previamente determinados o exigencias extraordinarias y transitorias. El vínculo puede terminar al concluir la obra, acto o servicio para el que se contrató. La empresa debe poder acreditar que la necesidad fue realmente eventual; no es una vía para cubrir de forma permanente puestos ordinarios."
+        },
+        "partTime": {
+          "title": "Contrato de trabajo a tiempo parcial",
+          "basis": "LCT, artículo 92 ter",
+          "description": "Es una relación laboral dependiente con una jornada diaria o semanal inferior a la legal o convencional de la actividad. La remuneración no puede quedar por debajo de la proporción que corresponda a una persona de tiempo completo de la misma categoría o puesto. El artículo 92 ter regula las horas suplementarias voluntarias, limita las horas extraordinarias y establece reglas específicas de aportes, obra social y convenios colectivos."
+        },
+        "seasonal": {
+          "title": "Contrato de trabajo de temporada",
+          "basis": "LCT, artículos 96 a 98",
+          "description": "Se aplica a actividades normales del establecimiento que se desarrollan solo en determinadas épocas del año y se repiten por la naturaleza del negocio. Conserva derechos y deberes propios de una relación laboral, con reglas específicas para el llamado y la continuidad entre temporadas."
+        },
+        "freelance": {
+          "title": "Servicios profesionales independientes (freelance)",
+          "basis": "Código Civil y Comercial; LCT, artículos 2 y 23, texto vigente",
+          "description": "No es una modalidad de contrato laboral de la LCT. Puede corresponder una contratación civil o comercial de obra o servicios cuando exista autonomía real: organización propia, alcance y entregables definidos y ausencia de subordinación laboral. El texto vigente del artículo 23 contempla los supuestos de servicios independientes respaldados por factura/recibo o pagos por sistemas bancarios. La denominación “freelance”, la factura o el contrato no deben utilizarse para encubrir una relación que en los hechos sea dependiente."
+        },
+        "remote": {
+          "title": "Trabajo remoto / teletrabajo",
+          "basis": "Ley 27.555 y normativa aplicable",
+          "description": "El trabajo remoto describe el lugar o la forma de prestación, no una categoría contractual autónoma. Puede combinarse con una relación laboral por tiempo indeterminado, a plazo fijo u otra modalidad válida. Cuando se configuren sus presupuestos, deben respetarse las reglas específicas de teletrabajo, además de la LCT y del convenio colectivo aplicable."
+        }
+      },
+      "note": "La modalidad concreta se definirá en cada convocatoria y acuerdo, luego de revisar las tareas, el grado de autonomía, la duración y el convenio colectivo que pudiera corresponder. Esta explicación es informativa y no constituye asesoramiento legal. Marco revisado el 12/11/2026."
+    }
   },
   "fields": {
     "counterMissing": "{{length}}/{{max}} · faltan {{missing}} para el mínimo",
@@ -253,5 +296,33 @@
   },
   "footer": {
     "line": "© {{year}} AJR Data — Consultora Tecnológica"
+  },
+  "legal": {
+    "privacy": "Privacidad",
+    "terms": "Términos de uso",
+    "eula": "Licencia EULA"
+  },
+  "regret": {
+    "button": "Botón de arrepentimiento",
+    "backHome": "Volver al inicio",
+    "title": "Solicitar arrepentimiento",
+    "intro": "Usá este formulario para solicitar la revocación de una contratación a distancia cuando corresponda. No necesitás iniciar sesión ni crear una cuenta.",
+    "orderId": "Número de pedido",
+    "orderHelp": "Lo encontrás en el detalle del pedido o en el email de confirmación.",
+    "email": "Email utilizado en el pedido",
+    "invalidOrder": "Ingresá un número de pedido válido.",
+    "invalidEmail": "Ingresá un email válido.",
+    "submit": "Enviar solicitud",
+    "sending": "Enviando solicitud…",
+    "noAccount": "No se requiere registro previo. Los datos se utilizan para asociar la solicitud con el pedido y protegerlo frente a gestiones de terceros.",
+    "successTitle": "Solicitud recibida",
+    "successText": "Registramos tu solicitud y generamos el código de seguimiento que aparece abajo. También se programó el email de constancia al correo asociado al pedido. Conservá el código para cualquier consulta.",
+    "codeLabel": "Código de seguimiento",
+    "newRequest": "Enviar otra solicitud",
+    "privacyTitle": "Tus datos",
+    "privacyText": "Solo pedimos el identificador del pedido y el email de contacto que figura en él. No solicitamos crear una cuenta ni aportar documentación adicional desde este formulario.",
+    "legalTitle": "Alcance del derecho",
+    "legalText": "La Ley 24.240 contempla un plazo de diez días corridos para los supuestos alcanzados, contado desde la entrega del bien o la celebración del contrato, lo que ocurra último. La Disposición 954/2025 establece excepciones y reglas especiales, entre ellas determinados servicios ya utilizados o consumidos y contrataciones destinadas a reventa o integradas en procesos productivos o de prestación a terceros. La aplicación depende de la operación concreta y de la normativa vigente.",
+    "readTerms": "Consultar términos de uso"
   }
 }

@@ -70,7 +70,16 @@
     "contactPhone": " · {{phone}}",
     "projectProgress": "Project progress",
     "discardedProgress": "This request was dismissed and will not continue through the development stages.",
-    "progressNote": "These stages are an estimate based on the overall request status. The current system records the request status, not the detailed progress of each phase."
+    "progressNote": "These stages are an estimate based on the overall request status. The current system records the request status, not the detailed progress of each phase.",
+    "regret": {
+      "title": "Withdrawal request",
+      "received": "A request has already been recorded for this order.",
+      "date": "Received: {{date}}",
+      "description": "You can submit the request here without leaving your account. The order creation date alone does not prove when the contract was concluded or the goods were delivered; the team will review those records and the applicable rules.",
+      "action": "Request withdrawal",
+      "sending": "Submitting…",
+      "error": "We could not record the request. Check the contact details or try the public form."
+    }
   },
   "supportPage": {
     "title": "Support",

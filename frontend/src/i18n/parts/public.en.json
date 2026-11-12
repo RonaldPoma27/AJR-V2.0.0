@@ -243,7 +243,50 @@
     "availabilityLabel": "Availability",
     "consent": "I agree that AJR Data may process my personal data to evaluate my application and contact me. I can ask for it to be deleted by writing to us.",
     "sending": "Sending...",
-    "submit": "Submit application"
+    "submit": "Submit application",
+    "modalities": {
+      "eyebrow": "Hiring framework",
+      "title": "Ways of working and engagement",
+      "intro": "Opportunities may address different team needs. The arrangement is determined by the actual work, its duration and how the work is organised—not merely by its label.",
+      "items": {
+        "indefinite": {
+          "title": "Open-ended employment contract",
+          "basis": "LCT, Articles 90 and 91; probation, Article 92 bis",
+          "description": "This is the general rule under the Labour Contract Law when an employment relationship is dependent. It has no predetermined end date and continues until a lawful ground for termination arises. The general probation period is six months; collective bargaining agreements may extend it to eight months for employers with six to one hundred workers and up to one year for employers with up to five workers, subject to Article 92 bis. Employment must be registered from its start. The probation period may not be reused for the same worker or abused to fill permanent positions. Statutory employment and social-security rights and duties continue to apply during probation."
+        },
+        "fixedTerm": {
+          "title": "Fixed-term employment contract",
+          "basis": "LCT, Articles 90 and 93–95",
+          "description": "It may be used when the term is expressly stated in writing and the nature of the task or activity reasonably justifies a fixed duration. It may not exceed five years. Repeated contracts without a justified need may convert the relationship into an open-ended one. Termination notice of one to two months under Article 94 must be respected, except for the statutory exception for contracts shorter than one month, together with the consequences set out in Articles 94 and 95."
+        },
+        "eventual": {
+          "title": "Temporary / occasional employment contract",
+          "basis": "LCT, Articles 99 and 100",
+          "description": "It is intended for specific results, extraordinary services defined in advance or extraordinary and temporary business needs. The relationship may end when the relevant work, act or service is completed. The employer must be able to prove that the need was genuinely temporary; this is not a route for filling permanent ordinary positions."
+        },
+        "partTime": {
+          "title": "Part-time employment contract",
+          "basis": "LCT, Article 92 ter",
+          "description": "This is a dependent employment relationship with daily or weekly working hours below the legal or collectively agreed schedule for the activity. Pay may not be lower than the proportional amount due to a full-time worker in the same category or position. Article 92 ter regulates voluntary supplementary hours, limits overtime and establishes specific rules on contributions, healthcare and collective bargaining agreements."
+        },
+        "seasonal": {
+          "title": "Seasonal employment contract",
+          "basis": "LCT, Articles 96–98",
+          "description": "It applies to ordinary business activities performed only during certain periods of the year and repeated due to the nature of the business. It remains an employment relationship and has specific rules for recall and continuity between seasons."
+        },
+        "freelance": {
+          "title": "Independent professional services (freelance)",
+          "basis": "Civil and Commercial Code; LCT, Articles 2 and 23, as amended",
+          "description": "This is not an employment-contract category under the LCT. A civil or commercial services/work agreement may apply where there is genuine independence: the provider organises their own work, has defined scope and deliverables, and is not subject to employment subordination. The current Article 23 addresses independent services supported by invoices/receipts or bank payments. A “freelance” label, invoice or agreement must not be used to disguise an employment relationship in practice."
+        },
+        "remote": {
+          "title": "Remote work / telework",
+          "basis": "Law 27,555 and applicable regulations",
+          "description": "Remote work describes where or how work is performed; it is not a separate contract category. It can coexist with an open-ended, fixed-term or other valid employment arrangement. Where applicable, specific telework rules apply alongside the LCT and relevant collective agreement."
+        }
+      },
+      "note": "The specific arrangement will be determined for each opening and agreement after reviewing the tasks, autonomy, duration and any applicable collective bargaining agreement. This explanation is informational and is not legal advice. Framework reviewed on 12 Nov 2026."
+    }
   },
   "fields": {
     "counterMissing": "{{length}}/{{max}} · {{missing}} more to reach the minimum",
@@ -253,5 +296,33 @@
   },
   "footer": {
     "line": "© {{year}} AJR Data — Technology Consultancy"
+  },
+  "legal": {
+    "privacy": "Privacy",
+    "terms": "Terms of use",
+    "eula": "EULA license"
+  },
+  "regret": {
+    "button": "Botón de arrepentimiento",
+    "backHome": "Back to home",
+    "title": "Request a withdrawal",
+    "intro": "Use this form to request withdrawal from a distance contract when applicable. You do not need to sign in or create an account.",
+    "orderId": "Order number",
+    "orderHelp": "You can find it in the order details or confirmation email.",
+    "email": "Email used for the order",
+    "invalidOrder": "Enter a valid order number.",
+    "invalidEmail": "Enter a valid email address.",
+    "submit": "Submit request",
+    "sending": "Sending request…",
+    "noAccount": "No prior registration is required. We use this information to match the request to the order and protect it against third-party actions.",
+    "successTitle": "Request received",
+    "successText": "Your request has been recorded and the tracking code below has been generated. A confirmation email has also been queued for the email address associated with the order. Keep this code for future enquiries.",
+    "codeLabel": "Tracking code",
+    "newRequest": "Submit another request",
+    "privacyTitle": "Your data",
+    "privacyText": "We only ask for the order identifier and the contact email on file. You do not need to create an account or upload additional documents through this form.",
+    "legalTitle": "Scope of the right",
+    "legalText": "Argentine Law 24,240 provides a ten-calendar-day period for covered cases, counted from delivery of the good or conclusion of the contract, whichever occurs later. Disposition 954/2025 establishes exceptions and special rules, including certain services already used or consumed and transactions for resale or integrated into production or services supplied to third parties. Applicability depends on the specific transaction and current law.",
+    "readTerms": "Read the terms of use"
   }
 }
