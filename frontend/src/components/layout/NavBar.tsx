@@ -6,15 +6,18 @@ import LanguageSwitch from "./LanguageSwitch";
 function Logo() {
   const { t } = useTranslation();
   return (
-    <Link to="/" aria-label={t("nav.goHome")} className="relative block h-12 w-28 shrink-0 overflow-hidden rounded-sm bg-transparent">
+    <Link to="/" aria-label={t("nav.goHome")} className="ajr-brand-mark group relative flex h-12 w-32 shrink-0 items-center justify-start overflow-visible rounded-sm bg-transparent sm:w-36">
       <img
         src="/logo.png"
         alt="AJR Data"
-        width={140}
-        height={140}
-        className="absolute left-1/2 top-1/2 max-w-none -translate-x-1/2 -translate-y-1/2 mix-blend-lighten"
-        style={{ width: 140, height: 140 }}
+        width={160}
+        height={160}
+        className="ajr-brand-logo block h-12 w-12 shrink-0 object-contain transition-transform duration-300 group-hover:scale-[1.04]"
       />
+      <span className="ml-2 flex min-w-0 flex-col leading-none">
+        <span className="font-display text-[0.98rem] font-extrabold tracking-[0.12em] text-white">AJR DATA</span>
+        <span className="mt-1 text-[0.56rem] font-semibold uppercase tracking-[0.22em] text-cyan-200/75">Systems · Data · Design</span>
+      </span>
     </Link>
   );
 }

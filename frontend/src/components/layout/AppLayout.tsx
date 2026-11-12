@@ -30,7 +30,10 @@ export default function AppLayout() {
       <AuroraBackground />
       <NavBar sidebarOpen={drawerOpen} onToggleSidebar={() => setDrawerOpen((v) => !v)} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <main className={`app-main relative flex-1 ${isPublicVisualRoute ? "ajr-public-route" : ""}`}>
+        <main
+          className={`app-main relative flex-1 ${isPublicVisualRoute ? "ajr-public-route" : ""} ${pathname === "/" ? "ajr-home-route" : "ajr-internal-route"}`}
+          data-route={pathname}
+        >
           <Outlet />
         </main>
         <Footer />
