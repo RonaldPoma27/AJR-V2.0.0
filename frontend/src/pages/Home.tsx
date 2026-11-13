@@ -134,5 +134,3 @@ export default function Home() {
   );
 }
 ```[cite: 14]
-
-Guarda el archivo, haz el commit y súbelo a GitHub. Con esto el compilador de TypeScript no volverá a fallar por literales de plantilla.
