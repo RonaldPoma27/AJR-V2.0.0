@@ -70,7 +70,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Métricas */}
+      {/* Métricas: cifras reales (socios cargados, etapas del proceso, preguntas frecuentes). */}
       <BentoGrid className="mt-14 sm:mt-20" aria-label={t("pubHome.metrics.label")}>
         {partnerCount > 0 && (
           <BentoCard cols={2} accent="cyan" className="flex flex-col gap-3 p-6 sm:p-7">
@@ -95,10 +95,11 @@ export default function Home() {
           <h2 id="about-title" className="ajr-section-title">{t("pubHome.aboutTitle")}</h2>
           <p className="ajr-section-copy">{t("pubHome.aboutText")}</p>
         </BentoCard>
-        {PROCESS_STEPS.map((step) => (
-          <BentoCard key={step} as="article" cols={2} accent="violet">
-            <h3 className="text-lg font-semibold text-fg">{t("pubHome.process.steps." + step + ".title")}</h3>
-            <p className="mt-1.5 text-sm text-fg-muted">{t("pubHome.process.steps." + step + ".description")}</p>
+        {PROCESS_STEPS.map((step, index) => (
+          <BentoCard key={step} as="article" cols={index < 2 ? 2 : 3} accent={index % 2 ? "violet" : "blue"}>
+            <span className="ajr-process-number">0{index + 1}</span>
+            <h3 className="mt-2 text-lg font-semibold text-fg">{t(`pubHome.process.steps.${step}.title`)}</h3>
+            <p className="mt-1.5 text-sm text-fg-muted">{t(`pubHome.process.steps.${step}.description`)}</p>
           </BentoCard>
         ))}
       </BentoGrid>
@@ -107,9 +108,42 @@ export default function Home() {
         <PricingCards />
       </div>
 
-      {/* Bento 2: CTA + socios */}
+      {/* Bento 2: FAQ + llamado a la acción + socios */}
       <BentoGrid className="mt-16 sm:mt-20">
-        <BentoCard cols={2} accent="violet" className="flex flex-col items-start justify-center gap-4 p-6 sm:p-8">
+        <BentoCard as="section" cols={4} rows={2} accent="blue" aria-labelledby="faq-title" className="p-6 sm:p-8">
+          <p className="ajr-section-eyebrow">{t("pubHome.faq.eyebrow")}</p>
+          <h2 id="faq-title" className="ajr-section-title">{t("pubHome.faq.title")}</h2>
+          <p className="ajr-section-copy">{t("pubHome.faq.intro")}</p>
+          <div className="ajr-faq-list mt-5">
+            {FAQ_ITEMS.map((item) => {
+              const isOpen = openFaq === item;
+              const triggerId = `faq-trigger-${item}`;
+              const panelId = `faq-panel-${item}`;
+              return (
+                <article key={item} className="ajr-faq-item" data-open={isOpen}>
+                  <h3>
+                    <button
+                      id={triggerId}
+                      type="button"
+                      className="ajr-faq-trigger focus-visible:outline-offset-[-4px]"
+                      aria-expanded={isOpen}
+                      aria-controls={panelId}
+                      onClick={() => setOpenFaq((current) => (current === item ? null : item))}
+                    >
+                      <span className="font-semibold">{t(`pubHome.faq.items.${item}.question`)}</span>
+                      <span className="ajr-faq-icon" aria-hidden="true" />
+                    </button>
+                  </h3>
+                  <div id={panelId} role="region" aria-labelledby={triggerId} hidden={!isOpen}>
+                    <p className="ajr-faq-answer">{t(`pubHome.faq.items.${item}.answer`)}</p>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </BentoCard>
+
+        <BentoCard cols={2} accent="violet" className="flex flex-col items-start justify-center gap-4">
           <p className="text-lg font-semibold text-fg">{t("pubHome.heroNote")}</p>
           <Link to="/solicitar-proyecto" className="ajr-gradient-button ajr-home-primary">
             {t("pubHome.cta")} <ArrowUpRight className="h-4 w-4" aria-hidden />
@@ -117,7 +151,7 @@ export default function Home() {
         </BentoCard>
 
         {partnerCount > 0 && (
-          <BentoCard as="section" cols={2} accent="cyan" aria-labelledby="partners-title" className="p-6 sm:p-8">
+          <BentoCard as="section" cols={2} accent="cyan" aria-labelledby="partners-title">
             <p className="ajr-section-eyebrow">{t("pubHome.partnersEyebrow")}</p>
             <h2 id="partners-title" className="ajr-section-title !text-2xl">{t("pubHome.partnersTitle")}</h2>
             <div className="ajr-partner-list mt-4">
@@ -133,4 +167,3 @@ export default function Home() {
     </div>
   );
 }
-```[cite: 14]
