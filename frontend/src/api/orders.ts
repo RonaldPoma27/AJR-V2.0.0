@@ -4,17 +4,6 @@ import { PAGE_SIZE, type Paginated, type PageResult } from "./types";
 
 export type OrderStatus = "nuevo" | "en_revision" | "contactado" | "finalizado" | "descartado";
 
-export interface OrderRegretRequest {
-  order_id: number;
-  contact_email: string;
-}
-
-export interface OrderRegretReceipt {
-  request_code: string;
-  requested_at: string;
-  message: string;
-}
-
 /** Camino "feliz" de un pedido (lo dibuja el Stepper). `descartado` queda fuera: es un desvío. */
 export const ORDER_FLOW: OrderStatus[] = ["nuevo", "en_revision", "contactado", "finalizado"];
 
@@ -44,8 +33,27 @@ export interface ClientOrder {
   status: OrderStatus;
   created_at: string;
   updated_at: string;
+  /** Calculado por el backend: menos de 10 días corridos y sin arrepentimiento previo. */
+  regret_eligible?: boolean;
+  regret_deadline?: string | null;
   regret_requested_at?: string | null;
   regret_code?: string | null;
+}
+
+/** Constancia del arrepentimiento (el código también se envía por email). */
+export interface RegretReceipt {
+  code: string;
+  order_id: number;
+  requested_at: string;
+  already_requested: boolean;
+}
+
+export interface RegretPublicPayload {
+  order_id: number;
+  contact_email: string;
+  reason?: string;
+  turnstile_token?: string;
+  website?: string;
 }
 
 /** Requiere sesión: el pedido queda asociado al cliente logueado. */
@@ -86,24 +94,6 @@ export function useUpdateOrderStatus() {
   });
 }
 
-/**
- * Público: recepción de una solicitud de arrepentimiento.
- * El endpoint no exige sesión; la API solo verifica el pedido y el email asociado.
- */
-export function useSubmitOrderRegret() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (payload: OrderRegretRequest): Promise<OrderRegretReceipt> => {
-      const { data } = await apiClient.post<OrderRegretReceipt>("/orders/regret", payload);
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["orders", "mine"] });
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
-    },
-  });
-}
-
 /** "Mis pedidos": solo los del usuario logueado. */
 export function useMyOrders() {
   return useQuery({
@@ -125,6 +115,30 @@ export function useTrashOrder() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
       queryClient.invalidateQueries({ queryKey: ["trash"] });
+    },
+  });
+}
+
+/** Arrepentimiento desde "Mis pedidos": acción directa del dueño del pedido. */
+export function useRegretFromAccount() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (orderId: number) => {
+      const { data } = await apiClient.post<RegretReceipt>(`/orders/${orderId}/arrepentimiento`);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+  });
+}
+
+/** Arrepentimiento sin cuenta (`/arrepentimiento`): número de pedido + email de contacto. */
+export function useRegretPublic() {
+  return useMutation({
+    mutationFn: async (payload: RegretPublicPayload) => {
+      const { data } = await apiClient.post<RegretReceipt>("/orders/arrepentimiento", payload);
+      return data;
     },
   });
 }
