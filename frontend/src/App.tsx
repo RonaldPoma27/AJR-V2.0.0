@@ -5,6 +5,8 @@ import Home from "@/pages/Home";
 import Portfolio from "@/pages/Portfolio";
 import ProjectRequestForm from "@/pages/ProjectRequestForm";
 import TrabajaConNosotros from "@/pages/TrabajaConNosotros";
+import Arrepentimiento from "@/pages/Arrepentimiento";
+import { EulaPage, PrivacyPage, TermsPage } from "@/pages/legal/LegalPages";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import NotFound from "@/pages/NotFound";
@@ -34,6 +36,10 @@ export default function App() {
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/solicitar-proyecto" element={<ProtectedRoute><ProjectRequestForm /></ProtectedRoute>} />
         <Route path="/trabaja-con-nosotros" element={<TrabajaConNosotros />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/eula" element={<EulaPage />} />
+        <Route path="/arrepentimiento" element={<Arrepentimiento />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Register />} />
 
