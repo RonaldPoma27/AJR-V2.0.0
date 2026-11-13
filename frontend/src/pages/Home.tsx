@@ -115,10 +115,10 @@ export default function Home() {
           <h2 id="faq-title" className="ajr-section-title">{t("pubHome.faq.title")}</h2>
           <p className="ajr-section-copy">{t("pubHome.faq.intro")}</p>
           <div className="ajr-faq-list mt-5">
-            {FAQ_ITEMS.map((item) => {
-              const isOpen = openFaq === item;
-              const triggerId = "faq-trigger-" + item;
-              const panelId = "faq-panel-" + item;
+            {FAQ_ITEMS.map(function(item) {
+              var isOpen = openFaq === item;
+              var triggerId = "faq-trigger-" + item;
+              var panelId = "faq-panel-" + item;
               return (
                 <article key={item} className="ajr-faq-item" data-open={isOpen}>
                   <h3>
@@ -128,7 +128,7 @@ export default function Home() {
                       className="ajr-faq-trigger focus-visible:outline-offset-[-4px]"
                       aria-expanded={isOpen}
                       aria-controls={panelId}
-                      onClick={() => setOpenFaq((current) => (current === item ? null : item))}
+                      onClick={function() { setOpenFaq(function(current) { return current === item ? null : item; }); }}
                     >
                       <span className="font-semibold">{t("pubHome.faq.items." + item + ".question")}</span>
                       <span className="ajr-faq-icon" aria-hidden="true" />
@@ -155,11 +155,13 @@ export default function Home() {
             <p className="ajr-section-eyebrow">{t("pubHome.partnersEyebrow")}</p>
             <h2 id="partners-title" className="ajr-section-title !text-2xl">{t("pubHome.partnersTitle")}</h2>
             <div className="ajr-partner-list mt-4">
-              {partners?.map((p) => (
-                <div key={p.id} className="ajr-partner-item">
-                  {p.logo_url ? <img src={p.logo_url} alt={p.name} loading="lazy" /> : <span>{p.name}</span>}
-                </div>
-              ))}
+              {partners?.map(function(p) {
+                return (
+                  <div key={p.id} className="ajr-partner-item">
+                    {p.logo_url ? <img src={p.logo_url} alt={p.name} loading="lazy" /> : <span>{p.name}</span>}
+                  </div>
+                );
+              })}
             </div>
           </BentoCard>
         )}
@@ -168,3 +170,5 @@ export default function Home() {
   );
 }
 ```[cite: 14]
+
+Guarda el archivo, realiza el commit y el despliegue en Render se completará con éxito.
