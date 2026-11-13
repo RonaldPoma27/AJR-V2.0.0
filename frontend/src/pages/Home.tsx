@@ -30,15 +30,15 @@ export default function Home() {
             </h1>
             <p className="ajr-home-intro">{t("pubHome.intro")}</p>
             <div className="ajr-home-actions">
-              <Link to="/solicitar-proyecto" className="ajr-gradient-button ajr-home-primary !rounded-full">
-                {t("pubHome.cta")} <ArrowUpRight className="h-4 w-4" aria-hidden />
+              <Link className="ajr-gradient-button ajr-home-primary !rounded-full" to="/solicitar-proyecto">
+                {t("pubHome.cta")} <ArrowUpRight aria-hidden className="h-4 w-4"/>
               </Link>
-              <Link to="/portfolio" className="ajr-home-secondary !rounded-full">
-                {t("pubHome.portfolioCta")} <ArrowRight className="h-4 w-4" aria-hidden />
+              <Link className="ajr-home-secondary !rounded-full" to="/portfolio">
+                {t("pubHome.portfolioCta")} <ArrowRight aria-hidden className="h-4 w-4"/>
               </Link>
             </div>
             <div className="ajr-home-proofline">
-              <span className="ajr-proofline-mark" aria-hidden="true"><Code2 className="h-4 w-4" /></span>
+              <span className="ajr-proofline-mark" aria-hidden="true"><Code2 className="h-4 w-4"/></span>
               <span>{t("pubHome.heroNote")}</span>
             </div>
           </div>
@@ -53,13 +53,13 @@ export default function Home() {
               <div className="ajr-hero-orbit-dot ajr-hero-orbit-dot--one" />
               <div className="ajr-hero-orbit-dot ajr-hero-orbit-dot--two" />
               <div className="ajr-hero-core">
-                <span className="ajr-hero-core-mark"><Code2 className="h-8 w-8" /></span>
+                <span className="ajr-hero-core-mark"><Code2 className="h-8 w-8"/></span>
                 <span className="ajr-hero-core-name">AJR</span>
                 <span className="ajr-hero-core-label">DATA</span>
               </div>
-              <div className="ajr-hero-node ajr-hero-node--data"><Database className="h-5 w-5" /></div>
-              <div className="ajr-hero-node ajr-hero-node--flow"><Workflow className="h-5 w-5" /></div>
-              <div className="ajr-hero-node ajr-hero-node--energy"><Zap className="h-5 w-5" /></div>
+              <div className="ajr-hero-node ajr-hero-node--data"><Database className="h-5 w-5"/></div>
+              <div className="ajr-hero-node ajr-hero-node--flow"><Workflow className="h-5 w-5"/></div>
+              <div className="ajr-hero-node ajr-hero-node--energy"><Zap className="h-5 w-5"/></div>
               <span className="ajr-hero-connector ajr-hero-connector--one" />
               <span className="ajr-hero-connector ajr-hero-connector--two" />
               <span className="ajr-hero-connector ajr-hero-connector--three" />
@@ -70,27 +70,27 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Métricas: cifras reales (socios cargados, etapas del proceso, preguntas frecuentes). */}
-      <BentoGrid className="mt-14 sm:mt-20" aria-label={t("pubHome.metrics.label")}>
+      {/* Métricas: cifras reales */}
+      <BentoGrid aria-label="{t(" className="mt-14 sm:mt-20" pubHome.metrics.label")}">
         {partnerCount > 0 && (
-          <BentoCard cols={2} accent="cyan" className="flex flex-col gap-3 p-6 sm:p-7">
+          <BentoCard accent="cyan" className="flex flex-col gap-3 p-6 sm:p-7" cols="{2}">
             <span className="ajr-meta">{t("pubHome.metrics.partners")}</span>
-            <CountUp value={partnerCount} className="ajr-metric-value" />
+            <CountUp className="ajr-metric-value" value="{partnerCount}"/>
           </BentoCard>
         )}
-        <BentoCard cols={2} accent="violet" className="flex flex-col gap-3 p-6 sm:p-7">
+        <BentoCard accent="violet" className="flex flex-col gap-3 p-6 sm:p-7" cols="{2}">
           <span className="ajr-meta">{t("pubHome.metrics.steps")}</span>
-          <CountUp value={PROCESS_STEPS.length} className="ajr-metric-value" />
+          <CountUp className="ajr-metric-value" value="{PROCESS_STEPS.length}"/>
         </BentoCard>
-        <BentoCard cols={2} accent="blue" className="flex flex-col gap-3 p-6 sm:p-7">
+        <BentoCard accent="blue" className="flex flex-col gap-3 p-6 sm:p-7" cols="{2}">
           <span className="ajr-meta">{t("pubHome.metrics.questions")}</span>
-          <CountUp value={FAQ_ITEMS.length} className="ajr-metric-value" />
+          <CountUp className="ajr-metric-value" value="{FAQ_ITEMS.length}"/>
         </BentoCard>
       </BentoGrid>
 
       {/* Bento 1: quiénes somos + proceso */}
-      <BentoGrid className="mt-6" aria-label={t("pubHome.aboutTitle")}>
-        <BentoCard as="section" cols={4} rows={2} accent="cyan" aria-labelledby="about-title" className="flex flex-col justify-center p-7 sm:p-10">
+      <BentoGrid aria-label="{t(" className="mt-6" pubHome.aboutTitle")}">
+        <BentoCard accent="cyan" aria-labelledby="about-title" as="section" className="flex flex-col justify-center p-7 sm:p-10" cols="{4}" rows="{2}">
           <p className="ajr-section-eyebrow">{t("pubHome.aboutEyebrow")}</p>
           <h2 id="about-title" className="ajr-section-title">{t("pubHome.aboutTitle")}</h2>
           <p className="ajr-section-copy">{t("pubHome.aboutText")}</p>
@@ -98,27 +98,27 @@ export default function Home() {
         {PROCESS_STEPS.map((step, index) => (
           <BentoCard key={step} as="article" cols={index < 2 ? 2 : 3} accent={index % 2 ? "violet" : "blue"}>
             <span className="ajr-process-number">0{index + 1}</span>
-            <h3 className="mt-2 text-lg font-semibold text-fg">{t(`pubHome.process.steps.${step}.title`)}</h3>
-            <p className="mt-1.5 text-sm text-fg-muted">{t(`pubHome.process.steps.${step}.description`)}</p>
+            <h3 className="mt-2 text-lg font-semibold text-fg">{t("pubHome.process.steps." + step + ".title")}</h3>
+            <p className="mt-1.5 text-sm text-fg-muted">{t("pubHome.process.steps." + step + ".description")}</p>
           </BentoCard>
         ))}
       </BentoGrid>
 
       <div className="ajr-home-services">
-        <PricingCards />
+        <PricingCards/>
       </div>
 
       {/* Bento 2: FAQ + llamado a la acción + socios */}
       <BentoGrid className="mt-16 sm:mt-20">
-        <BentoCard as="section" cols={4} rows={2} accent="blue" aria-labelledby="faq-title" className="p-6 sm:p-8">
+        <BentoCard accent="blue" aria-labelledby="faq-title" as="section" className="p-6 sm:p-8" cols="{4}" rows="{2}">
           <p className="ajr-section-eyebrow">{t("pubHome.faq.eyebrow")}</p>
           <h2 id="faq-title" className="ajr-section-title">{t("pubHome.faq.title")}</h2>
           <p className="ajr-section-copy">{t("pubHome.faq.intro")}</p>
           <div className="ajr-faq-list mt-5">
             {FAQ_ITEMS.map((item) => {
               const isOpen = openFaq === item;
-              const triggerId = `faq-trigger-${item}`;
-              const panelId = `faq-panel-${item}`;
+              const triggerId = "faq-trigger-" + item;
+              const panelId = "faq-panel-" + item;
               return (
                 <article key={item} className="ajr-faq-item" data-open={isOpen}>
                   <h3>
@@ -130,12 +130,12 @@ export default function Home() {
                       aria-controls={panelId}
                       onClick={() => setOpenFaq((current) => (current === item ? null : item))}
                     >
-                      <span className="font-semibold">{t(`pubHome.faq.items.${item}.question`)}</span>
+                      <span className="font-semibold">{t("pubHome.faq.items." + item + ".question")}</span>
                       <span className="ajr-faq-icon" aria-hidden="true" />
                     </button>
                   </h3>
                   <div id={panelId} role="region" aria-labelledby={triggerId} hidden={!isOpen}>
-                    <p className="ajr-faq-answer">{t(`pubHome.faq.items.${item}.answer`)}</p>
+                    <p className="ajr-faq-answer">{t("pubHome.faq.items." + item + ".answer")}</p>
                   </div>
                 </article>
               );
@@ -143,15 +143,15 @@ export default function Home() {
           </div>
         </BentoCard>
 
-        <BentoCard cols={2} accent="violet" className="flex flex-col items-start justify-center gap-4">
+        <BentoCard accent="violet" className="flex flex-col items-start justify-center gap-4" cols="{2}">
           <p className="text-lg font-semibold text-fg">{t("pubHome.heroNote")}</p>
-          <Link to="/solicitar-proyecto" className="ajr-gradient-button ajr-home-primary !rounded-full">
-            {t("pubHome.cta")} <ArrowUpRight className="h-4 w-4" aria-hidden />
+          <Link className="ajr-gradient-button ajr-home-primary !rounded-full" to="/solicitar-proyecto">
+            {t("pubHome.cta")} <ArrowUpRight aria-hidden className="h-4 w-4"/>
           </Link>
         </BentoCard>
 
         {partnerCount > 0 && (
-          <BentoCard as="section" cols={2} accent="cyan" aria-labelledby="partners-title">
+          <BentoCard accent="cyan" aria-labelledby="partners-title" as="section" cols="{2}">
             <p className="ajr-section-eyebrow">{t("pubHome.partnersEyebrow")}</p>
             <h2 id="partners-title" className="ajr-section-title !text-2xl">{t("pubHome.partnersTitle")}</h2>
             <div className="ajr-partner-list mt-4">
@@ -167,4 +167,3 @@ export default function Home() {
     </div>
   );
 }
-```[cite: 24]
