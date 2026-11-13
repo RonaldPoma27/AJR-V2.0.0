@@ -33,16 +33,14 @@
     "requestProject": "Solicitar proyecto",
     "work": "Trabajá con nosotros",
     "logout": "Cerrar sesión",
-    "navLabel": "Navegación",
-    "drawerLabel": "Menú principal",
+    "navLabel": "Cuenta",
+    "drawerLabel": "Menú de la cuenta",
     "loading": "Cargando tu cuenta",
     "roles": {
       "USER": "Cliente",
       "TECHNICIAN": "Técnico",
       "ADMIN": "Administrador"
     },
-    "audit": "Auditoría",
-    "collapse": "Contraer menú",
-    "expand": "Expandir navegación"
+    "audit": "Auditoría"
   }
 }
