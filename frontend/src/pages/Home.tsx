@@ -70,7 +70,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Métricas: cifras reales (socios cargados, etapas del proceso, preguntas frecuentes). */}
+      {/* Métricas */}
       <BentoGrid className="mt-14 sm:mt-20" aria-label={t("pubHome.metrics.label")}>
         {partnerCount > 0 && (
           <BentoCard cols={2} accent="cyan" className="flex flex-col gap-3 p-6 sm:p-7">
@@ -169,4 +169,4 @@ export default function Home() {
 }
 ```[cite: 14]
 
-Reemplaza el contenido de tu archivo `Home.tsx` con este código, haz commit, súbelo a tu repositorio de GitHub en la rama correspondiente (`ajrdata-3.5-hercules`) y el deploy en Render pasará exitosamente sin errores de TypeScript.
+Guarda este contenido en tu archivo **`app/src/pages/Home.tsx`** y realiza el commit para que el despliegue en Render se ejecute sin problemas.
