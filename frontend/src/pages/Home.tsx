@@ -135,4 +135,4 @@ export default function Home() {
 }
 ```[cite: 14]
 
-Guarda este contenido en tu archivo `app/src/pages/Home.tsx`, haz commit y súbelo a GitHub. Con esto el build compilará limpio sin rastro de errores de sintaxis en TypeScript.
+Guarda el archivo, haz el commit y súbelo a GitHub. Con esto el compilador de TypeScript no volverá a fallar por literales de plantilla.
