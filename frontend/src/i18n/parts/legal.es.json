@@ -1,0 +1,126 @@
+{
+  "rail": {
+    "collapse": "Contraer menú",
+    "expand": "Expandir menú"
+  },
+  "footerNav": {
+    "label": "Información legal",
+    "privacy": "Privacidad",
+    "terms": "Términos de uso",
+    "eula": "EULA",
+    "regret": "Botón de arrepentimiento",
+    "regretHint": "Revocá una contratación (Res. 424/2020)",
+    "rights": "Defensa del consumidor: podés reclamar ante la Dirección General de Defensa del Consumidor de tu jurisdicción."
+  },
+  "legalPages": {
+    "back": "Volver al inicio",
+    "updated": "Documento legal · versión 1.0",
+    "onlySpanish": "This legal document is provided in Spanish, as it is governed by Argentine law.",
+    "privacy": {
+      "title": "Política de Privacidad",
+      "meta": "Cómo recolectamos, usamos y protegemos tus datos."
+    },
+    "terms": {
+      "title": "Términos de Uso",
+      "meta": "Reglas de uso, propiedad intelectual y límites de responsabilidad."
+    },
+    "eula": {
+      "title": "Acuerdo de Licencia (EULA)",
+      "meta": "Licencia de uso del CMS de AJR Data."
+    }
+  },
+  "orderRegret": {
+    "title": "Botón de arrepentimiento",
+    "intro": "Si contrataste un servicio a distancia, podés revocarlo dentro de los 10 días corridos desde la contratación. No hace falta tener cuenta ni dar explicaciones.",
+    "legalNote": "Res. 424/2020 de la Secretaría de Comercio Interior y art. 34 de la Ley 24.240. Te enviamos un código de constancia dentro de las 24 horas.",
+    "orderId": "Número de pedido",
+    "orderIdHint": "Figura en el mail de confirmación (ej.: 123).",
+    "email": "Email de contacto del pedido",
+    "reason": "Motivo (opcional)",
+    "submit": "Revocar contratación",
+    "sending": "Enviando…",
+    "invalidOrder": "Ingresá un número de pedido válido.",
+    "invalidEmail": "Ingresá un email válido.",
+    "notFound": "No encontramos un pedido con esos datos. Revisá el número y el email con el que lo cargaste.",
+    "expired": "Pasaron más de 10 días corridos desde la contratación: ya no se puede revocar desde acá. Escribinos y lo vemos.",
+    "generic": "No pudimos registrar la revocación. Probá de nuevo en un rato.",
+    "doneTitle": "Revocación registrada",
+    "doneText": "Detuvimos el trabajo asociado a tu pedido #{{id}}. Te enviamos la constancia por email.",
+    "already": "Este pedido ya había sido revocado. Este es tu código de constancia.",
+    "code": "Código de constancia",
+    "keepCode": "Guardá este código.",
+    "button": "Arrepentirme de esta contratación",
+    "buttonShort": "Botón de arrepentimiento",
+    "deadline": "Podés arrepentirte hasta el {{date}}.",
+    "expiredShort": "El plazo de arrepentimiento (10 días corridos) ya venció.",
+    "requestedAt": "Revocado el {{date}} · código {{code}}",
+    "confirmTitle": "¿Revocar el pedido #{{id}}?",
+    "confirmText": "Detendremos el trabajo asociado y no podrás deshacerlo desde acá. Te enviaremos una constancia por email.",
+    "confirmYes": "Sí, revocar",
+    "confirmNo": "Cancelar",
+    "done": "Revocación registrada. Código: {{code}}"
+  },
+  "workLaw": {
+    "eyebrow": "Transparencia laboral",
+    "title": "Cómo contratamos",
+    "intro": "Contratamos con modalidades previstas por la Ley de Contrato de Trabajo 20.744 (LCT) y sus reformas, y con prestaciones autónomas cuando el vínculo realmente lo es. Elegimos la modalidad según la naturaleza de la tarea, no por conveniencia.",
+    "listLabel": "Modalidades de contratación",
+    "basis": "Base legal",
+    "expand": "Ver detalle",
+    "items": {
+      "indefinite": {
+        "title": "Plazo indeterminado",
+        "summary": "Es la regla general (LCT art. 90): vínculo sin fecha de finalización pactada.",
+        "p1": "Registro desde el primer día, aportes y contribuciones, vacaciones, aguinaldo y cobertura de la LCT completos.",
+        "p2": "Período de prueba de 6 meses (art. 92 bis): cualquiera de las partes puede extinguir sin causa ni indemnización, con preaviso de 15 días. Los convenios colectivos pueden ampliarlo según el tamaño de la empresa.",
+        "p3": "No se encadenan períodos de prueba: si recontratamos a una persona, se considera que renunciamos a él.",
+        "law": "LCT arts. 90, 91, 92 bis, 231."
+      },
+      "fixed": {
+        "title": "Plazo fijo",
+        "summary": "Para tareas con un fin determinado y previsible, como un proyecto con alcance cerrado.",
+        "p1": "Su duración debe estar pactada por escrito y justificarse por la naturaleza de la actividad; no puede superar los 5 años.",
+        "p2": "Si dura un año o más, avisamos la no renovación con 1 a 2 meses de antelación; de lo contrario se convierte en indeterminado.",
+        "p3": "Si se extingue antes de tiempo sin justa causa, corresponde la indemnización prevista para el caso.",
+        "law": "LCT arts. 90, 93, 94 y 95."
+      },
+      "eventual": {
+        "title": "Trabajo eventual",
+        "summary": "Para necesidades transitorias y objetivas, ajenas al giro normal: un pico de trabajo, un reemplazo o un servicio extraordinario.",
+        "p1": "La causa se expresa en el contrato y debe ser real y verificable; la prueba le corresponde al empleador.",
+        "p2": "Termina con la circunstancia que lo originó; no se usa para cubrir puestos permanentes.",
+        "p3": "Se informa el motivo y el plazo estimado desde el inicio.",
+        "law": "LCT art. 99 y Ley 24.013."
+      },
+      "parttime": {
+        "title": "Tiempo parcial",
+        "summary": "Jornada inferior a la habitual, con remuneración proporcional.",
+        "p1": "Se pacta por escrito la jornada semanal y la franja horaria.",
+        "p2": "Con la reforma, solo se admiten horas complementarias voluntarias que no excedan la jornada legal.",
+        "p3": "Derechos y beneficios proporcionales a la jornada.",
+        "law": "LCT art. 92 ter, según Leyes 27.742 y 27.802."
+      },
+      "remote": {
+        "title": "Teletrabajo",
+        "summary": "Modalidad de prestación (no de contrato): la tarea se hace fuera del establecimiento, con tecnología.",
+        "p1": "Es voluntario y reversible: nadie queda obligado a teletrabajar sin consentimiento.",
+        "p2": "Se garantizan el derecho a la desconexión digital, la compensación de gastos y los equipos necesarios.",
+        "p3": "Mismos derechos que el trabajo presencial.",
+        "law": "Ley 27.555 (incorporada a la LCT como art. 102 bis)."
+      },
+      "freelance": {
+        "title": "Freelance (locación de servicios)",
+        "summary": "No es una modalidad de la LCT: es una prestación autónoma, sin relación de dependencia.",
+        "p1": "Se formaliza con contrato de servicios o de obra, honorarios facturados e inscripción fiscal de quien presta (monotributo o autónomos).",
+        "p2": "Hay autonomía real: la persona organiza su tiempo, usa sus propios medios y puede trabajar para otros.",
+        "p3": "Si en los hechos hubiera subordinación, la ley presume relación de trabajo salvo prueba en contrario; por eso evaluamos cada caso.",
+        "law": "LCT arts. 21 a 23 (presunción del art. 23, con las precisiones de la Ley 27.802) y Código Civil y Comercial arts. 1251 y ss."
+      }
+    },
+    "noteTitle": "Importante",
+    "note": "Este resumen es informativo, no constituye una oferta de empleo ni asesoramiento legal. Las normas laborales cambiaron recientemente (Leyes 27.742 y 27.802) y algunos artículos están en revisión judicial: la modalidad concreta se define por escrito en cada contratación.",
+    "applyCta": "Postularme ahora",
+    "processTitle": "Cómo es el proceso",
+    "processText": "Revisamos tu postulación, hacemos una entrevista técnica y te informamos qué modalidad corresponde antes de cualquier firma."
+  }
+}

@@ -70,16 +70,7 @@
     "contactPhone": " · {{phone}}",
     "projectProgress": "Progreso del proyecto",
     "discardedProgress": "Este pedido fue descartado y no continuará por las etapas de desarrollo.",
-    "progressNote": "Etapas orientativas a partir del estado general del pedido. El sistema actual registra el estado de la solicitud, no el avance detallado de cada fase.",
-    "regret": {
-      "title": "Solicitud de arrepentimiento",
-      "received": "Ya registramos una solicitud para este pedido.",
-      "date": "Recibida: {{date}}",
-      "description": "Podés enviar la solicitud desde acá sin salir de tu cuenta. La fecha de creación de este pedido no acredita por sí sola cuándo se celebró el contrato o se entregó el bien; el equipo revisará esos antecedentes y las reglas aplicables.",
-      "action": "Solicitar arrepentimiento",
-      "sending": "Enviando…",
-      "error": "No pudimos registrar la solicitud. Revisá los datos de contacto o probá desde el formulario público."
-    }
+    "progressNote": "Etapas orientativas a partir del estado general del pedido. El sistema actual registra el estado de la solicitud, no el avance detallado de cada fase."
   },
   "supportPage": {
     "title": "Soporte",
