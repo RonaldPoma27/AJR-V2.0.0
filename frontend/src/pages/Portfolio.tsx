@@ -1,7 +1,12 @@
 import { Trans, useTranslation } from "react-i18next";
 import { Download, ExternalLink, FileText } from "lucide-react";
 import { useProjects, type Project, type ProjectMedia } from "@/api/projects";
+import { BentoCard, BentoGrid, type BentoSpan } from "@/components/ui/Bento";
 import { cn } from "@/lib/utils";
+
+// Patrón asimétrico que se repite: el primero (destacado) ocupa todo el ancho.
+const SPAN_PATTERN: BentoSpan[] = [6, 3, 3, 2, 4, 4, 2];
+const ACCENTS = ["cyan", "violet", "blue"] as const;
 
 function MediaItem({ media, title, wide }: { media: ProjectMedia; title: string; wide: boolean }) {
   const { t } = useTranslation();
@@ -47,12 +52,15 @@ function MediaItem({ media, title, wide }: { media: ProjectMedia; title: string;
   );
 }
 
-function ProjectSection({ project, featured }: { project: Project; featured: boolean }) {
+function ProjectSection({ project, featured, span, index }: { project: Project; featured: boolean; span: BentoSpan; index: number }) {
   const { t } = useTranslation();
   const gallery = project.media;
   const done = project.status === "terminado";
   return (
-    <article
+    <BentoCard
+      as="article"
+      cols={span}
+      accent={ACCENTS[index % ACCENTS.length]}
       id={`portfolio-project-${project.id}`}
       aria-labelledby={`project-${project.id}`}
       className={cn("ajr-portfolio-project", featured && "ajr-portfolio-project--featured")}
@@ -98,7 +106,7 @@ function ProjectSection({ project, featured }: { project: Project; featured: boo
           ))}
         </div>
       )}
-    </article>
+    </BentoCard>
   );
 }
 
@@ -124,11 +132,11 @@ export default function Portfolio() {
       {projects && projects.length === 0 && <p className="ajr-portfolio-state">{t("pubPortfolio.empty")}</p>}
 
       {projects && projects.length > 0 && (
-        <section className="ajr-portfolio-grid" aria-label={t("pubPortfolio.projectsLabel")}>
+        <BentoGrid className="mt-10" aria-label={t("pubPortfolio.projectsLabel")}>
           {projects.map((project, index) => (
-            <ProjectSection key={project.id} project={project} featured={index === 0} />
+            <ProjectSection key={project.id} project={project} featured={index === 0} index={index} span={SPAN_PATTERN[index % SPAN_PATTERN.length]} />
           ))}
-        </section>
+        </BentoGrid>
       )}
     </div>
   );

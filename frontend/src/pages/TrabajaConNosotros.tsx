@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { ChevronDown, Scale } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
 import { useCreateApplication } from "@/api/applications";
@@ -11,6 +10,8 @@ import {
   TextAreaField,
   TextField,
 } from "@/components/forms/Fields";
+import { BentoCard, BentoGrid } from "@/components/ui/Bento";
+import ContractModalities from "@/components/work/ContractModalities";
 import { getFormErrorMessage } from "@/lib/errors";
 
 const PERK_KEYS = ["custom", "ai", "learning", "remote"] as const;
@@ -39,56 +40,6 @@ const AVAILABILITY = [
 
 const MIN_MOTIVATION = 30;
 const MAX_MOTIVATION = 3000;
-
-
-const EMPLOYMENT_KEYS = ["indefinite", "fixedTerm", "eventual", "partTime", "seasonal", "freelance", "remote"] as const;
-
-function EmploymentModalities() {
-  const { t } = useTranslation();
-  const [openItem, setOpenItem] = useState<string | null>("indefinite");
-
-  return (
-    <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6" aria-labelledby="employment-title">
-      <div className="mb-6 max-w-3xl">
-        <div className="mb-3 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">
-          <Scale className="h-4 w-4" aria-hidden="true" />{t("jobForm.modalities.eyebrow")}
-        </div>
-        <h2 id="employment-title" className="text-2xl font-bold tracking-tight text-white sm:text-3xl">{t("jobForm.modalities.title")}</h2>
-        <p className="mt-3 text-sm leading-7 text-slate-300">{t("jobForm.modalities.intro")}</p>
-      </div>
-      <div className="grid gap-3 md:grid-cols-2">
-        {EMPLOYMENT_KEYS.map((key, index) => {
-          const isOpen = openItem === key;
-          const panelId = `employment-panel-${key}`;
-          return (
-            <article key={key} className="ajr-employment-card" data-open={isOpen}>
-              <h3>
-                <button type="button" className="ajr-employment-trigger" aria-expanded={isOpen} aria-controls={panelId} onClick={() => setOpenItem(isOpen ? null : key)}>
-                  <span className="flex min-w-0 items-center gap-3 text-left">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-cyan-300/20 bg-cyan-300/[0.08] text-xs font-bold text-cyan-100">0{index + 1}</span>
-                    <span className="min-w-0">
-                      <span className="block text-sm font-semibold text-white">{t(`jobForm.modalities.items.${key}.title`)}</span>
-                      <span className="mt-0.5 block text-xs text-slate-400">{t(`jobForm.modalities.items.${key}.basis`)}</span>
-                    </span>
-                  </span>
-                  <ChevronDown className={`h-4 w-4 shrink-0 text-cyan-200 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} aria-hidden="true" />
-                </button>
-              </h3>
-              <div id={panelId} hidden={!isOpen} className="ajr-employment-content"><p>{t(`jobForm.modalities.items.${key}.description`)}</p></div>
-            </article>
-          );
-        })}
-      </div>
-      <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-xs leading-6 text-slate-400">
-        <p>{t("jobForm.modalities.note")}</p>
-        <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
-          <a href="https://www.argentina.gob.ar/normativa/nacional/25552/actualizacion" target="_blank" rel="noreferrer noopener" className="font-semibold text-cyan-200 underline underline-offset-4">Texto actualizado de la LCT</a>
-          <a href="https://www.argentina.gob.ar/normativa/nacional/ley-27555-341093/texto" target="_blank" rel="noreferrer noopener" className="font-semibold text-cyan-200 underline underline-offset-4">Ley de Teletrabajo 27.555</a>
-        </p>
-      </div>
-    </section>
-  );
-}
 
 /* ------------------------------------------------------------------ formulario */
 const initialForm = {
@@ -200,27 +151,28 @@ export default function TrabajaConNosotros() {
 
   return (
     <div>
-      {/* Hero */}
-      <section className="border-b bg-surface-2">
-        <div className="mx-auto max-w-3xl px-6 py-16 text-center">
-          <h1 className="text-4xl font-bold text-fg">{t("jobForm.heroTitle")}</h1>
-          <p className="mt-5 text-lg text-fg-muted">{t("jobForm.heroIntro")}</p>
-          <p className="mt-4 text-fg-muted">{t("jobForm.heroOutro")}</p>
-          <ul className="mt-10 grid gap-4 text-left sm:grid-cols-2">
-            {PERK_KEYS.map((perk) => (
-              <li key={perk} className="rounded-lg border bg-surface p-4">
-                <h2 className="font-semibold text-accent">{t(`jobForm.perks.${perk}.title`)}</h2>
-                <p className="mt-1 text-sm text-fg-muted">{t(`jobForm.perks.${perk}.text`)}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
+      {/* Hero en Bento */}
+      <section className="mx-auto max-w-6xl px-5 pt-12 sm:px-6">
+        <BentoGrid>
+          <BentoCard cols={6} accent="cyan" scrollReveal={false} className="p-7 sm:p-10">
+            <h1 className="text-4xl font-bold text-fg">{t("jobForm.heroTitle")}</h1>
+            <p className="mt-5 max-w-3xl text-lg text-fg-muted">{t("jobForm.heroIntro")}</p>
+            <p className="mt-4 max-w-3xl text-fg-muted">{t("jobForm.heroOutro")}</p>
+          </BentoCard>
+          {PERK_KEYS.map((perk, i) => (
+            <BentoCard key={perk} cols={3} accent={i % 2 ? "violet" : "blue"}>
+              <h2 className="font-semibold text-accent">{t(`jobForm.perks.${perk}.title`)}</h2>
+              <p className="mt-1 text-sm text-fg-muted">{t(`jobForm.perks.${perk}.text`)}</p>
+            </BentoCard>
+          ))}
+        </BentoGrid>
       </section>
 
-      <EmploymentModalities />
+      {/* Modalidades de contratación (LCT 20.744) */}
+      <ContractModalities />
 
       {/* Formulario */}
-      <section className="mx-auto max-w-xl px-6 py-14">
+      <section id="postulacion" className="mx-auto max-w-xl scroll-mt-8 px-6 py-14">
         <h2 className="text-2xl font-bold text-fg">{t("jobForm.applyTitle")}</h2>
         <p className="mt-1 text-sm text-fg-subtle">{t("jobForm.requiredNote")}</p>
 

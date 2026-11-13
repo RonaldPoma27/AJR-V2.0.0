@@ -1,103 +1,91 @@
-import { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useRef, useState, type FormEvent } from "react";
+import { isAxiosError } from "axios";
+import { Link } from "react-router-dom";
+import { CheckCircle2, Undo2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, CheckCircle2, CircleAlert, ClipboardCheck, ShieldCheck } from "lucide-react";
-import { useSubmitOrderRegret } from "@/api/orders";
-import { getServerDetail } from "@/lib/errors";
-import { dateLocale } from "@/i18n";
+import { useRegretPublic, type RegretReceipt } from "@/api/orders";
+import Turnstile, { turnstileEnabled, type TurnstileHandle } from "@/components/Turnstile";
+import { Honeypot, TextAreaField, TextField } from "@/components/forms/Fields";
+import { BentoCard, BentoGrid } from "@/components/ui/Bento";
 
-function getRegretError(error: unknown): string {
-  const detail = getServerDetail(error);
-  if (detail) return detail;
-  const status = (error as { response?: { status?: number } })?.response?.status;
-  if (status === 404) return "No pudimos asociar un pedido con ese número y email. Revisá los datos e intentá nuevamente.";
-  if (status === 429) return "Se realizaron demasiados intentos. Volvé a probar más tarde.";
-  if (status === 422) return "Revisá el número de pedido y el formato del email.";
-  return "No pudimos enviar la solicitud. Comprobá tu conexión e intentá nuevamente.";
-}
-
+/**
+ * /arrepentimiento — Botón de arrepentimiento SIN cuenta (Res. 424/2020).
+ * Identifica el pedido con número + email de contacto. El backend responde 404 genérico si no
+ * coinciden (no revela qué pedidos existen) y 409 si venció el plazo de 10 días corridos.
+ */
 export default function Arrepentimiento() {
   const { t } = useTranslation();
-  const [searchParams] = useSearchParams();
-  const [orderId, setOrderId] = useState(searchParams.get("pedido") ?? "");
-  const [email, setEmail] = useState(searchParams.get("email") ?? "");
-  const submitRegret = useSubmitOrderRegret();
-  const [submitted, setSubmitted] = useState(false);
+  const regret = useRegretPublic();
+  const turnstileRef = useRef<TurnstileHandle>(null);
+  const [orderId, setOrderId] = useState("");
+  const [email, setEmail] = useState("");
+  const [reason, setReason] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  const [token, setToken] = useState("");
+  const [errors, setErrors] = useState<{ order?: string; email?: string }>({});
+  const [receipt, setReceipt] = useState<RegretReceipt | null>(null);
+  const [serverError, setServerError] = useState<string | null>(null);
 
-  const validOrderId = /^\d+$/.test(orderId.trim()) && Number(orderId) > 0 && Number.isSafeInteger(Number(orderId));
-  const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
-  const canSubmit = !submitRegret.isPending;
-
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  const submit = (event: FormEvent) => {
     event.preventDefault();
-    setSubmitted(true);
-    if (!validOrderId || !validEmail) return;
-    submitRegret.mutate({ order_id: Number(orderId), contact_email: email.trim() });
-  }
+    setServerError(null);
+    const id = Number(orderId.trim().replace(/^#/, ""));
+    const next: typeof errors = {};
+    if (!Number.isInteger(id) || id <= 0) next.order = t("orderRegret.invalidOrder");
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) next.email = t("orderRegret.invalidEmail");
+    setErrors(next);
+    if (next.order || next.email) return;
+
+    regret.mutate(
+      { order_id: id, contact_email: email.trim(), reason: reason.trim() || undefined, turnstile_token: token || undefined, website: honeypot || undefined },
+      {
+        onSuccess: setReceipt,
+        onError: (error) => {
+          turnstileRef.current?.reset();
+          const status = isAxiosError(error) ? error.response?.status : undefined;
+          setServerError(status === 404 ? t("orderRegret.notFound") : status === 409 ? t("orderRegret.expired") : t("orderRegret.generic"));
+        },
+      }
+    );
+  };
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-1 py-5 sm:px-3 sm:py-8">
-      <Link to="/" className="mb-5 inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-cyan-200">
-        <ArrowLeft className="h-4 w-4" aria-hidden="true" />{t("regret.backHome")}
-      </Link>
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem]">
-        <section className="ajr-regret-panel rounded-[1.6rem] border border-white/10 p-6 shadow-[0_20px_70px_rgba(0,0,0,.25)] sm:p-9" aria-labelledby="regret-title">
-          <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/10 text-cyan-200">
-            <ClipboardCheck className="h-6 w-6" aria-hidden="true" />
-          </div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">AJR DATA · ATENCIÓN AL CLIENTE</p>
-          <h1 id="regret-title" className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl">{t("regret.title")}</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300">{t("regret.intro")}</p>
+    <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 lg:px-8 lg:py-14">
+      <BentoGrid>
+        <BentoCard cols={6} accent="cyan" scrollReveal={false}>
+          <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-rose-500/20 text-rose-200" aria-hidden><Undo2 className="h-5 w-5" /></span>
+          <h1 className="mt-4 text-3xl font-extrabold">{t("orderRegret.title")}</h1>
+          <p className="mt-3 max-w-2xl text-fg-muted">{t("orderRegret.intro")}</p>
+          <p className="mt-2 text-sm text-fg-subtle">{t("orderRegret.legalNote")}</p>
+        </BentoCard>
 
-          {submitRegret.data ? (
-            <div className="mt-8 rounded-2xl border border-emerald-300/25 bg-emerald-300/[0.07] p-5" role="status" aria-live="polite">
-              <div className="flex items-center gap-3 text-emerald-200">
-                <CheckCircle2 className="h-6 w-6" aria-hidden="true" />
-                <h2 className="text-lg font-semibold">{t("regret.successTitle")}</h2>
-              </div>
-              <p className="mt-2 text-sm leading-6 text-slate-200">{t("regret.successText")}</p>
-              <div className="mt-4 rounded-xl border border-white/10 bg-black/20 p-4">
-                <p className="text-xs uppercase tracking-wider text-slate-400">{t("regret.codeLabel")}</p>
-                <p className="mt-1 break-all font-mono text-xl font-bold tracking-wide text-white">{submitRegret.data.request_code}</p>
-                <p className="mt-2 text-xs text-slate-400">{new Intl.DateTimeFormat(dateLocale(), { dateStyle: "long", timeStyle: "short" }).format(new Date(submitRegret.data.requested_at))}</p>
-              </div>
-              <button type="button" onClick={() => { submitRegret.reset(); setSubmitted(false); }} className="mt-5 rounded-xl border border-white/15 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/5">{t("regret.newRequest")}</button>
+        <BentoCard cols={6} accent="violet" scrollReveal={false}>
+          {receipt ? (
+            <div role="status" className="space-y-3">
+              <h2 className="flex items-center gap-2 text-xl font-bold text-fg"><CheckCircle2 className="h-6 w-6 text-emerald-400" aria-hidden />{t("orderRegret.doneTitle")}</h2>
+              <p className="text-fg-muted">{receipt.already_requested ? t("orderRegret.already") : t("orderRegret.doneText", { id: receipt.order_id })}</p>
+              <p className="rounded-lg border border-white/10 bg-black/30 p-4 text-center">
+                <span className="block text-xs uppercase tracking-widest text-fg-subtle">{t("orderRegret.code")}</span>
+                <span className="mt-1 block select-all font-mono text-2xl font-bold text-accent">{receipt.code}</span>
+                <span className="mt-1 block text-xs text-fg-subtle">{t("orderRegret.keepCode")}</span>
+              </p>
+              <Link to="/" className="inline-block text-sm text-accent hover:underline">{t("legalPages.back")}</Link>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-5">
-              <div>
-                <label htmlFor="regret-order-id" className="mb-2 block text-sm font-medium text-slate-200">{t("regret.orderId")}</label>
-                <input id="regret-order-id" name="order_id" type="number" inputMode="numeric" min="1" step="1" required value={orderId} onChange={(event) => setOrderId(event.target.value)} aria-invalid={submitted && !validOrderId} aria-describedby="regret-order-help" className="ajr-input w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300/60 focus:ring-2 focus:ring-cyan-300/10" placeholder="Ej. 1042" />
-                <p id="regret-order-help" className="mt-2 text-xs text-slate-500">{t("regret.orderHelp")}</p>
-                {submitted && !validOrderId && <p className="mt-1 text-xs text-rose-300" role="alert">{t("regret.invalidOrder")}</p>}
-              </div>
-              <div>
-                <label htmlFor="regret-email" className="mb-2 block text-sm font-medium text-slate-200">{t("regret.email")}</label>
-                <input id="regret-email" name="contact_email" type="email" autoComplete="email" maxLength={320} required value={email} onChange={(event) => setEmail(event.target.value)} aria-invalid={submitted && !validEmail} className="ajr-input w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300/60 focus:ring-2 focus:ring-cyan-300/10" placeholder="nombre@empresa.com" />
-                {submitted && !validEmail && <p className="mt-1 text-xs text-rose-300" role="alert">{t("regret.invalidEmail")}</p>}
-              </div>
-              {submitRegret.isError && <div role="alert" className="flex gap-2 rounded-xl border border-rose-300/20 bg-rose-300/[0.06] p-3 text-sm text-rose-100"><CircleAlert className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />{getRegretError(submitRegret.error)}</div>}
-              <button type="submit" disabled={!canSubmit} className="ajr-gradient-button flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
-                {submitRegret.isPending ? t("regret.sending") : t("regret.submit")}
-                {!submitRegret.isPending && <ArrowLeft className="h-4 w-4 rotate-180" aria-hidden="true" />}
+            <form onSubmit={submit} noValidate className="mx-auto max-w-lg space-y-4">
+              <TextField label={t("orderRegret.orderId")} name="order_id" value={orderId} onChange={(e) => setOrderId(e.target.value)} required maxLength={12} error={errors.order} hint={t("orderRegret.orderIdHint")} />
+              <TextField label={t("orderRegret.email")} name="contact_email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required maxLength={320} autoComplete="email" error={errors.email} />
+              <TextAreaField label={t("orderRegret.reason")} name="reason" value={reason} onChange={(e) => setReason(e.target.value)} maxLength={1000} />
+              <Honeypot value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
+              <Turnstile ref={turnstileRef} onToken={setToken} />
+              <button type="submit" disabled={regret.isPending || (turnstileEnabled && !token)} className="w-full rounded-md bg-rose-600 px-6 py-3 font-semibold text-white hover:bg-rose-500 disabled:opacity-50">
+                {regret.isPending ? t("orderRegret.sending") : t("orderRegret.submit")}
               </button>
-              <p className="text-xs leading-6 text-slate-400">{t("regret.noAccount")}</p>
+              {serverError && <p role="alert" className="text-sm text-red-400">{serverError}</p>}
             </form>
           )}
-        </section>
-
-        <aside className="space-y-4">
-          <div className="rounded-[1.4rem] border border-white/10 bg-[#0c1422]/85 p-5">
-            <div className="mb-3 flex items-center gap-2 text-cyan-200"><ShieldCheck className="h-5 w-5" aria-hidden="true" /><h2 className="text-sm font-semibold">{t("regret.privacyTitle")}</h2></div>
-            <p className="text-sm leading-6 text-slate-300">{t("regret.privacyText")}</p>
-          </div>
-          <div className="rounded-[1.4rem] border border-white/10 bg-[#0c1422]/85 p-5">
-            <h2 className="text-sm font-semibold text-white">{t("regret.legalTitle")}</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-300">{t("regret.legalText")}</p>
-            <Link to="/terms" className="mt-3 inline-flex text-xs font-semibold text-cyan-200 underline underline-offset-4">{t("regret.readTerms")}</Link>
-          </div>
-        </aside>
-      </div>
+        </BentoCard>
+      </BentoGrid>
     </div>
   );
 }
