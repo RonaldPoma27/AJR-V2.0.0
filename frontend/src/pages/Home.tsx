@@ -98,8 +98,8 @@ export default function Home() {
         {PROCESS_STEPS.map((step, index) => (
           <BentoCard key={step} as="article" cols={index < 2 ? 2 : 3} accent={index % 2 ? "violet" : "blue"}>
             <span className="ajr-process-number">0{index + 1}</span>
-            <h3 className="mt-2 text-lg font-semibold text-fg">{t(`pubHome.process.steps.${step}.title`)}</h3>
-            <p className="mt-1.5 text-sm text-fg-muted">{t(`pubHome.process.steps.${step}.description`)}</p>
+            <h3 className="mt-2 text-lg font-semibold text-fg">{t("pubHome.process.steps." + step + ".title")}</h3>
+            <p className="mt-1.5 text-sm text-fg-muted">{t("pubHome.process.steps." + step + ".description")}</p>
           </BentoCard>
         ))}
       </BentoGrid>
@@ -117,8 +117,8 @@ export default function Home() {
           <div className="ajr-faq-list mt-5">
             {FAQ_ITEMS.map((item) => {
               const isOpen = openFaq === item;
-              const triggerId = `faq-trigger-${item}`;
-              const panelId = `faq-panel-${item}`;
+              const triggerId = "faq-trigger-" + item;
+              const panelId = "faq-panel-" + item;
               return (
                 <article key={item} className="ajr-faq-item" data-open={isOpen}>
                   <h3>
@@ -130,12 +130,12 @@ export default function Home() {
                       aria-controls={panelId}
                       onClick={() => setOpenFaq((current) => (current === item ? null : item))}
                     >
-                      <span className="font-semibold">{t(`pubHome.faq.items.${item}.question`)}</span>
+                      <span className="font-semibold">{t("pubHome.faq.items." + item + ".question")}</span>
                       <span className="ajr-faq-icon" aria-hidden="true" />
                     </button>
                   </h3>
                   <div id={panelId} role="region" aria-labelledby={triggerId} hidden={!isOpen}>
-                    <p className="ajr-faq-answer">{t(`pubHome.faq.items.${item}.answer`)}</p>
+                    <p className="ajr-faq-answer">{t("pubHome.faq.items." + item + ".answer")}</p>
                   </div>
                 </article>
               );
@@ -168,5 +168,3 @@ export default function Home() {
   );
 }
 ```[cite: 14]
-
-Guarda este contenido en tu archivo **`app/src/pages/Home.tsx`** y realiza el commit para que el despliegue en Render se ejecute sin problemas.
