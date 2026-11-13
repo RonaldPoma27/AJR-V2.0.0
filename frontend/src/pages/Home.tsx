@@ -30,10 +30,10 @@ export default function Home() {
             </h1>
             <p className="ajr-home-intro">{t("pubHome.intro")}</p>
             <div className="ajr-home-actions">
-              <Link to="/solicitar-proyecto" className="ajr-gradient-button ajr-home-primary">
+              <Link to="/solicitar-proyecto" className="ajr-gradient-button ajr-home-primary !rounded-full">
                 {t("pubHome.cta")} <ArrowUpRight className="h-4 w-4" aria-hidden />
               </Link>
-              <Link to="/portfolio" className="ajr-home-secondary">
+              <Link to="/portfolio" className="ajr-home-secondary !rounded-full">
                 {t("pubHome.portfolioCta")} <ArrowRight className="h-4 w-4" aria-hidden />
               </Link>
             </div>
@@ -145,7 +145,7 @@ export default function Home() {
 
         <BentoCard cols={2} accent="violet" className="flex flex-col items-start justify-center gap-4">
           <p className="text-lg font-semibold text-fg">{t("pubHome.heroNote")}</p>
-          <Link to="/solicitar-proyecto" className="ajr-gradient-button ajr-home-primary">
+          <Link to="/solicitar-proyecto" className="ajr-gradient-button ajr-home-primary !rounded-full">
             {t("pubHome.cta")} <ArrowUpRight className="h-4 w-4" aria-hidden />
           </Link>
         </BentoCard>
@@ -167,3 +167,4 @@ export default function Home() {
     </div>
   );
 }
+```[cite: 24]
