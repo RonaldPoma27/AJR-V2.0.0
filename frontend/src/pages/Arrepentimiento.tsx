@@ -21,7 +21,7 @@ export default function Arrepentimiento() {
   const [email, setEmail] = useState("");
   const [reason, setReason] = useState("");
   const [honeypot, setHoneypot] = useState("");
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState<string | null>(null); // <- Corregido aquí para aceptar null
   const [errors, setErrors] = useState<{ order?: string; email?: string }>({});
   const [receipt, setReceipt] = useState<RegretReceipt | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
