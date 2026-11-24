@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4518635e-2ec2-405c-ac5c-67d8813a0a6c" name="Changes" comment="fix: reparar esquema de correo de respaldo y sprints" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="242" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="ajrdata-3.3-morpheoA" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;RonaldPoma27&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/RonaldPoma27/AJR-V2.0.0.git&quot;,
+    &quot;accountId&quot;: &quot;ec6adbef-6d15-41c1-b490-6f752f52489e&quot;
+  }
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.00002712551805" />
+      <entry key="MS500" value="1.1419572838578902" />
+      <entry key="S2" value="2.3226036915408743" />
+      <entry key="S5" value="3.761234973979976" />
+      <entry key="S10" value="5.448087394683541" />
+      <entry key="S30" value="12.256820318584646" />
+      <entry key="S60" value="19.11185035692411" />
+      <entry key="M2" value="25.09267463804443" />
+      <entry key="M5" value="30.001673526433212" />
+      <entry key="M10" value="31.91980746937165" />
+      <entry key="M15" value="32.5945112302997" />
+      <entry key="M30" value="33.2877306447114" />
+      <entry key="H1" value="33.64145007833831" />
+      <entry key="H2" value="33.820116923888584" />
+      <entry key="H4" value="33.90990589167114" />
+      <entry key="D1" value="33.984963078846334" />
+      <entry key="W1" value="33.9978513477283" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="2.5355874625706737E-79" />
+      <entry key="MS500" value="2.0081562871478372E-16" />
+      <entry key="S2" value="1.8077131247323935E-4" />
+      <entry key="S5" value="0.05546619086088517" />
+      <entry key="S10" value="0.4005821243661902" />
+      <entry key="S30" value="1.6527785041679035" />
+      <entry key="S60" value="2.4971457831984707" />
+      <entry key="M2" value="3.1321423443525602" />
+      <entry key="M5" value="3.6185432960520982" />
+      <entry key="M10" value="3.802904246858906" />
+      <entry key="M15" value="3.8671348183163174" />
+      <entry key="M30" value="3.9328196178454187" />
+      <entry key="H1" value="3.966220225304631" />
+      <entry key="H2" value="3.9830623827186047" />
+      <entry key="H4" value="3.9915192168339773" />
+      <entry key="D1" value="3.9985848694286243" />
+      <entry key="W1" value="3.999797797625608" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.9075421236696044" />
+      <entry key="MS500" value="1.1155633342558147" />
+      <entry key="S2" value="2.262000046856906" />
+      <entry key="S5" value="3.669146555711887" />
+      <entry key="S10" value="5.642807772643848" />
+      <entry key="S30" value="13.742892955924354" />
+      <entry key="S60" value="21.499883271693903" />
+      <entry key="M2" value="28.16156349499038" />
+      <entry key="M5" value="33.592412473025114" />
+      <entry key="M10" value="35.70835007049282" />
+      <entry key="M15" value="36.451966046692895" />
+      <entry key="M30" value="37.2156565738319" />
+      <entry key="H1" value="37.60520986475458" />
+      <entry key="H2" value="37.80194566665024" />
+      <entry key="H4" value="37.900807430643745" />
+      <entry key="D1" value="37.983444882579626" />
+      <entry key="W1" value="37.99763441875636" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="3LOgRJZ1jyOVJxERWbjV4M4HD6H" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "python.packages.toolwindow.project.migrated.to.right.top.v2": "true",
+    "settings.editor.selected.configurable": "advanced.settings",
+    "to.speed.mode.migration.done": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-73a66231627c-5bd6d13a2a75-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-262.10968.92" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4518635e-2ec2-405c-ac5c-67d8813a0a6c" name="Changes" comment="" />
+      <created>1793330521715</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1793330521715</updated>
+      <workItem from="1793330525387" duration="1267000" />
+      <workItem from="1793331813262" duration="3179000" />
+      <workItem from="1793397463095" duration="537000" />
+      <workItem from="1794576647868" duration="23000" />
+      <workItem from="1795491678655" duration="191000" />
+      <workItem from="1795491935855" duration="717000" />
+    </task>
+    <task id="LOCAL-00001" summary="fix: reparar esquema de correo de respaldo y sprints">
+      <option name="closed" value="true" />
+      <created>1793333423582</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1793333423582</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="fix: reparar esquema de correo de respaldo y sprints" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: reparar esquema de correo de respaldo y sprints" />
+  </component>
+</project>

@@ -1,0 +1,126 @@
+{
+  "rail": {
+    "collapse": "Collapse menu",
+    "expand": "Expand menu"
+  },
+  "footerNav": {
+    "label": "Legal information",
+    "privacy": "Privacy",
+    "terms": "Terms of use",
+    "eula": "EULA",
+    "regret": "Right of withdrawal button",
+    "regretHint": "Cancel a purchase (Res. 424/2020, Argentina)",
+    "rights": "Consumer protection: you can file a claim with your local consumer protection authority."
+  },
+  "legalPages": {
+    "back": "Back to home",
+    "updated": "Legal document · version 1.0",
+    "onlySpanish": "This legal document is provided in Spanish, as it is governed by Argentine law.",
+    "privacy": {
+      "title": "Privacy Policy",
+      "meta": "How we collect, use and protect your data."
+    },
+    "terms": {
+      "title": "Terms of Use",
+      "meta": "Usage rules, intellectual property and liability limits."
+    },
+    "eula": {
+      "title": "License Agreement (EULA)",
+      "meta": "License to use the AJR Data CMS."
+    }
+  },
+  "orderRegret": {
+    "title": "Right of withdrawal",
+    "intro": "If you hired a service remotely, you can cancel it within 10 calendar days of the purchase. No account or explanation needed.",
+    "legalNote": "Res. 424/2020 (Argentina) and art. 34 of Law 24.240. We email you a confirmation code within 24 hours.",
+    "orderId": "Order number",
+    "orderIdHint": "It appears in your confirmation email (e.g. 123).",
+    "email": "Order contact email",
+    "reason": "Reason (optional)",
+    "submit": "Cancel purchase",
+    "sending": "Sending…",
+    "invalidOrder": "Enter a valid order number.",
+    "invalidEmail": "Enter a valid email.",
+    "notFound": "We couldn't find an order with those details. Check the number and the email used.",
+    "expired": "More than 10 calendar days have passed since purchase: it can no longer be cancelled here. Contact us and we'll look into it.",
+    "generic": "We couldn't register the cancellation. Please try again later.",
+    "doneTitle": "Cancellation registered",
+    "doneText": "We stopped the work tied to order #{{id}}. We emailed you the receipt.",
+    "already": "This order had already been cancelled. Here is your confirmation code.",
+    "code": "Confirmation code",
+    "keepCode": "Keep this code.",
+    "button": "Withdraw from this purchase",
+    "buttonShort": "Right of withdrawal",
+    "deadline": "You can withdraw until {{date}}.",
+    "expiredShort": "The withdrawal period (10 calendar days) has expired.",
+    "requestedAt": "Cancelled on {{date}} · code {{code}}",
+    "confirmTitle": "Cancel order #{{id}}?",
+    "confirmText": "We will stop the related work and you won't be able to undo it here. We'll email you a receipt.",
+    "confirmYes": "Yes, cancel",
+    "confirmNo": "Keep order",
+    "done": "Cancellation registered. Code: {{code}}"
+  },
+  "workLaw": {
+    "eyebrow": "Employment transparency",
+    "title": "How we hire",
+    "intro": "We hire under the models of Argentina's Employment Contract Law 20,744 (LCT) and its reforms, and with independent contractors when the relationship truly is one. We pick the model by the nature of the work, not by convenience.",
+    "listLabel": "Hiring models",
+    "basis": "Legal basis",
+    "expand": "View details",
+    "items": {
+      "indefinite": {
+        "title": "Indefinite term",
+        "summary": "The general rule (LCT art. 90): no agreed end date.",
+        "p1": "Registered from day one, with social security contributions, vacation, bonus and full LCT coverage.",
+        "p2": "6-month probation period (art. 92 bis): either party may end it without cause or severance, with 15 days' notice. Collective agreements may extend it depending on company size.",
+        "p3": "Probation periods can't be chained: if we rehire someone, we are deemed to have waived it.",
+        "law": "LCT arts. 90, 91, 92 bis, 231."
+      },
+      "fixed": {
+        "title": "Fixed term",
+        "summary": "For work with a defined, foreseeable end, such as a closed-scope project.",
+        "p1": "Its duration must be agreed in writing and justified by the nature of the activity; max. 5 years.",
+        "p2": "If it lasts a year or more, we give 1 to 2 months' notice of non-renewal; otherwise it becomes indefinite.",
+        "p3": "Early termination without just cause entitles the person to the compensation provided by law.",
+        "law": "LCT arts. 90, 93, 94 and 95."
+      },
+      "eventual": {
+        "title": "Casual work",
+        "summary": "For temporary, objective needs outside normal business: a workload peak, a replacement or an extraordinary service.",
+        "p1": "The cause is stated in the contract and must be real and verifiable; the employer bears the burden of proof.",
+        "p2": "It ends with the circumstance that caused it; it is not used to fill permanent positions.",
+        "p3": "The reason and estimated term are disclosed from the start.",
+        "law": "LCT art. 99 and Law 24,013."
+      },
+      "parttime": {
+        "title": "Part-time",
+        "summary": "Fewer hours than the usual workday, with proportional pay.",
+        "p1": "The weekly schedule and time window are agreed in writing.",
+        "p2": "Following the reform, only voluntary supplementary hours are allowed, never exceeding the legal workday.",
+        "p3": "Rights and benefits are proportional to the hours worked.",
+        "law": "LCT art. 92 ter, as amended by Laws 27,742 and 27,802."
+      },
+      "remote": {
+        "title": "Remote work",
+        "summary": "A way of performing the job (not a contract type): the work is done off-premises using technology.",
+        "p1": "It is voluntary and reversible: no one is forced to work remotely without consent.",
+        "p2": "It guarantees the right to disconnect, expense compensation and the necessary equipment.",
+        "p3": "Same rights as on-site work.",
+        "law": "Law 27,555 (added to the LCT as art. 102 bis)."
+      },
+      "freelance": {
+        "title": "Freelance (service agreement)",
+        "summary": "Not an LCT model: it is independent work, without an employment relationship.",
+        "p1": "Formalized with a service or work contract, invoiced fees and tax registration of the provider (monotributo or self-employed).",
+        "p2": "There is real autonomy: the person organizes their time, uses their own tools and may work for others.",
+        "p3": "If, in practice, there is subordination, the law presumes an employment relationship unless proven otherwise; so we assess each case.",
+        "law": "LCT arts. 21 to 23 (art. 23 presumption, as clarified by Law 27,802) and Civil and Commercial Code arts. 1251 ff."
+      }
+    },
+    "noteTitle": "Important",
+    "note": "This summary is informational and is not a job offer or legal advice. Labor rules changed recently (Laws 27,742 and 27,802) and some articles are under judicial review: the specific model is defined in writing for each hire.",
+    "applyCta": "Apply now",
+    "processTitle": "How the process works",
+    "processText": "We review your application, run a technical interview and tell you which model applies before anything is signed."
+  }
+}

@@ -66,5 +66,9 @@
   "turnstile": {
     "missingKey": "The anti-spam check is not configured (VITE_TURNSTILE_SITE_KEY).",
     "required": "Complete the anti-spam check."
+  },
+  "toast": {
+    "close": "Dismiss notification",
+    "region": "Notifications"
   }
 }

@@ -4,6 +4,7 @@ import { formatWait } from "@/lib/time";
 
 /** Mensajes de error que manda el backend (en español) -> clave de traducción. */
 const SERVER_MESSAGES: Record<string, string> = {
+  "backup_address_unavailable": "security.errors.backup_address_unavailable",
   "El envío de formularios no está disponible por el momento.": "serverErrors.formsUnavailable",
   "Completá la verificación anti-spam antes de enviar.": "serverErrors.antiSpamRequired",
   "No pudimos verificar que sos una persona. Recargá la página y probá de nuevo.": "serverErrors.antiSpamFailed",

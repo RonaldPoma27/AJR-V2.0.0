@@ -41,7 +41,6 @@
       "TECHNICIAN": "Técnico",
       "ADMIN": "Administrador"
     },
-    "audit": "Auditoría",
-    "dashboard": "Resumen"
+    "audit": "Auditoría"
   }
 }

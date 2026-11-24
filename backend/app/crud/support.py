@@ -8,7 +8,6 @@ from typing import Any
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
 from app.core.exceptions import AppError
 from app.models import SupportMessage, SupportTicket, SupportTicketStatus, User
@@ -51,7 +50,6 @@ async def build_detail(db: AsyncSession, ticket_id: int, viewer: User) -> dict[s
     ticket = await db.scalar(
         select(SupportTicket)
         .where(SupportTicket.id == ticket_id)
-        .options(selectinload(SupportTicket.messages))
         .execution_options(populate_existing=True)
     )
     if ticket is None or not can_access(viewer, ticket):
@@ -65,17 +63,26 @@ async def build_detail(db: AsyncSession, ticket_id: int, viewer: User) -> dict[s
     ):
         block_reason = "awaiting_support"
 
+    # Read message/sender scalar columns explicitly: reloading an already-present
+    # ticket with populate_existing can otherwise leave an eager sender unset.
+    rows = (await db.execute(
+        select(SupportMessage.id, SupportMessage.ticket_id, SupportMessage.sender_id,
+               SupportMessage.content, SupportMessage.created_at, User.first_name, User.last_name)
+        .join(User, User.id == SupportMessage.sender_id)
+        .where(SupportMessage.ticket_id == ticket_id)
+        .order_by(SupportMessage.id)
+    )).all()
     messages = [
         {
-            "id": m.id,
-            "ticket_id": m.ticket_id,
-            "sender_id": m.sender_id,
-            "sender_name": m.sender.full_name or "Usuario",
-            "from_customer": m.sender_id == ticket.user_id,
-            "content": m.content,
-            "created_at": m.created_at,
+            "id": row.id,
+            "ticket_id": row.ticket_id,
+            "sender_id": row.sender_id,
+            "sender_name": " ".join(part for part in (row.first_name, row.last_name) if part) or "Usuario",
+            "from_customer": row.sender_id == ticket.user_id,
+            "content": row.content,
+            "created_at": row.created_at,
         }
-        for m in ticket.messages
+        for row in rows
     ]
     return {
         **{c: getattr(ticket, c) for c in (

@@ -1,6 +1,7 @@
 """Envío de mails (stdlib). Pensado para correr en BackgroundTasks.
 
-Regla de oro: un problema con el mail NUNCA rompe la respuesta HTTP; se loguea y listo.
+Los avisos históricos usan send_email (best-effort). Los desafíos de seguridad usan
+send_security_email (estricto, sin fallback ni logs del contenido).
 
 Transportes (EMAIL_BACKEND):
 - "smtp":    envío real por SMTP.
@@ -63,17 +64,24 @@ def _deliver_smtp(msg: EmailMessage) -> None:
 
 
 def send_email(
-    to: str, subject: str, text: str, html: str | None = None, reply_to: str | None = None
-) -> None:
-    """Envía un mail. No lanza excepciones: loguea y sigue."""
+    to: str, subject: str, text: str, html: str | None = None, reply_to: str | None = None,
+    *, strict: bool = False,
+) -> bool:
+    """Envía un mail. En modo normal no interrumpe flujos; `strict=True` permite reintentos."""
     console = settings.EMAIL_BACKEND == "console"
     if not console and not settings.SMTP_HOST:
-        logger.info("SMTP no configurado: se omite el mail «%s».", _clean_header(subject))
-        return
+        message = f"SMTP no configurado para «{_clean_header(subject)}»."
+        if strict:
+            raise RuntimeError(message)
+        logger.info(message)
+        return False
     sender = settings.SMTP_FROM or settings.SMTP_USER or ("no-reply@ajrdata.local" if console else None)
     if not sender:
-        logger.warning("Falta SMTP_FROM o SMTP_USER: se omite el mail «%s».", _clean_header(subject))
-        return
+        message = f"Falta SMTP_FROM o SMTP_USER para «{_clean_header(subject)}»."
+        if strict:
+            raise RuntimeError(message)
+        logger.warning(message)
+        return False
     try:
         msg = EmailMessage()
         msg["From"] = _clean_header(f"AJR Data <{sender}>" if "<" not in sender else sender)
@@ -86,8 +94,12 @@ def send_email(
             msg.add_alternative(html, subtype="html")
         _deliver(msg)
         logger.info("Mail enviado: «%s».", _clean_header(subject))
+        return True
     except Exception:  # noqa: BLE001 - el mail nunca debe tirar abajo la request
         logger.exception("No se pudo enviar el mail «%s».", _clean_header(subject))
+        if strict:
+            raise
+        return False
 
 
 # ---------------------------------------------------------------------- plantillas
@@ -148,6 +160,30 @@ def send_order_emails(order: dict[str, Any]) -> None:
         "Recibimos tu solicitud en AJR Data",
         f"{intro}\n\n{outro}\n\n— El equipo de AJR Data",
         _html("¡Gracias por escribirnos!", intro, outro=outro),
+    )
+
+
+def send_order_regret_email(*, to: str, name: str, order_id: int, request_code: str, strict: bool = False) -> bool:
+    """Confirma por el mismo canal la recepción de un pedido de arrepentimiento."""
+    intro = (
+        f"Hola {_first_name(name)}, recibimos la solicitud de arrepentimiento "
+        f"vinculada al pedido #{order_id}."
+    )
+    rows = [
+        ("Pedido", f"#{order_id}"),
+        ("Código de seguimiento", request_code),
+        ("Estado", "Solicitud recibida; AJR Data debe procesarla y confirmar su efectivización."),
+    ]
+    outro = (
+        "Conservá este código. Te enviaremos la respuesta por este mismo medio. "
+        "La recepción de esta notificación no limita los derechos que pudieran corresponderte."
+    )
+    return send_email(
+        to,
+        f"Recibimos tu solicitud de arrepentimiento · Pedido #{order_id}",
+        f"{intro}\n\n{_rows_text(rows)}\n\n{outro}\n\n— El equipo de AJR Data",
+        _html("Solicitud recibida", intro, rows, outro),
+        strict=strict,
     )
 
 
@@ -227,3 +263,25 @@ def send_order_status_email(
         f"{intro}\n\n{outro}\n\n— El equipo de AJR Data",
         _html(f"Tu pedido está «{label}»", intro, rows, outro),
     )
+
+
+
+def send_security_email(to: str, subject: str, text: str) -> None:
+    """Fail closed, no console fallback, no recipient/body/SMTP exception logging."""
+    if settings.EMAIL_BACKEND != "smtp" or not settings.SMTP_HOST:
+        raise RuntimeError("Security mail requires SMTP")
+    sender = settings.SMTP_FROM or settings.SMTP_USER
+    if not sender:
+        raise RuntimeError("Security mail requires a sender")
+    mode = settings.SMTP_TLS.strip().lower()
+    if mode not in {"starttls", "ssl", "none"} or (settings.is_production and mode == "none"):
+        raise RuntimeError("Secure SMTP transport required")
+    msg = EmailMessage()
+    msg["From"] = _clean_header(sender)
+    msg["To"] = _clean_header(to)
+    msg["Subject"] = _clean_header(subject)
+    msg.set_content(text)
+    try:
+        _deliver_smtp(msg)
+    except Exception:
+        raise RuntimeError("Security mail delivery failed") from None

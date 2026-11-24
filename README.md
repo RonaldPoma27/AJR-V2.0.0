@@ -1,129 +1,121 @@
-# AJR Data 3.5 — Hercules
+# AJR Data 3.6 — Haniel
 
-**Nombre clave:** `ajrdata-3.5-hercules`  
-**Base:** AJR Data 3.4 — Tanatos  
-**Entrega:** Fases 1 y 2 — backend, integración frontend y rediseño global  
-**Estado:** candidato de entrega funcional; requiere build con dependencias completas, QA visual real y completar datos legales antes de producción.
+**Nombre clave:** `ajrdata-3.6-haniel`
+**Base:** AJR Data 3.5 — Hercules (`ajrdata-3.5-hercules`)
+**Entrega:** Rediseño integral del portfolio público y su administración; editor Bento configurable.
+**Estado:** implementación de Haniel preparada para revisión. La migración y los contratos de backend están añadidos; el build completo de frontend y el QA visual en navegador quedan pendientes de ejecutarse en un entorno con dependencias instaladas.
 
 ---
 
-## 1. Qué incluye Hercules 3.5
+## 1. Resumen de Haniel 3.6
 
-Esta versión integra la base documental y técnica de Fase 1 con la interfaz global implementada en Fase 2.
+Haniel reemplaza la antigua presentación lineal del portfolio por una experiencia editorial oscura, modular y personalizable. La implementación mantiene el stack y los contratos anteriores cuando es posible, y agrega un modelo de bloques que permite que cada proyecto tenga su propia composición visual.
 
-- Borradores de Política de Privacidad, Términos de Uso y EULA en `docs/legal/`.
-- Endpoint público `POST /api/orders/regret`, sin login, que recibe número de pedido y email de contacto.
-- Verificación acotada de identidad, rate limit y respuesta genérica para datos no coincidentes.
-- Código de seguimiento único y persistencia de la fecha de recepción.
-- Evento de auditoría `regret_requested` dentro de la misma transacción.
-- Outbox de email persistente, reintentos progresivos y despacho periódico mediante APScheduler.
-- Migraciones `0009_order_regret` y `0010_email_outbox`.
-- Se conserva la autenticación, permisos, endpoints y flujos del sistema anterior.
-- Se preserva el layout original en contenido de negocio donde no era necesario cambiar los contratos de datos; las vistas se adaptan mediante el marco global y los estilos compartidos.
+### 1.1 Portfolio público
 
-### Integración de interfaz (Fase 2)
+- Identidad local del portfolio en negro, grafito y grises; no cambia el tema global del resto del sitio.
+- Portada con navegación circular de proyectos: proyecto prioritario centrado y proyectos anterior/siguiente parcialmente visibles, desenfocados y con menor escala.
+- Navegación por flechas, selección de tarjetas laterales y gesto horizontal de arrastre.
+- El proyecto central conduce a `/portfolio/:projectId`. La ruta principal y las rutas de detalle usan el mismo componente y la misma consulta de TanStack Query, por lo que el listado ya cargado se reutiliza al abrir un proyecto.
+- Tarjeta fija **«Más próximamente...»** en la portada, incluso cuando todavía no hay proyectos publicados.
+- Detalle individual compuesto por una grilla Bento asimétrica de bloques; soporta texto, imágenes, video y archivos.
+- Logo, título, resumen breve, estado, cliente opcional y enlace externo en la cabecera del proyecto.
+- Navegación entre proyectos anterior/siguiente dentro del detalle.
+- Transiciones de entrada con desenfoque, movimiento y opacidad; las preferencias `prefers-reduced-motion` desactivan las animaciones decorativas.
+- Los medios se contienen en su bloque: imágenes con `object-fit: contain` o `cover`, ancho máximo del contenedor, overflow recortado y alturas limitadas. Los videos también tienen límites de ancho y alto.
 
-- `AppLayout.tsx`: sidebar flotante persistente y colapsable en escritorio; drawer accesible para tablet/móvil, con cierre por Escape, control de foco, bloqueo del scroll y recuperación del foco.
-- `NavBar.tsx`: barra compacta móvil con acceso visible y rotulado al botón de arrepentimiento.
-- `Footer.tsx`: enlaces a Privacidad, Términos, EULA y acceso destacado al botón de arrepentimiento.
-- Nuevas rutas públicas `/arrepentimiento`, `/privacy`, `/terms` y `/eula`.
-- Página pública de arrepentimiento conectada a `POST /api/orders/regret`, sin login y con código de seguimiento inmediato.
-- `MisPedidos.tsx`: acción contextual de solicitud y visualización del estado/código.
-- `TrabajaConNosotros.tsx`: acordeones de contratación por tiempo indeterminado, plazo fijo, eventual, tiempo parcial, temporada, servicios independientes y teletrabajo.
-- Renderer compartido para los documentos legales Markdown ubicados en `docs/legal/`.
-- Refinamiento visual CSS-first con superficies dark premium/glass controladas, grillas responsive, estados hover/focus y respeto de `prefers-reduced-motion`.
+### 1.2 Personalización visual
 
-## 2. Estado de validación y pendientes
+- Paleta por proyecto: fondo de tarjeta, borde, color de acento reactivo y color de texto principal.
+- Paleta por bloque: fondo, borde y color de texto.
+- Los bordes y brillos de hover toman el color de acento del proyecto; no dependen de los antiguos acentos azules/cian globales.
+- Bloques de texto con negrita, cursiva y subrayado.
+- Selección de fragmentos del texto para aplicar color sólido o degradado de dos colores.
+- Los degradados se almacenan como dos valores HEX independientes.
+- Los colores se validan en backend con formato `#RRGGBB`; no se admiten valores CSS arbitrarios.
+- Los bloques de texto tienen límites de caracteres según su tamaño: pequeño 140, mediano 280, grande 520, ancho 640, alto 420 y completo 900.
+- La API verifica de nuevo los límites, las URL y los rangos de formato; las validaciones no dependen solamente del navegador.
 
-La integración está conectada a las rutas y contratos presentes en el backend. Se validaron los JSON de traducciones y la estructura de los archivos. **No se pudo completar `npm ci` en el entorno de trabajo (la instalación quedó sin finalizar), por lo que no se pudo ejecutar `npm run build` ni certificar el type-check de TypeScript.** Tampoco se realizó QA visual en navegadores/dispositivos reales. El código debe considerarse candidato a QA, no un release certificado.
+### 1.3 Administración del portfolio
 
-## 3. Stack y arquitectura
+- Listado ordenable de proyectos con prioridad numérica, logo/miniatura y estado.
+- Arrastrar y soltar para cambiar el orden y controles accesibles de subir/bajar.
+- Acción explícita **Guardar prioridad**; el backend persiste la lista completa y comprueba que no haya proyectos faltantes, extra o duplicados.
+- Editor visual por secciones: datos básicos, bloques Bento y paleta del proyecto.
+- Creación de bloques de texto, imagen, video y archivo, con tamaño seleccionable y orden configurable.
+- Los bloques de imagen pueden mostrarse como cuadros sin texto ni caption; un proyecto puede componerse únicamente de imágenes.
+- Previsualización de colores por bloque y paleta global.
+- El resumen, el logo, el estado y los enlaces son campos opcionales salvo el título.
+- Se conserva el permiso existente: ADMIN y TECHNICIAN pueden crear/editar y solamente ADMIN puede borrar.
 
-- **Frontend:** React 18, TypeScript, Vite, Tailwind CSS, React Router, TanStack Query, i18next y Lucide.
-- **Backend:** Python, FastAPI, SQLAlchemy 2 async y Alembic.
-- **Base de datos:** PostgreSQL.
-- **Perímetro:** Cloudflare DNS y Cloudflare Turnstile ya integrados en formularios existentes. No se añaden capas redundantes.
+---
 
-## 4. Actualizar el backend
+## 2. Datos y API
 
-Antes de aplicar cambios en producción, generar backup de PostgreSQL y verificar las variables de entorno.
+### 2.1 Persistencia
+
+La migración `0011_haniel_portfolio` agrega a `portfolio_items`:
+
+| Campo | Tipo | Uso |
+|---|---|---|
+| `logo_url` | `VARCHAR(1000)` nullable | Logo individual del proyecto |
+| `position` | `INTEGER NOT NULL` | Prioridad ascendente en la portada |
+| `style` | `JSON NOT NULL` | Paleta del proyecto |
+| `blocks` | `JSON NOT NULL` | Composición y contenido de cada cuadro Bento |
+
+La migración inicializa el orden existente respetando el orden cronológico descendente que usaba el portfolio anterior. Los proyectos actuales conservan título, descripción, cliente, estado, enlaces y galería. `media` y `image_url` se mantienen para compatibilidad con los clientes anteriores; el editor nuevo utiliza `blocks` como composición principal.
+
+El editor admite hasta 40 bloques Bento y hasta 30 elementos multimedia por proyecto, alineado con el límite heredado de la galería. Un bloque admite:
+
+- `type`: `text`, `image`, `video` o `file`.
+- `size`: `small`, `medium`, `large`, `wide`, `tall` o `full`.
+- Contenido de texto o URL, caption opcional, ajuste de imagen `contain`/`cover`.
+- Colores HEX de fondo, borde y texto.
+- Degradado opcional con dos colores.
+- Marcas de formato por rango (`start` / `end`): negrita, cursiva, subrayado, color sólido o degradado.
+
+### 2.2 Endpoints
+
+| Método | Ruta | Acceso | Función |
+|---|---|---|---|
+| `GET` | `/api/portfolio` | Público | Listado ordenado por `position`, con bloques, estilo y galería |
+| `GET` | `/api/portfolio/{item_id}` | Público | Detalle del proyecto |
+| `POST` | `/api/portfolio` | ADMIN / TECHNICIAN | Crear proyecto |
+| `PUT` | `/api/portfolio/{item_id}` | ADMIN / TECHNICIAN | Reemplazar datos, bloques, estilo y galería |
+| `POST` | `/api/portfolio/reorder` | ADMIN / TECHNICIAN | Guardar prioridad de todos los proyectos |
+| `DELETE` | `/api/portfolio/{item_id}` | ADMIN | Eliminar proyecto |
+
+El request de reordenamiento tiene esta forma:
+
+```json
+{
+  "ids": [12, 8, 21]
+}
+```
+
+La lista debe contener exactamente los IDs existentes, una sola vez cada uno. Si la colección cambió entre la carga y el guardado, el backend responde `409 Conflict` para evitar guardar una prioridad parcial u obsoleta.
+
+### 2.3 Comportamiento de compatibilidad
+
+- Los proyectos anteriores sin `blocks` se presentan mediante una composición de respaldo generada con su descripción y sus elementos de `media`.
+- `image_url` sigue siendo un campo calculado desde la primera imagen de `media`.
+- El endpoint público continúa siendo `/portfolio`; no se crea una ruta backend nueva por cada proyecto.
+- `/portfolio/:projectId` es una subruta frontend dinámica. Añadir un proyecto no requiere modificar `App.tsx` ni publicar nuevas rutas por proyecto.
+
+---
+
+## 3. Aplicar la versión
+
+Antes de desplegar, generar una copia de seguridad de PostgreSQL y comprobar las variables de entorno de Hercules.
 
 ```bash
 cd backend
 alembic upgrade head
 ```
 
-Variables esenciales:
+La revisión nueva es `0011_haniel_portfolio`, posterior a `0010_email_outbox`.
 
-- `DATABASE_URL`: conexión PostgreSQL compatible con `asyncpg`.
-- `SECRET_KEY`: secreto único de al menos 32 caracteres.
-- `SCHEDULER_ENABLED=true`: mantiene activo el worker de la outbox.
-- `EMAIL_BACKEND=smtp` y `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`, `SMTP_TLS`.
-- `ADMIN_NOTIFY_EMAIL` / `ADMIN_EMAIL` según la configuración existente.
-
-`EMAIL_BACKEND=console` es exclusivamente para desarrollo: el mensaje se registra en logs y no llega al destinatario.
-
-## 5. Endpoint de arrepentimiento
-
-**Request:**
-
-```http
-POST /api/orders/regret
-Content-Type: application/json
-```
-
-```json
-{
-  "order_id": 1042,
-  "contact_email": "contacto@empresa.com"
-}
-```
-
-**Respuesta:** HTTP `202 Accepted`, con `request_code` y `requested_at`.
-
-La solicitud, el evento de auditoría y la fila del outbox se guardan en una única transacción. El correo se entrega de forma asíncrona con reintentos. La implementación es de entrega *at-least-once*: ante una caída después de la aceptación SMTP puede producirse un envío duplicado.
-
-La plataforma no rechaza solicitudes por edad de `created_at`: ese campo registra la creación del pedido, no la celebración del contrato ni la entrega de un bien. La elegibilidad jurídica queda sujeta a los hitos contractuales y a las excepciones aplicables.
-
-## 6. Marco normativo considerado
-
-- Ley 24.240, artículo 34.
-- Código Civil y Comercial, artículos 1105 a 1116.
-- Disposición 954/2025: botón visible, sin registro previo, código de identificación dentro de 24 horas y medidas para efectivizar la revocación; derogó la Resolución 424/2020.
-- Disposición 3/2026: mecanismos razonables de corroboración de identidad y seguridad.
-- Ley 25.326 de Protección de Datos Personales.
-- Ley 20.744 (LCT) y modificaciones vigentes, incluida la Ley 27.802 publicada el 6 de marzo de 2026; la UI laboral se integró en Fase 2 y muestra las modalidades con sus artículos de referencia.
-
-Fuentes oficiales:
-
-- [Ley 24.240 — texto actualizado](https://www.argentina.gob.ar/normativa/nacional/638/actualizacion)
-- [Código Civil y Comercial — texto actualizado](https://www.argentina.gob.ar/normativa/nacional/ley-26994-235975/actualizacion)
-- [Disposición 954/2025 — texto](https://www.argentina.gob.ar/normativa/nacional/disposici%C3%B3n-954-2025-417152/texto)
-- [Disposición 3/2026 — texto](https://www.argentina.gob.ar/normativa/nacional/disposici%C3%B3n-3-2026-423007/texto)
-- [Ley 20.744 — texto actualizado](https://www.argentina.gob.ar/normativa/nacional/25552/actualizacion)
-
-**Nota:** los documentos legales son borradores. Deben completarse con razón social/titular, CUIT, domicilio, emails, proveedores y plazos reales, y revisarse con asesoramiento jurídico argentino antes de publicarse. Las operaciones B2B deben evaluarse según su finalidad concreta; no se presume que todas queden automáticamente incluidas o excluidas del régimen de consumo.
-
-## 7. Limitaciones conocidas
-
-1. El proyecto todavía no tiene asociación estructural entre `ClientOrder` y `AgileWorkItem`; no se suspenden tareas Scrumban de forma automática.
-2. El outbox hace persistente el envío y reintenta, pero la entrega dentro de 24 horas depende de SMTP, disponibilidad del worker y monitoreo externo. Los pendientes mayores a 24 horas generan un log de error que debe conectarse a alertas.
-3. Aún no se registran los hitos contractuales reales y la fecha de entrega; no debe calcularse el plazo legal con `created_at`.
-5. La Disposición 954/2025 también contempla un **“Botón de baja de servicio”** separado del botón de arrepentimiento para los supuestos comprendidos por el artículo 10 ter de la Ley 24.240. Esta entrega implementa el arrepentimiento solicitado; no implementa todavía un flujo de baja de servicios recurrentes. Antes de comercializar servicios continuos a distancia debe definirse su alcance y su proceso independiente.
-6. La información legal y laboral es informativa. No reemplaza revisión por un profesional argentino ni la evaluación concreta de cada operación o relación laboral.
-
-## 8. Calidad y validación
-
-La implementación utiliza como guía los factores de McCall: corrección, confiabilidad, eficiencia, integridad y usabilidad; mantenibilidad, flexibilidad y testeabilidad; portabilidad, reusabilidad e interoperabilidad. Esto no equivale a certificación formal.
-
-Validaciones realizadas hasta esta entrega:
-
-- Backend: 7 pruebas focalizadas del esquema de solicitud/recibo y política de reintentos aprobadas (`pytest tests/test_order_regret_schema.py tests/test_email_outbox.py`); compilación sintáctica de módulos Python.
-- Frontend: 20 JSON de traducciones parseados correctamente; revisión de rutas, esquema HTTP y correspondencia con `POST /api/orders/regret`; comprobación sintáctica de 82 archivos TypeScript/TSX mediante el transpilador de TypeScript (sin type-check por dependencias incompletas).
-- No se ejecutó el build completo de frontend por la instalación incompleta de paquetes (`npm ci` se agotó por timeout).
-- Las pruebas pytest generales deben ejecutarse con las dependencias del proyecto instaladas y una base de pruebas aislada. `tests/smoke_test.py` aborta intencionalmente si la URL de DB no contiene `test`; no apuntar pruebas a producción.
-
-## 9. Comandos de QA local
+Para instalar y validar el frontend:
 
 ```bash
 cd frontend
@@ -132,8 +124,68 @@ npm run build
 npm run lint
 ```
 
-Para validar backend, crear una base PostgreSQL exclusiva de pruebas, instalar las dependencias del backend y ejecutar las pruebas pertinentes según `backend/pytest.ini` y la configuración del proyecto. No ejecutar `smoke_test.py` contra producción.
+No ejecutar migraciones destructivas ni pruebas de smoke contra producción. La prueba de roundtrip de migraciones existente exige una base cuyo nombre contenga `test`.
 
 ---
 
-**Identificador de entrega:** `ajrdata-3.5-hercules` · **Fases 1 y 2 integradas**
+## 4. Stack y arquitectura conservados
+
+- **Frontend:** React 18, TypeScript, Vite, Tailwind CSS, React Router, TanStack Query, i18next y Lucide.
+- **Backend:** Python, FastAPI, SQLAlchemy 2 async y Alembic.
+- **Base de datos:** PostgreSQL.
+- **Perímetro:** Cloudflare DNS y Cloudflare Turnstile ya presentes en formularios existentes.
+- **Autenticación:** roles `ADMIN`, `TECHNICIAN` y `USER`; no se sustituye el mecanismo existente.
+
+Haniel no agrega dependencias de interfaz para drag-and-drop ni un editor rich-text de terceros: utiliza eventos de arrastre del navegador, controles React y rangos de formato almacenados como datos estructurados.
+
+---
+
+## 5. Base heredada de Hercules 3.5
+
+Haniel parte de AJR Data 3.5 — Hercules. Se mantienen los componentes y flujos incorporados en esa versión:
+
+- Documentos legales de Privacidad, Términos y EULA ubicados en `docs/legal/`, considerados borradores hasta completar datos reales y revisión legal.
+- Endpoint público `POST /api/orders/regret`, solicitud sin login, verificación acotada, rate limit, código de seguimiento y evento de auditoría.
+- Outbox persistente de correo, reintentos progresivos y despacho periódico mediante APScheduler.
+- Layout global con sidebar/drawer, rutas legales y página de arrepentimiento.
+- Páginas de cuenta, pedidos, soporte y modalidades de contratación.
+- Autenticación, permisos y módulos administrativos previos.
+
+Los detalles normativos, las fuentes oficiales y las limitaciones del flujo de arrepentimiento se conservan en el historial de Hercules y en los documentos legales correspondientes; Haniel no constituye una revisión jurídica de esos contenidos.
+
+---
+
+## 6. Validación de Haniel
+
+Pruebas de contrato y migración añadidas en `backend/tests/test_portfolio_haniel_schema.py` y `backend/tests/test_portfolio_haniel_migration.py`:
+
+- Admite proyectos compuestos solo por imágenes y sin resumen textual.
+- Aplica los límites de caracteres según tamaño de bloque.
+- Exige los dos colores de un degradado.
+- Rechaza colores CSS arbitrarios.
+- Impide rangos de formato fuera del contenido.
+- Conserva compatibilidad con el campo heredado `image_url`.
+- Rechaza IDs duplicados en el ordenamiento.
+- Comprueba que la migración añade las columnas nuevas, inicializa la prioridad de proyectos existentes y puede revertirse en SQLite.
+
+**Estado de ejecución en el entorno de implementación:** las 9 pruebas nuevas de esquema y migración pasan; también pasan la compilación sintáctica de los módulos Python modificados, el chequeo sintáctico TypeScript de los archivos React/API tocados y la validación JSON de los cuatro catálogos i18n modificados. `npm ci` no terminó dentro del entorno de trabajo y dejó dependencias incompletas; por eso no se informa un build TypeScript/Vite satisfactorio. Tampoco se realizó QA visual real en navegadores, pantallas móviles, zoom o escalas de DPI. Estas validaciones siguen pendientes antes de considerar Haniel una entrega certificada.
+
+---
+
+## 7. Limitaciones y siguientes controles
+
+1. La subida directa de imágenes no está incluida: el editor continúa recibiendo URLs, como en Hercules. La integración de un proveedor de almacenamiento debe diseñarse y validarse por separado.
+2. Los rangos de formato se reinician al editar el texto de un bloque. Esta decisión evita que los índices queden asociados a fragmentos incorrectos; se vuelve a seleccionar y aplicar el formato después de editar.
+3. El drag-and-drop funciona con ratón/trackpad; los controles de prioridad ascendente/descendente constituyen la alternativa de teclado y toque.
+4. Debe revisarse el comportamiento del carrusel con distintos números de proyectos, especialmente uno o dos, y con contenido de imagen de proporciones extremas.
+5. Verificar permisos ADMIN/TECHNICIAN en un entorno integrado, incluyendo el rechazo de reordenamientos parciales y la respuesta `409` ante listas desactualizadas.
+6. Verificar compatibilidad visual con `prefers-reduced-motion`, teclado, lectores de pantalla y viewports pequeños.
+7. Comprobar que las URLs proporcionadas por administración apunten a recursos confiables y utilizar HTTPS en producción.
+
+---
+
+## 8. Criterios de calidad
+
+La implementación toma como guía factores de McCall: corrección, confiabilidad, eficiencia, integridad y usabilidad; mantenibilidad, flexibilidad y testeabilidad; portabilidad, reusabilidad e interoperabilidad. La referencia metodológica no equivale a una certificación formal.
+
+**Identificador de entrega:** `ajrdata-3.6-haniel` · **Portfolio Bento configurable**

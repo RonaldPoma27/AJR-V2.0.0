@@ -8,6 +8,7 @@ import DetailRow from "@/components/admin/DetailRow";
 import ConfirmButton from "@/components/ui/ConfirmButton";
 import Pager from "@/components/admin/Pager";
 import StatusChips from "@/components/admin/StatusChips";
+import DashboardCharts from "@/components/admin/DashboardCharts";
 import StatusSelect from "@/components/admin/StatusSelect";
 import { getServerDetail } from "@/lib/errors";
 import { formatDateTime } from "@/lib/format";
@@ -44,6 +45,8 @@ export default function AdminOrders() {
         <h1 className="text-2xl font-bold text-fg">{t("adminOrders.title")}</h1>
         <p className="text-sm text-fg-subtle">{t("adminOrders.subtitle")}</p>
       </div>
+
+      {data && <DashboardCharts orders={data.items} counts={data.counts} />}
 
       {data && (
         <StatusChips counts={data.counts} labels={ORDER_STATUS_LABELS} active={status} onSelect={selectStatus} />

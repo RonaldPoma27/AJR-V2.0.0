@@ -1,81 +1,68 @@
-import { Check } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { ArrowUpRight, Check } from "lucide-react";
 import { Link } from "react-router-dom";
-import Reveal from "@/components/ui/Reveal";
-import { PLAN_KEYS, PLAN_PRICE_USD, type PlanKey } from "@/lib/plans";
-import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
-const FEATURES = ["f1", "f2", "f3"] as const;
-const POPULAR: PlanKey = "web-gestion";
+type PricingPlan = {
+  id: string;
+  key: "presence" | "management" | "custom";
+  price: string;
+  features: string[];
+  featured?: boolean;
+};
 
-/**
- * Tres planes con estética "premium": fondos sólidos oscuros (claros en modo claro), borde que se
- * ilumina y elevación al pasar el cursor. "Solicitar" lleva a /solicitar-proyecto con el plan elegido
- * (en la URL y en el estado del router); si no hay sesión, ProtectedRoute manda a /login y luego vuelve.
- */
+const plans: PricingPlan[] = [
+  {
+    id: "presencia-digital",
+    key: "presence",
+    price: "USD 100",
+    features: ["website", "responsive", "contact"],
+  },
+  {
+    id: "web-gestion",
+    key: "management",
+    price: "USD 250",
+    features: ["presence", "forms", "launch"],
+    featured: true,
+  },
+  {
+    id: "sistema-medida",
+    key: "custom",
+    price: "USD 450",
+    features: ["analysis", "customFeatures", "implementation"],
+  },
+];
+
 export default function PricingCards() {
   const { t } = useTranslation();
   return (
-    <section aria-labelledby="pricing-title">
-      <div className="text-center">
-        <p className="text-sm font-semibold uppercase tracking-widest text-accent">{t("pricing.eyebrow")}</p>
-        <h2 id="pricing-title" className="mt-2 text-3xl font-bold text-fg">
-          {t("pricing.title")}
-        </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-fg-muted">{t("pricing.subtitle")}</p>
+    <section aria-labelledby="pricing-title" className="ajr-services-section mt-20">
+      <div className="ajr-section-heading ajr-section-heading--center mx-auto max-w-2xl text-center">
+        <p className="text-sm font-semibold uppercase tracking-[0.22em] text-accent">{t("pubHome.pricingEyebrow")}</p>
+        <h2 id="pricing-title" className="mt-3 text-3xl font-bold text-fg sm:text-4xl">{t("pubHome.pricingTitle")}</h2>
+        <p className="mt-3 text-fg-muted">{t("pubHome.pricingIntro")}</p>
       </div>
-
-      <ul className="mt-12 grid gap-6 md:grid-cols-3">
-        {PLAN_KEYS.map((key, index) => {
-          const popular = key === POPULAR;
-          return (
-            <li key={key} className="flex">
-              <Reveal delay={index * 120} className="flex w-full">
-                <article
-                  className={cn(
-                    "relative flex w-full flex-col rounded-2xl border bg-surface p-7 shadow-sm transition-all duration-300",
-                    "hover:-translate-y-2 hover:shadow-xl hover:ring-2 hover:ring-indigo-500/50 focus-within:-translate-y-2 focus-within:ring-2 focus-within:ring-indigo-500/50",
-                    "dark:bg-slate-900",
-                    popular && "border-indigo-400 dark:border-indigo-500"
-                  )}
-                >
-                  {popular && (
-                    <span className="absolute -top-3 left-7 rounded-full bg-indigo-600 px-3 py-0.5 text-xs font-semibold text-white">
-                      {t("pricing.popular")}
-                    </span>
-                  )}
-                  <h3 className="text-lg font-semibold text-fg">{t(`pricing.plans.${key}.name`)}</h3>
-                  <p className="mt-1 text-sm text-fg-muted">{t(`pricing.plans.${key}.tagline`)}</p>
-
-                  <p className="mt-6 flex items-baseline gap-1.5">
-                    <span className="text-sm text-fg-subtle">{t("pricing.from")}</span>
-                    <span className="text-xs font-semibold text-fg-subtle">{t("pricing.currency")}</span>
-                    <span className="text-4xl font-bold tracking-tight text-fg">{PLAN_PRICE_USD[key]}</span>
-                  </p>
-
-                  <ul className="mt-6 flex-1 space-y-3 text-sm text-fg-muted">
-                    {FEATURES.map((f) => (
-                      <li key={f} className="flex items-start gap-2.5">
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-indigo-500 dark:text-indigo-400" strokeWidth={2} aria-hidden />
-                        {t(`pricing.plans.${key}.${f}`)}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Link
-                    viewTransition
-                    to={`/solicitar-proyecto?plan=${key}`}
-                    state={{ plan: key }}
-                    className="btn-cta mt-8 inline-flex items-center justify-center rounded-md bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark"
-                  >
-                    {t("pricing.cta")}
-                  </Link>
-                </article>
-              </Reveal>
-            </li>
-          );
-        })}
-      </ul>
+      <div className="ajr-pricing-grid mt-9 grid items-stretch gap-5 md:grid-cols-3">
+        {plans.map((plan) => (
+          <article
+            key={plan.id}
+            className={`ajr-pricing-card group relative flex flex-col rounded-2xl border bg-[#0E1523]/95 p-6 shadow-xl transition duration-300 ${plan.featured ? "ajr-pricing-card--featured border-cyan-300/50 shadow-indigo-950/30" : "border-white/10"}`}
+          >
+            {plan.featured && <span className="absolute -top-3 left-6 rounded-full bg-gradient-to-r from-cyan-500 to-violet-500 px-3 py-1 text-xs font-semibold text-white shadow-lg">{t("pubHome.popularPlan")}</span>}
+            <h3 className="text-xl font-semibold text-fg">{t(`pubHome.pricingPlans.${plan.key}.name`)}</h3>
+            <p className="mt-3 text-sm leading-relaxed text-fg-muted">{t(`pubHome.pricingPlans.${plan.key}.description`)}</p>
+            <p className="mt-6"><span className="text-sm text-fg-subtle">{t("pubHome.startingAt")}</span><span className="ml-2 text-3xl font-bold tracking-tight text-fg">{plan.price}</span></p>
+            <ul className="mt-6 flex-1 space-y-3 border-t border-line pt-5">
+              {plan.features.map((feature) => <li key={feature} className="flex gap-2 text-sm text-fg-muted"><Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" aria-hidden />{t(`pubHome.pricingFeatures.${feature}`)}</li>)}
+            </ul>
+            <Link
+              to={`/solicitar-proyecto?plan=${plan.id}`}
+              className="ajr-gradient-button mt-7 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 focus-visible:outline-offset-4"
+            >
+              {t("pubHome.requestPlan")} <ArrowUpRight className="h-4 w-4" aria-hidden />
+            </Link>
+          </article>
+        ))}
+      </div>
     </section>
   );
 }

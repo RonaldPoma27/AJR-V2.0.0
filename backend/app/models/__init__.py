@@ -1,7 +1,9 @@
+from app.models.backup_email import BackupEmail, BackupEmailChallenge, BackupEmailRateEvent
 from app.models.audit import AuditLog, IpBlock
 from app.models.base import Base
 from app.models.client_order import ClientOrder
 from app.models.cms import BlogPost, PortfolioItem, PortfolioMedia, Service
+from app.models.email_outbox import EmailOutbox
 from app.models.enums import (
     ApplicationStatus,
     MediaType,
@@ -24,6 +26,7 @@ __all__ = [
     "Base",
     "BlogPost",
     "ClientOrder",
+    "EmailOutbox",
     "IpBlock",
     "JobApplication",
     "MediaType",
@@ -44,3 +47,5 @@ __all__ = [
     "User",
     "UserRole",
 ]
+
+from app.models.agile import AgileMembership, AgileProject, AgileSprint, AgileSprintItem, AgileWorkItem, AgileWorkItemComment, AgileWorkItemHistory

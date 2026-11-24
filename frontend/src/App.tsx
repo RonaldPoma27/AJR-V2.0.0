@@ -5,13 +5,11 @@ import Home from "@/pages/Home";
 import Portfolio from "@/pages/Portfolio";
 import ProjectRequestForm from "@/pages/ProjectRequestForm";
 import TrabajaConNosotros from "@/pages/TrabajaConNosotros";
+import Arrepentimiento from "@/pages/Arrepentimiento";
+import { EulaPage, PrivacyPage, TermsPage } from "@/pages/legal/LegalPages";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import NotFound from "@/pages/NotFound";
-import Arrepentimiento from "@/pages/Arrepentimiento";
-import Privacy from "@/pages/legal/Privacy";
-import Terms from "@/pages/legal/Terms";
-import Eula from "@/pages/legal/Eula";
 import Seguridad from "@/pages/account/Seguridad";
 import MiCuenta from "@/pages/account/MiCuenta";
 import MisPedidos from "@/pages/account/MisPedidos";
@@ -36,12 +34,13 @@ export default function App() {
       <Route element={<AppLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/portfolio" element={<Portfolio />} />
+        <Route path="/portfolio/:projectId" element={<Portfolio />} />
         <Route path="/solicitar-proyecto" element={<ProtectedRoute><ProjectRequestForm /></ProtectedRoute>} />
         <Route path="/trabaja-con-nosotros" element={<TrabajaConNosotros />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/eula" element={<EulaPage />} />
         <Route path="/arrepentimiento" element={<Arrepentimiento />} />
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/terms" element={<Terms />} />
-        <Route path="/eula" element={<Eula />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Register />} />
 

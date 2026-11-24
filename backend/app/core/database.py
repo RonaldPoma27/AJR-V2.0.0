@@ -6,6 +6,7 @@ from app.core.config import settings
 
 engine = create_async_engine(
     settings.DATABASE_URL,
+    hide_parameters=True,
     pool_pre_ping=True,  # descarta conexiones caídas (p. ej. DB serverless que se suspende)
 )
 

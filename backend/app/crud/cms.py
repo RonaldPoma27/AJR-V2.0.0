@@ -1,3 +1,4 @@
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.base import CRUDBase
@@ -19,7 +20,8 @@ class PortfolioCRUD(CRUDBase[PortfolioItem]):
 
     async def create(self, db: AsyncSession, payload: PortfolioItemCreate) -> PortfolioItem:  # type: ignore[override]
         data = payload.model_dump(exclude={"media"})
-        obj = PortfolioItem(**data, media=_build_media(payload.media))
+        max_position = await db.scalar(select(func.max(PortfolioItem.position)))
+        obj = PortfolioItem(**data, position=(max_position + 1) if max_position is not None else 0, media=_build_media(payload.media))
         db.add(obj)
         await db.commit()
         return obj

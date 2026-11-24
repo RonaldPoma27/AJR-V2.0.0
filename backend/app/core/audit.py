@@ -21,7 +21,8 @@ from app.models.audit import AuditLog
 
 logger = logging.getLogger("audit")
 
-_SKIP_TABLES = {"audit_logs", "ip_blocks"}
+_SKIP_TABLES = {"audit_logs", "ip_blocks", "backup_emails", "backup_email_challenges", "backup_email_rate_events"}
+_SKIP_TABLES.add("agile_work_item_history")
 _SECRET_FIELDS = {"hashed_password"}
 _NOISE_FIELDS = {"updated_at", "created_at", "id"}
 _LABEL_FIELDS = ("title", "name", "company", "subject", "full_name", "email", "slug")

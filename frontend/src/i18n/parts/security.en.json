@@ -1,0 +1,57 @@
+{
+  "security": {
+    "title": "Account security",
+    "intro": "Manage your backup email without changing your primary address.",
+    "back": "Back to my account",
+    "loading": "Loading security…",
+    "refresh": "Refresh status",
+    "manage": "Add or change email",
+    "email": "New backup email",
+    "password": "Current password",
+    "passwordHint": "Required to add, resend or remove. Never saved on this device.",
+    "add": "Send code",
+    "change": "Verify a new address",
+    "resend": "Resend code",
+    "wait": "You can request another code in {{seconds}} s.",
+    "verifyTitle": "Confirm your email",
+    "code": "6-digit code",
+    "verify": "Verify code",
+    "removeTitle": "Remove backup email",
+    "removeWarning": "Your backup email and any pending verification will be removed. You will lose this alternative method. Your primary email stays the same.",
+    "confirmRemove": "I confirm I want to remove my backup email and cancel pending verification.",
+    "remove": "Remove and cancel pending verification",
+    "saving": "Processing…",
+    "verifiedAt": "Verified on {{date}}",
+    "pendingAddress": "Pending verification: {{email}}",
+    "previousActive": "Your previous verified address stays active until you confirm the new one.",
+    "expiresAt": "Code expires on {{date}}",
+    "attempts": "Attempts remaining: {{count}}",
+    "futureRecovery": "Password recovery through backup email is not available in this version.",
+    "noticeFailed": "Your change was saved, but the notice to your primary address could not be sent.",
+    "states": {
+      "not_configured": "No backup email",
+      "pending": "Pending verification",
+      "verified": "Verified backup email"
+    },
+    "success": {
+      "request": "We sent a code to your proposed address. Check your spam folder too.",
+      "resend": "We sent a new code. The previous code is no longer valid.",
+      "verify": "Backup email verified.",
+      "remove": "Backup email and pending codes removed."
+    },
+    "errors": {
+      "connection": "A connection problem prevented us from confirming the result. Check the status before repeating the operation.",
+      "generic": "We could not complete the operation. Refresh the status and try again.",
+      "backup_address_unavailable": "This address cannot be used. It must differ from your primary email and not already be in use.",
+      "backup_password_incorrect": "Your current password is incorrect.",
+      "backup_no_challenge": "No pending verification. Refresh the status or request a code.",
+      "backup_cooldown": "Please wait before requesting another code.",
+      "backup_rate_limited": "Operation limit reached. Wait up to an hour before trying again.",
+      "backup_mail_unavailable": "We could not send the email. Your previous state is unchanged. Try again later.",
+      "backup_code_expired": "This code has expired. Request a new one.",
+      "backup_attempts_exhausted": "No attempts remaining. Request a new code when available.",
+      "backup_code_invalid": "The code is incorrect.",
+      "backup_invalid_input": "Check your email, password and code format."
+    }
+  }
+}

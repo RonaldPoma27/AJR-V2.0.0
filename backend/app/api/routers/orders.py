@@ -1,6 +1,9 @@
+from datetime import datetime, timezone
+import secrets
 from typing import Annotated
 
 from fastapi import APIRouter, BackgroundTasks, Query, Request, Response
+from sqlalchemy import select
 
 from app.api.deps import AdminUser, CurrentUser, DBSession, StaffUser
 from app.core.email import send_order_emails, send_order_status_email
@@ -10,8 +13,9 @@ from app.core.turnstile import verify_turnstile
 from app.crud import client_order as crud_order
 from app.crud import trash as crud_trash
 from app.crud import user as crud_user
-from app.models import OrderStatus
+from app.models import AuditLog, ClientOrder, EmailOutbox, OrderStatus
 from app.schemas.client_order import ClientOrderCreate, ClientOrderRead, ClientOrderUpdate
+from app.schemas.order_regret import OrderRegretReceipt, OrderRegretRequest
 from app.schemas.common import Page, Receipt
 
 router = APIRouter(prefix="/orders", tags=["orders"])
@@ -41,6 +45,75 @@ async def create_order(
     order = await crud_order.create(db, data, user_id=current_user.id)
     background.add_task(send_order_emails, {**data, "id": order.id})
     return Receipt()
+
+
+@router.post("/regret", response_model=OrderRegretReceipt, status_code=202)
+async def request_order_regret(
+    payload: OrderRegretRequest,
+    request: Request,
+    db: DBSession,
+):
+    """Recibe una solicitud pública sin exigir cuenta o inicio de sesión.
+
+    Número de pedido + email es una verificación acotada a identidad y seguridad. No se
+    rechaza por `created_at`: la fecha de creación de una solicitud no prueba cuándo se
+    celebró el contrato ni cuándo se entregó el bien. La elegibilidad se revisa con los
+    antecedentes contractuales reales, sin bloquear la recepción por un dato técnico.
+    """
+    enforce_rate_limit(request, "order-regret")
+    statement = (
+        select(ClientOrder)
+        .where(ClientOrder.id == payload.order_id, ClientOrder.deleted_at.is_(None))
+        .with_for_update()
+    )
+    order = await db.scalar(statement)
+    if order is None or order.contact_email.casefold() != str(payload.contact_email).casefold():
+        # Respuesta genérica para no revelar si existe un pedido asociado a otro email.
+        raise AppError(404, "No encontramos un pedido con esos datos.")
+
+    if order.regret_requested_at and order.regret_code:
+        return OrderRegretReceipt(
+            request_code=order.regret_code,
+            requested_at=order.regret_requested_at,
+        )
+
+    now = datetime.now(timezone.utc)
+    request_code = f"AJR-AR-{secrets.token_hex(8).upper()}"
+    order.regret_requested_at = now
+    order.regret_code = request_code
+    # La auditoría y el cambio del pedido comparten transacción: no se confirma
+    # la solicitud si no queda también registrada su trazabilidad.
+    db.add(
+        AuditLog(
+            user_id=order.user_id,
+            user_email=order.contact_email[:255],
+            user_role="USER" if order.user_id else None,
+            action="regret_requested",
+            entity="client_orders",
+            entity_id=str(order.id),
+            entity_label=f"Pedido #{order.id} · {order.company_name}",
+            ip=client_ip(request),
+            method="POST",
+            path=request.url.path,
+            detail=f"Solicitud recibida; código {request_code}.",
+        )
+    )
+    db.add(
+        EmailOutbox(
+            dedupe_key=f"order-regret:{order.id}",
+            event_type="order_regret_received",
+            order_id=order.id,
+            recipient=order.contact_email,
+            payload={
+                "name": order.contact_name,
+                "order_id": order.id,
+                "request_code": request_code,
+            },
+        )
+    )
+    # Solicitud, auditoría y correo pendiente se confirman o revierten juntos.
+    await db.commit()
+    return OrderRegretReceipt(request_code=request_code, requested_at=now)
 
 
 @router.get("/mine", response_model=list[ClientOrderRead])

@@ -138,7 +138,7 @@ function TicketCard({
                 : tr("adminSupport.noResponse")}
             </DetailRow>
           </dl>
-          <div className="mx-4 mb-4 h-[26rem] overflow-hidden rounded-md border bg-surface">
+          <div className="ajr-admin-support-chat mx-4 mb-4 h-[26rem] overflow-hidden rounded-md border bg-surface">
             <ChatThread ticketId={t.id} perspective="staff" className="h-full" />
           </div>
         </div>

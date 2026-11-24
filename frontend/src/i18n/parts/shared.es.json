@@ -66,5 +66,9 @@
   "turnstile": {
     "missingKey": "Falta configurar la verificación anti-spam (VITE_TURNSTILE_SITE_KEY).",
     "required": "Completá la verificación anti-spam."
+  },
+  "toast": {
+    "close": "Cerrar notificación",
+    "region": "Notificaciones"
   }
 }

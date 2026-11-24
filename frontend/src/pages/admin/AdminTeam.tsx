@@ -52,7 +52,7 @@ export default function AdminTeam() {
             <div className="min-w-[16rem] flex-1">
               <TextField label={t("adminCommon.email")} name="email" type="email" value={email} onChange={(e) => { setEmail(e.target.value); setAdded(null); }} autoComplete="off" required />
             </div>
-            <button type="submit" disabled={promote.isPending || !email.trim()} className="btn-cta mb-0.5 inline-flex items-center gap-2 rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50">
+            <button type="submit" disabled={promote.isPending || !email.trim()} className="mb-0.5 inline-flex items-center gap-2 rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50">
               <UserPlus className="h-4 w-4" aria-hidden />
               {promote.isPending ? t("adminTeam.adding") : t("adminTeam.addButton")}
             </button>

@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from app.crud import backup_email as backup_crud
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import DUMMY_PASSWORD_HASH, hash_password, verify_password
@@ -19,6 +20,7 @@ async def create(
     first_name: str | None = None,
     last_name: str | None = None,
 ) -> User:
+    await backup_crud.check_address(db, email.strip().lower())
     user = User(
         email=email.strip().lower(),
         hashed_password=await hash_password(password),
@@ -45,6 +47,7 @@ async def change_password(
     db: AsyncSession, user: User, *, current_password: str, new_password: str
 ) -> bool:
     """Cambia la contraseña si `current_password` es correcta. Devuelve False si no lo es."""
+    user = await backup_crud.lock_user(db, user.id)
     if not await verify_password(current_password, user.hashed_password):
         return False
     user.hashed_password = await hash_password(new_password)
@@ -59,8 +62,11 @@ async def change_email(
 
     Lanza IntegrityError si el email ya lo usa otra cuenta (carrera con otro registro).
     """
+    user = await backup_crud.lock_user(db, user.id)
     if not await verify_password(current_password, user.hashed_password):
         return None
+    user = await backup_crud.lock_user(db, user.id)
+    await backup_crud.check_address(db, new_email.strip().lower())
     user.email = new_email.strip().lower()
     await db.commit()
     return user

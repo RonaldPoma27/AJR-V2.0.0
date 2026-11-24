@@ -1,15 +1,18 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
+from sqlalchemy import select
 
 from app.api.deps import DBSession, require_admin, require_technician_or_admin
 from app.crud import cms as crud_cms
 from app.crud.base import CRUDBase
+from app.models.cms import PortfolioItem
 from app.schemas.cms import (
     BlogPostCreate,
     BlogPostRead,
     PortfolioItemCreate,
     PortfolioItemRead,
+    PortfolioOrderUpdate,
     ServiceCreate,
     ServiceRead,
 )
@@ -69,8 +72,29 @@ portfolio_router = APIRouter(prefix="/portfolio", tags=["cms: portfolio"])
 
 
 @portfolio_router.get("", response_model=list[PortfolioItemRead])
-async def list_portfolio(db: DBSession, skip: Skip = 0, limit: Limit = 50):
-    return await crud_cms.portfolio_items.get_multi(db, skip=skip, limit=limit)
+async def list_portfolio(db: DBSession, skip: Skip = 0, limit: Limit = 100):
+    stmt = (
+        select(PortfolioItem)
+        .order_by(PortfolioItem.position.asc(), PortfolioItem.created_at.desc(), PortfolioItem.id.desc())
+        .offset(skip)
+        .limit(limit)
+    )
+    return (await db.scalars(stmt)).all()
+
+
+@portfolio_router.post("/reorder", response_model=list[PortfolioItemRead], dependencies=staff_only)
+async def reorder_portfolio(payload: PortfolioOrderUpdate, db: DBSession):
+    """Persiste el orden completo para que la portada pública siempre respete la prioridad."""
+    items = list((await db.scalars(select(PortfolioItem))).all())
+    existing_ids = {item.id for item in items}
+    if set(payload.ids) != existing_ids:
+        raise HTTPException(status_code=409, detail="La lista de proyectos cambió. Actualizá y volvé a ordenar.")
+    by_id = {item.id: item for item in items}
+    for position, item_id in enumerate(payload.ids):
+        by_id[item_id].position = position
+    await db.commit()
+    ordered = [by_id[item_id] for item_id in payload.ids]
+    return ordered
 
 
 @portfolio_router.get("/{item_id}", response_model=PortfolioItemRead)

@@ -10,4 +10,4 @@ python -m app.scripts.create_admin || echo "[prestart] AVISO: no se pudo crear e
 
 echo "[prestart] Iniciando API..."
 exec uvicorn app.main:app --host 0.0.0.0 --port "${PORT:-8000}" \
-    --proxy-headers --forwarded-allow-ips="*"
+    --proxy-headers --forwarded-allow-ips="${FORWARDED_ALLOW_IPS:-127.0.0.1}"

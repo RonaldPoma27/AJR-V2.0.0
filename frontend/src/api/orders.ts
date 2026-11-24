@@ -1,6 +1,5 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "./client";
-import type { BudgetKey, PlanKey, TimelineKey } from "@/lib/plans";
 import { PAGE_SIZE, type Paginated, type PageResult } from "./types";
 
 export type OrderStatus = "nuevo" | "en_revision" | "contactado" | "finalizado" | "descartado";
@@ -15,10 +14,6 @@ export interface ClientOrderCreate {
   contact_phone?: string;
   industry: string;
   problem_description: string;
-  plan?: PlanKey;
-  budget?: BudgetKey;
-  timeline?: TimelineKey;
-  has_domain?: boolean;
   /** Token de Cloudflare Turnstile (anti-bots). */
   turnstile_token?: string;
   /** Honeypot: tiene que ir vacío. Los bots lo completan. */
@@ -35,13 +30,30 @@ export interface ClientOrder {
   contact_phone: string | null;
   industry: string;
   problem_description: string;
-  plan: string | null;
-  budget: string | null;
-  timeline: string | null;
-  has_domain: boolean | null;
   status: OrderStatus;
   created_at: string;
   updated_at: string;
+  /** Calculado por el backend: menos de 10 días corridos y sin arrepentimiento previo. */
+  regret_eligible?: boolean;
+  regret_deadline?: string | null;
+  regret_requested_at?: string | null;
+  regret_code?: string | null;
+}
+
+/** Constancia del arrepentimiento (el código también se envía por email). */
+export interface RegretReceipt {
+  code: string;
+  order_id: number;
+  requested_at: string;
+  already_requested: boolean;
+}
+
+export interface RegretPublicPayload {
+  order_id: number;
+  contact_email: string;
+  reason?: string;
+  turnstile_token?: string;
+  website?: string;
 }
 
 /** Requiere sesión: el pedido queda asociado al cliente logueado. */
@@ -107,19 +119,25 @@ export function useTrashOrder() {
   });
 }
 
-export interface OrderStats {
-  by_month: { month: string; count: number }[];
-  by_status: Record<OrderStatus, number>;
-  by_plan: Record<PlanKey | "sin-plan", number>;
-  by_domain: Record<"si" | "no" | "sin-dato", number>;
+/** Arrepentimiento desde "Mis pedidos": acción directa del dueño del pedido. */
+export function useRegretFromAccount() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (orderId: number) => {
+      const { data } = await apiClient.post<RegretReceipt>(`/orders/${orderId}/arrepentimiento`);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+  });
 }
 
-/** Staff: datos agregados para los gráficos del panel. */
-export function useOrderStats() {
-  return useQuery({
-    queryKey: ["orders", "stats"],
-    queryFn: async () => {
-      const { data } = await apiClient.get<OrderStats>("/orders/stats");
+/** Arrepentimiento sin cuenta (`/arrepentimiento`): número de pedido + email de contacto. */
+export function useRegretPublic() {
+  return useMutation({
+    mutationFn: async (payload: RegretPublicPayload) => {
+      const { data } = await apiClient.post<RegretReceipt>("/orders/arrepentimiento", payload);
       return data;
     },
   });

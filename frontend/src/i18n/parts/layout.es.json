@@ -7,17 +7,13 @@
     "goAccount": "Ir a mi cuenta",
     "logout": "Cerrar sesión"
   },
-  "theme": {
-    "toLight": "Cambiar a modo claro",
-    "toDark": "Cambiar a modo oscuro",
-    "light": "Modo claro",
-    "dark": "Modo oscuro"
-  },
   "meta": {
     "title": "AJR Data — Consultora Tech"
   },
-  "toast": {
-    "region": "Notificaciones",
-    "close": "Cerrar notificación"
+  "theme": {
+    "toLight": "Cambiar a modo claro",
+    "toDark": "Cambiar a modo oscuro",
+    "light": "Claro",
+    "dark": "Oscuro"
   }
 }

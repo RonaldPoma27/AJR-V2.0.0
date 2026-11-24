@@ -43,3 +43,5 @@ class ClientOrderRead(BaseModel):
     status: OrderStatus
     created_at: datetime
     updated_at: datetime
+    regret_requested_at: datetime | None = None
+    regret_code: str | None = None

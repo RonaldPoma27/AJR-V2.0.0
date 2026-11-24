@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 export default function TypingIndicator() {
   const { t } = useTranslation();
   return (
-    <div role="status" className="flex items-center gap-2 px-1 text-xs text-fg-subtle">
-      <span className="flex items-center gap-1 rounded-2xl rounded-bl-sm bg-slate-200 px-3 py-2.5 dark:bg-slate-600/40" aria-hidden>
+    <div role="status" className="ajr-chat-typing flex items-center gap-2 px-1 text-xs text-fg-subtle">
+      <span className="ajr-chat-typing-bubble flex items-center gap-1 rounded-2xl rounded-bl-sm px-3 py-2.5" aria-hidden>
         {[0, 1, 2].map((i) => (
           <span
             key={i}

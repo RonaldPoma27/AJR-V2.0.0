@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base, CreatedAtMixin
@@ -58,6 +58,10 @@ class PortfolioItem(CMSBase):
     )
     client_name: Mapped[str | None] = mapped_column(String(200))
     project_url: Mapped[str | None] = mapped_column(String(500))
+    logo_url: Mapped[str | None] = mapped_column(String(1000))
+    position: Mapped[int] = mapped_column(Integer, default=0, server_default="0", index=True)
+    style: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
+    blocks: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
 
     # selectin: en async no existe el lazy-load, así la galería viaja siempre con el item.
     media: Mapped[list[PortfolioMedia]] = relationship(

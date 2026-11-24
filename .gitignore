@@ -222,3 +222,12 @@ node_modules/
 backend/static/
 .env
 !.env.example
+
+# Application source must not match generic Python lib/parts exclusions.
+!frontend/src/lib/
+!frontend/src/lib/**
+!frontend/src/i18n/parts/
+!frontend/src/i18n/parts/**
+frontend/test-results/
+frontend/playwright-report/
+*.tsbuildinfo

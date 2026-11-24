@@ -22,12 +22,13 @@ if "test" not in DB_URL.rsplit("/", 1)[-1] and os.environ.get("SMOKE_TEST_FORCE"
 # Entorno controlado, antes de importar la app.
 os.environ.update(
     ENVIRONMENT="development",
-    ADMIN_EMAIL="admin@ajr.test",
+    SCHEDULER_ENABLED="true",
+    ADMIN_EMAIL="admin@example.com",
     ADMIN_PASSWORD="clave-inicial-123",
     ADMIN_FULL_NAME="Admin de Prueba",
-    ADMIN_NOTIFY_EMAIL="avisos@ajr.test",
+    ADMIN_NOTIFY_EMAIL="avisos@example.com",
     SMTP_HOST="smtp.invalido.test",
-    SMTP_FROM="hola@ajr.test",
+    SMTP_FROM="hola@example.com",
     RATE_LIMIT_PER_HOUR="5",
     IP_GUARD_ENABLED="false",  # el flujo general hace muchos pedidos desde una IP; se prueba aparte
 )
@@ -119,15 +120,15 @@ async def main() -> None:
         await create_admin()
         await create_admin()  # idempotente
         async with AsyncSessionLocal() as s:
-            n = await s.scalar(text("select count(*) from users where email='admin@ajr.test'"))
+            n = await s.scalar(text("select count(*) from users where email='admin@example.com'"))
         check("crea el admin una sola vez (idempotente)", n == 1, n)
 
         # ------------------------------------------------------------- health / auth
         print("\n[health y auth]")
         r = await c.get("/api/health")
         check("GET /api/health", r.status_code == 200 and r.json() == {"status": "ok"}, r.text)
-        check("login con clave incorrecta -> 401", (await login(c, "admin@ajr.test", "mala-clave")).status_code == 401)
-        r = await login(c, "admin@ajr.test", "clave-inicial-123")
+        check("login con clave incorrecta -> 401", (await login(c, "admin@example.com", "mala-clave")).status_code == 401)
+        r = await login(c, "admin@example.com", "clave-inicial-123")
         check("login del admin creado por el script", r.status_code == 200, r.text)
         admin = {"Authorization": f"Bearer {r.json()['access_token']}"}
         me = (await c.get("/api/auth/me", headers=admin)).json()
@@ -150,7 +151,7 @@ async def main() -> None:
         check("se envían 2 mails (admin + auto-reply)", len(sent) == 2, len(sent))
         if len(sent) == 2:
             admin_mail, reply = sent
-            check("mail admin: asunto y destinatario", admin_mail["Subject"] == "Nuevo pedido de proyecto" and admin_mail["To"] == "avisos@ajr.test", dict(admin_mail))
+            check("mail admin: asunto y destinatario", admin_mail["Subject"] == "Nuevo pedido de proyecto" and admin_mail["To"] == "avisos@example.com", dict(admin_mail))
             check("mail admin: Reply-To = cliente", admin_mail["Reply-To"] == ORDER["contact_email"])
             check("auto-reply al cliente", reply["To"] == ORDER["contact_email"] and "Recibimos tu solicitud en AJR Data, la revisaremos pronto" in reply.get_body(("plain",)).get_content())
 
@@ -577,8 +578,8 @@ async def main() -> None:
         check("nueva > 72 bytes (tildes) -> 422", r.status_code == 422)
         r = await c.patch(url, json={"current_password": "clave-inicial-123", "new_password": "Nueva-clave-123!"}, headers=admin)
         check("cambio exitoso -> 204", r.status_code == 204, r.text)
-        check("la clave vieja ya no entra", (await login(c, "admin@ajr.test", "clave-inicial-123")).status_code == 401)
-        check("la clave nueva entra", (await login(c, "admin@ajr.test", "Nueva-clave-123!")).status_code == 200)
+        check("la clave vieja ya no entra", (await login(c, "admin@example.com", "clave-inicial-123")).status_code == 401)
+        check("la clave nueva entra", (await login(c, "admin@example.com", "Nueva-clave-123!")).status_code == 200)
         r = await c.patch(url, json={"current_password": "Nueva-clave-123!", "new_password": "Nueva-clave-123!"}, headers=admin)
         check("nueva igual a la actual -> 400", r.status_code == 400, r.text)
         r = await c.post("/api/auth/register", json={"email": "debil@x.com", "password": "sinmayuscula1!"})
@@ -587,23 +588,23 @@ async def main() -> None:
         # ------------------------------------------------------------ cambio de email
         print("\n[cambio de email]")
         url = "/api/users/me/email"
-        good = {"current_email": "admin@ajr.test", "new_email": "Admin.Nuevo@ajr.test", "current_password": "Nueva-clave-123!"}
+        good = {"current_email": "admin@example.com", "new_email": "Admin.Nuevo@example.com", "current_password": "Nueva-clave-123!"}
         check("sin token -> 401", (await c.patch(url, json=good)).status_code == 401)
-        r = await c.patch(url, json={**good, "current_email": "otro@ajr.test"}, headers=admin)
+        r = await c.patch(url, json={**good, "current_email": "otro@example.com"}, headers=admin)
         check("email actual que no coincide -> 400", r.status_code == 400, r.text)
         r = await c.patch(url, json={**good, "current_password": "equivocada"}, headers=admin)
         check("contraseña incorrecta -> 400 (no 401)", r.status_code == 400, r.text)
-        r = await c.patch(url, json={**good, "new_email": "admin@ajr.test"}, headers=admin)
+        r = await c.patch(url, json={**good, "new_email": "admin@example.com"}, headers=admin)
         check("email nuevo igual al actual -> 400", r.status_code == 400, r.text)
         r = await c.patch(url, json={**good, "new_email": "cliente@x.com"}, headers=admin)
         check("email nuevo ya registrado -> 409", r.status_code == 409, r.text)
         r = await c.patch(url, json={**good, "new_email": "no-es-un-email"}, headers=admin)
         check("email nuevo inválido -> 422", r.status_code == 422, r.text)
         r = await c.patch(url, json=good, headers=admin)
-        check("cambio exitoso (se guarda en minúsculas)", r.status_code == 200 and r.json()["email"] == "admin.nuevo@ajr.test", r.text)
+        check("cambio exitoso (se guarda en minúsculas)", r.status_code == 200 and r.json()["email"] == "admin.nuevo@example.com", r.text)
         check("la sesión sigue válida tras el cambio", (await c.get("/api/auth/me", headers=admin)).status_code == 200)
-        check("el email viejo ya no entra", (await login(c, "admin@ajr.test", "Nueva-clave-123!")).status_code == 401)
-        check("el email nuevo entra", (await login(c, "admin.nuevo@ajr.test", "Nueva-clave-123!")).status_code == 200)
+        check("el email viejo ya no entra", (await login(c, "admin@example.com", "Nueva-clave-123!")).status_code == 401)
+        check("el email nuevo entra", (await login(c, "admin.nuevo@example.com", "Nueva-clave-123!")).status_code == 200)
 
         # --------------------------------------------------------- SPA y rutas /api
         print("\n[frontend estático y fallback de SPA]")
@@ -627,12 +628,12 @@ async def main() -> None:
         guard.reset()
         ip = "127.0.0.1"
 
-        codes = [(await login(c, "admin@ajr.test", "mala")).status_code for _ in range(5)]
+        codes = [(await login(c, "admin.nuevo@example.com", "mala")).status_code for _ in range(5)]
         check("4 claves malas -> 401 y la 5.ª bloquea la IP (429)", codes == [401, 401, 401, 401, 429], codes)
-        r = await login(c, "admin@ajr.test", "clave-inicial-123")
+        r = await login(c, "admin.nuevo@example.com", "Nueva-clave-123!")
         check(
-            "IP bloqueada: ni con la clave correcta entra (429 + Retry-After ~30 min)",
-            r.status_code == 429 and 1700 < int(r.headers.get("retry-after", 0)) <= 1800,
+            "IP bloqueada: ni con la clave correcta entra (429 + Retry-After según LOGIN_LOCK_MINUTES)",
+            r.status_code == 429 and settings.LOGIN_LOCK_MINUTES * 60 - 60 < int(r.headers.get("retry-after", 0)) <= settings.LOGIN_LOCK_MINUTES * 60,
             (r.status_code, r.headers.get("retry-after")),
         )
         limiter.reset()
@@ -644,9 +645,9 @@ async def main() -> None:
         check("el bloqueo se guarda en la base (sobrevive a reinicios)", n == 1, n)
         guard.reset()
         await guard.load_active()
-        check("tras 'reiniciar' (recargar desde la base) sigue bloqueada", (await login(c, "admin@ajr.test", "clave-inicial-123")).status_code == 429)
+        check("tras 'reiniciar' (recargar desde la base) sigue bloqueada", (await login(c, "admin.nuevo@example.com", "Nueva-clave-123!")).status_code == 429)
         check("levantar el bloqueo devuelve True", await guard.release(ip) is True)
-        r = await login(c, "admin@ajr.test", "clave-inicial-123")
+        r = await login(c, "admin.nuevo@example.com", "Nueva-clave-123!")
         check("sin bloqueo vuelve a poder iniciar sesión", r.status_code == 200, r.text)
         admin = {"Authorization": f"Bearer {r.json()['access_token']}"}
 
@@ -656,7 +657,7 @@ async def main() -> None:
         check("9 pedidos pasan y el que llega al límite banea (429)", codes[:9] == [200] * 9 and codes[9] == 429, codes)
         r = await c.get("/api/auth/me", headers=admin)
         check("IP baneada: toda la API responde 429 ip_banned", r.status_code == 429 and r.json().get("code") == "ip_banned", r.text)
-        check("el ban dura ~12 h", 12 * 3600 - 60 < int(r.headers["retry-after"]) <= 12 * 3600, r.headers.get("retry-after"))
+        check("el ban dura según FLOOD_BAN_HOURS", settings.FLOOD_BAN_HOURS * 3600 - 60 < int(r.headers["retry-after"]) <= settings.FLOOD_BAN_HOURS * 3600, r.headers.get("retry-after"))
         check("/api/health queda exento (health checks de Render)", (await c.get("/api/health")).status_code == 200)
         await guard.release(ip)
         settings.FLOOD_MAX_REQUESTS = 1000
@@ -672,7 +673,7 @@ async def main() -> None:
         check(
             "el cambio de rol quedó auditado: quién, qué y old -> new",
             entry is not None
-            and entry["user_email"] == "admin@ajr.test"
+            and entry["user_email"] == "admin.nuevo@example.com"
             and entry["user_role"] == "ADMIN"
             and entry["changes"]["role"] == {"old": "USER", "new": "TECHNICIAN"}
             and entry["method"] == "POST",

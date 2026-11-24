@@ -55,6 +55,15 @@ class Settings(BaseSettings):
     TRASH_PURGE_INTERVAL_MINUTES: int = Field(default=60, gt=0)
     SCHEDULER_ENABLED: bool = True  # False desactiva las tareas periódicas (APScheduler)
 
+    BACKUP_CODE_TTL_SECONDS: int = Field(default=600, ge=60, le=1800)
+    BACKUP_MAX_ATTEMPTS: int = Field(default=5, ge=1, le=10)
+    BACKUP_RESEND_SECONDS: int = Field(default=60, ge=1)
+    BACKUP_MAX_OPERATIONS_USER: int = Field(default=30, ge=1)
+    BACKUP_MAX_OPERATIONS_IP: int = Field(default=120, ge=1)
+    BACKUP_MAX_SENDS_USER: int = Field(default=5, ge=1)
+    BACKUP_MAX_SENDS_IP: int = Field(default=20, ge=1)
+    BACKUP_MAX_SENDS_DESTINATION: int = Field(default=5, ge=1)
+
     # Límite de envíos por IP en los formularios públicos
     RATE_LIMIT_PER_HOUR: int = Field(default=5, gt=0)
 
