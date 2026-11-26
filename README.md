@@ -2,8 +2,8 @@
 
 **Nombre clave:** `ajrdata-3.6-haniel`
 **Base:** AJR Data 3.5 — Hercules (`ajrdata-3.5-hercules`)
-**Entrega:** Rediseño integral del portfolio público y su administración; editor Bento configurable.
-**Estado:** implementación de Haniel preparada para revisión. La migración y los contratos de backend están añadidos; el build completo de frontend y el QA visual en navegador quedan pendientes de ejecutarse en un entorno con dependencias instaladas.
+**Entrega:** Rediseño integral del portfolio público y su administración; editor Bento configurable y estabilización visual posterior con referencia HTML.
+**Estado:** implementación Haniel integrada en el código fuente local. Se validaron las pruebas de esquema/migración, sintaxis Python, sintaxis TSX y catálogos i18n. El build completo de frontend y el QA visual real en navegador siguen pendientes: el registro npm no resolvió DNS durante `npm ci` (`EAI_AGAIN`).
 
 ---
 
@@ -47,6 +47,24 @@ Haniel reemplaza la antigua presentación lineal del portfolio por una experienc
 - Previsualización de colores por bloque y paleta global.
 - El resumen, el logo, el estado y los enlaces son campos opcionales salvo el título.
 - Se conserva el permiso existente: ADMIN y TECHNICIAN pueden crear/editar y solamente ADMIN puede borrar.
+
+---
+
+### 1.4 Estabilización visual y navegación del portfolio
+
+Esta revisión de Haniel incorpora la referencia HTML y el video del sitio actualmente publicado:
+
+- `/portfolio` y `/portfolio/:projectId` montan `PortfolioAtmosphere` en lugar de `AuroraBackground`. También se oculta el indicador global de progreso superior en esas rutas; el fondo deja de reutilizar los brillos cian/violeta de la marca.
+- El fondo propio utiliza una base de grafito/negro, retícula de baja intensidad, polvo de partículas plateadas y una **malla topográfica/isométrica de datos** en perspectiva. La malla se desplaza suavemente como un relieve técnico; no utiliza espirales, vórtices ni órbitas decorativas. Ninguno de estos elementos toma el acento del proyecto activo.
+- El canvas limita la densidad según el viewport, utiliza un DPR máximo de 1.5, pausa `requestAnimationFrame` cuando la pestaña no está visible y queda estático con `prefers-reduced-motion`.
+- Se conserva la navegación de AJR Data que aparece en el ZIP/video: `FloatingSidebar` colapsable en escritorio; `NavBar` compacta en móvil y el `SidebarDrawer` flotante con backdrop, cierre por Escape, control de foco y bloqueo del scroll. El `NavBar` existente ahora se monta realmente desde `AppLayout` en tablet/móvil. El footer y la burbuja de soporte mantienen los componentes compartidos de la aplicación.
+- La tarjeta central conserva `z-index: 30`; las laterales no superan `z-index: 10`, tampoco con hover o focus. La etapa crea un contexto de apilamiento independiente y la reacción lateral se limita al contorno; el zoom de imagen se reserva a la tarjeta central.
+- Los controles de anterior/siguiente conservan su hitbox; el brillo y la escala actúan sobre el contenido visual interior y no desplazan el botón.
+- Se eliminó el cambio de mayúsculas y espaciado de los enlaces de navegación en hover, que alteraba su geometría. El drawer móvil usa una superficie oscura estable sin un sheen animado permanente.
+- La entrada del portfolio utiliza una única transición específica de desenfoque/opacidad/desplazamiento, evitando competir con la animación global aplicada al resto de rutas.
+- Los CTA principales, secundarios y el CTA de la tarjeta inferior de Home comparten geometría de píldora y área de interacción estable.
+
+La atmósfera del portfolio queda intencionalmente **neutral**: los colores configurados para cada proyecto aparecen en el delineado, el brillo de hover, la numeración y los controles de navegación, no en el fondo general. Así el entorno da profundidad sin competir con capturas, logos o identidad de los proyectos.
 
 ---
 
@@ -168,7 +186,7 @@ Pruebas de contrato y migración añadidas en `backend/tests/test_portfolio_hani
 - Rechaza IDs duplicados en el ordenamiento.
 - Comprueba que la migración añade las columnas nuevas, inicializa la prioridad de proyectos existentes y puede revertirse en SQLite.
 
-**Estado de ejecución en el entorno de implementación:** las 9 pruebas nuevas de esquema y migración pasan; también pasan la compilación sintáctica de los módulos Python modificados, el chequeo sintáctico TypeScript de los archivos React/API tocados y la validación JSON de los cuatro catálogos i18n modificados. `npm ci` no terminó dentro del entorno de trabajo y dejó dependencias incompletas; por eso no se informa un build TypeScript/Vite satisfactorio. Tampoco se realizó QA visual real en navegadores, pantallas móviles, zoom o escalas de DPI. Estas validaciones siguen pendientes antes de considerar Haniel una entrega certificada.
+**Estado de ejecución de esta revisión:** las 9 pruebas de esquema y migración pasan (`9 passed`); también pasan `py_compile` en los módulos Python de Haniel, la comprobación sintáctica de los cinco archivos TSX revisados, `frontend/check_i18n.py` y el parseo de todos los JSON de traducción. El primer intento de `npm ci` no pudo descargar los paquetes debido a un fallo DNS del registro npm (`EAI_AGAIN`); por eso no se informa un build TypeScript/Vite satisfactorio ni se considera que el type-check completo esté validado. Tampoco se realizó QA visual real en navegador. El build, el lint y la revisión en desktop/móvil/zoom/DPI siguen pendientes.
 
 ---
 
