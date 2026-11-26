@@ -2584,3 +2584,95 @@ body {
   .ajr-orbit-card, .ajr-bento-block, .ajr-project-orbit-controls > button, .ajr-project-orbit-control-inner, .ajr-coming-soon { transition-duration: .01ms !important; }
   .ajr-portfolio-atmosphere-glow { filter: none; }
 }
+
+
+/* ============================================================================
+   HANIEL 3.6.1 — reactive atmospheres + visible active navigation state.
+   Global routes use the scroll/cursor reactive data field. Portfolio keeps its
+   isolated graphite atmosphere. Active drawer labels remain legible when open.
+   ============================================================================ */
+.ajr-global-atmosphere {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 52% 46%, rgb(10 43 67 / .24), transparent 48%),
+    linear-gradient(145deg, #070D1B 0%, #0A1222 52%, #080E1B 100%);
+}
+.ajr-global-atmosphere::before,
+.ajr-global-atmosphere::after { content: none !important; }
+.ajr-global-atmosphere-glow,
+.ajr-global-atmosphere-canvas,
+.ajr-global-atmosphere-vignette {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.ajr-global-atmosphere-glow {
+  background: radial-gradient(ellipse at 52% 44%, rgb(34 211 238 / .045), transparent 60%);
+  filter: blur(34px);
+}
+.ajr-global-atmosphere-canvas { opacity: .92; }
+.ajr-global-atmosphere-vignette {
+  background: radial-gradient(ellipse at center, transparent 28%, rgb(2 6 18 / .34) 100%);
+}
+.ajr-app-shell[data-portfolio-route="true"] .ajr-global-atmosphere { display: none !important; }
+
+/* HTML reference: neutral graphite, cursor-reactive glow and a low-contrast data plane. */
+.ajr-portfolio-atmosphere {
+  background:
+    radial-gradient(ellipse at 50% 39%, rgb(147 154 166 / .10) 0%, transparent 48%),
+    radial-gradient(ellipse at 12% 82%, rgb(255 255 255 / .035) 0%, transparent 34%),
+    linear-gradient(148deg, #1A1B20 0%, #121318 48%, #0A0B0E 100%);
+}
+.ajr-portfolio-atmosphere-glow {
+  filter: blur(34px);
+  will-change: transform;
+  background: radial-gradient(ellipse at 52% 42%, rgb(196 202 212 / .072), transparent 58%);
+}
+.ajr-portfolio-atmosphere-grid {
+  opacity: .25;
+  background-size: 84px 84px, 84px 84px, 28px 28px;
+}
+.ajr-portfolio-atmosphere-canvas { opacity: .98; }
+
+/* Fix: older global nav CSS clipped active labels into transparent gradient text.
+   Use a contained gradient SURFACE, opaque text, and a separately colored icon. */
+.ajr-nav-link[aria-current="page"] {
+  color: #F8FAFC !important;
+  -webkit-text-fill-color: #F8FAFC !important;
+  background-image: linear-gradient(100deg, rgb(6 182 212 / .17), rgb(59 130 246 / .105)) !important;
+  background-clip: border-box !important;
+  -webkit-background-clip: border-box !important;
+  border-color: rgb(34 211 238 / .23) !important;
+  box-shadow: inset 3px 0 0 #22D3EE, 0 8px 22px rgb(0 0 0 / .16) !important;
+}
+.ajr-nav-link[aria-current="page"] > svg {
+  color: #67E8F9 !important;
+  stroke: currentColor !important;
+  -webkit-text-fill-color: initial !important;
+  flex: 0 0 auto;
+}
+.ajr-nav-link[aria-current="page"] > span,
+.ajr-nav-link[aria-current="page"] > :not(svg) {
+  color: #F8FAFC !important;
+  -webkit-text-fill-color: #F8FAFC !important;
+  opacity: 1 !important;
+  background: none !important;
+  background-clip: border-box !important;
+  -webkit-background-clip: border-box !important;
+}
+.ajr-nav-link[aria-current="page"]:hover {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: rgb(34 211 238 / .34) !important;
+  background-image: linear-gradient(100deg, rgb(6 182 212 / .22), rgb(59 130 246 / .14)) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ajr-global-atmosphere-glow,
+  .ajr-portfolio-atmosphere-glow { filter: none; }
+}
