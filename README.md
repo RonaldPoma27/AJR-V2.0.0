@@ -54,17 +54,19 @@ Haniel reemplaza la antigua presentación lineal del portfolio por una experienc
 
 Esta revisión de Haniel incorpora la referencia HTML y el video del sitio actualmente publicado:
 
-- `/portfolio` y `/portfolio/:projectId` montan `PortfolioAtmosphere` en lugar de `AuroraBackground`. También se oculta el indicador global de progreso superior en esas rutas; el fondo deja de reutilizar los brillos cian/violeta de la marca.
-- El fondo propio utiliza una base de grafito/negro, retícula de baja intensidad, polvo de partículas plateadas y una **malla topográfica/isométrica de datos** en perspectiva. La malla se desplaza suavemente como un relieve técnico; no utiliza espirales, vórtices ni órbitas decorativas. Ninguno de estos elementos toma el acento del proyecto activo.
-- El canvas limita la densidad según el viewport, utiliza un DPR máximo de 1.5, pausa `requestAnimationFrame` cuando la pestaña no está visible y queda estático con `prefers-reduced-motion`.
+- `/portfolio` y `/portfolio/:projectId` montan `PortfolioAtmosphere` en lugar de `ReactiveBackground`. También se oculta el indicador global de progreso superior en esas rutas; el fondo deja de reutilizar los brillos cian/violeta de la marca.
+- Las demás rutas conservan la atmósfera Dark Tech Premium, ahora mediante un canvas reactivo de telemetría (`ReactiveBackground`): sus partículas se transforman entre nube de señales, cintas neuronales, matriz isométrica y malla de datos según el scroll; el cursor modifica el parallax y el centro de luz. No utiliza espirales ni anillos.
+- El portfolio monta su propio fondo: base grafito/negro, retícula de baja intensidad, polvo plateado y una **malla topográfica/isométrica de datos** en perspectiva. La luz sigue el cursor con retraso suave y el plano responde discretamente al scroll. Una fracción muy pequeña del polvo toma el color del proyecto enfocado; no se utiliza el cian/violeta corporativo de AJR, para mantener el espacio neutral y dejar que destaquen los proyectos.
+- Ambos canvas limitan la densidad según el viewport, usan un DPR máximo de 1.5, pausan `requestAnimationFrame` cuando la pestaña no está visible y quedan estáticos con `prefers-reduced-motion`.
 - Se conserva la navegación de AJR Data que aparece en el ZIP/video: `FloatingSidebar` colapsable en escritorio; `NavBar` compacta en móvil y el `SidebarDrawer` flotante con backdrop, cierre por Escape, control de foco y bloqueo del scroll. El `NavBar` existente ahora se monta realmente desde `AppLayout` en tablet/móvil. El footer y la burbuja de soporte mantienen los componentes compartidos de la aplicación.
 - La tarjeta central conserva `z-index: 30`; las laterales no superan `z-index: 10`, tampoco con hover o focus. La etapa crea un contexto de apilamiento independiente y la reacción lateral se limita al contorno; el zoom de imagen se reserva a la tarjeta central.
 - Los controles de anterior/siguiente conservan su hitbox; el brillo y la escala actúan sobre el contenido visual interior y no desplazan el botón.
 - Se eliminó el cambio de mayúsculas y espaciado de los enlaces de navegación en hover, que alteraba su geometría. El drawer móvil usa una superficie oscura estable sin un sheen animado permanente.
+- Se corrigió el estado activo de `ajr-nav-link`: una regla heredada aplicaba `background-clip: text` y `-webkit-text-fill-color: transparent` al enlace completo. Ahora el resaltado se aplica a la superficie de la fila y la etiqueta mantiene texto opaco; el icono conserva su acento. La corrección cubre el drawer móvil y el sidebar de escritorio expandido/colapsado.
 - La entrada del portfolio utiliza una única transición específica de desenfoque/opacidad/desplazamiento, evitando competir con la animación global aplicada al resto de rutas.
 - Los CTA principales, secundarios y el CTA de la tarjeta inferior de Home comparten geometría de píldora y área de interacción estable.
 
-La atmósfera del portfolio queda intencionalmente **neutral**: los colores configurados para cada proyecto aparecen en el delineado, el brillo de hover, la numeración y los controles de navegación, no en el fondo general. Así el entorno da profundidad sin competir con capturas, logos o identidad de los proyectos.
+La atmósfera del portfolio queda intencionalmente **neutral**: los colores configurados para cada proyecto aparecen en el delineado, el brillo de hover, la numeración, los controles de navegación y apenas en una fracción del polvo animado. La base del fondo permanece gris/negra, sin identidad cromática corporativa, para no competir con capturas, logos o identidad de los proyectos.
 
 ---
 
@@ -186,7 +188,7 @@ Pruebas de contrato y migración añadidas en `backend/tests/test_portfolio_hani
 - Rechaza IDs duplicados en el ordenamiento.
 - Comprueba que la migración añade las columnas nuevas, inicializa la prioridad de proyectos existentes y puede revertirse en SQLite.
 
-**Estado de ejecución de esta revisión:** las 9 pruebas de esquema y migración pasan (`9 passed`); también pasan `py_compile` en los módulos Python de Haniel, la comprobación sintáctica de los cinco archivos TSX revisados, `frontend/check_i18n.py` y el parseo de todos los JSON de traducción. El primer intento de `npm ci` no pudo descargar los paquetes debido a un fallo DNS del registro npm (`EAI_AGAIN`); por eso no se informa un build TypeScript/Vite satisfactorio ni se considera que el type-check completo esté validado. Tampoco se realizó QA visual real en navegador. El build, el lint y la revisión en desktop/móvil/zoom/DPI siguen pendientes.
+**Estado de ejecución de esta revisión:** las 9 pruebas de esquema y migración pasan (`9 passed`); también pasan `py_compile` en los módulos Python de Haniel, la comprobación sintáctica de los componentes TSX revisados, `frontend/check_i18n.py`, el parseo de todos los JSON de traducción y el parseo de la hoja CSS. En el ajuste de atmósferas y navegación activa se comprobó sintácticamente `AppLayout.tsx`, `ReactiveBackground.tsx`, `PortfolioAtmosphere.tsx` y `Portfolio.tsx`. Estos controles sintácticos no sustituyen un type-check completo. `npm ci` no pudo completarse: el registro npm había devuelto `EAI_AGAIN` y la instalación offline no encontró en caché `yocto-queue`; por eso no se informa un build TypeScript/Vite satisfactorio. Tampoco se realizó QA visual real en navegador. El build, el lint y la revisión en desktop/móvil/zoom/DPI siguen pendientes.
 
 ---
 
