@@ -190,6 +190,23 @@ export default function Portfolio() {
   const active = projects?.[activeIndex];
   const previous = projects?.length ? projects[(activeIndex - 1 + projects.length) % projects.length] : undefined;
   const next = projects?.length ? projects[(activeIndex + 1) % projects.length] : undefined;
+  const atmosphereAccent = (selectedProject ?? active)?.style.accent_color;
+
+  // El fondo conserva una base gris neutra; solo una pequeña parte del polvo
+  // plateado toma el acento del proyecto enfocado, como en el HTML de referencia.
+  useEffect(() => {
+    const root = document.documentElement;
+    const previousAccent = root.style.getPropertyValue("--portfolio-atmosphere-accent");
+    if (atmosphereAccent && /^#[0-9a-f]{6}$/i.test(atmosphereAccent)) {
+      root.style.setProperty("--portfolio-atmosphere-accent", atmosphereAccent);
+    } else {
+      root.style.removeProperty("--portfolio-atmosphere-accent");
+    }
+    return () => {
+      if (previousAccent) root.style.setProperty("--portfolio-atmosphere-accent", previousAccent);
+      else root.style.removeProperty("--portfolio-atmosphere-accent");
+    };
+  }, [atmosphereAccent]);
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLElement>) => {
     dragStart.current = event.clientX;
