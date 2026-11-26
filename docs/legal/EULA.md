@@ -1,6 +1,6 @@
 # Acuerdo de Licencia de Usuario Final (EULA) — CMS AJR Data
 
-**Versión de trabajo:** AJR Data 3.5 — Hercules  
+**Versión de trabajo:** AJR Data 3.6 — Haniel
 **Última revisión del borrador:** 12 de noviembre de 2026  
 **Estado:** borrador sujeto a completar y revisión jurídica.
 

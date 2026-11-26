@@ -1,4 +1,4 @@
-# Flujo de arrepentimiento — AJR Data 3.5 Hercules
+# Flujo de arrepentimiento — AJR Data 3.6 Haniel
 
 **Estado:** recepción y trazabilidad de backend integradas con la interfaz pública y “Mis pedidos” en Hercules 3.5. Pendientes QA de navegador, SLA operativo y revisión de elegibilidad con antecedentes reales.
 
