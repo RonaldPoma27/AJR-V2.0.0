@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { getToken, useMe } from "@/api/auth";
 import ChatBubble from "@/components/support/ChatBubble";
-import AuroraBackground from "./AuroraBackground";
+import ReactiveBackground from "./ReactiveBackground";
 import PortfolioAtmosphere from "./PortfolioAtmosphere";
 import NavBar from "./NavBar";
 import FloatingSidebar from "./FloatingSidebar";
@@ -54,7 +54,7 @@ export default function AppLayout() {
 
   return (
     <div className="ajr-app-shell ajr-shell relative isolate flex min-h-screen flex-col" data-rail={collapsed ? "collapsed" : "expanded"} data-portfolio-route={isPortfolioRoute ? "true" : undefined}>
-      {isPortfolioRoute ? <PortfolioAtmosphere /> : <AuroraBackground />}
+      {isPortfolioRoute ? <PortfolioAtmosphere /> : <ReactiveBackground />}
       <FloatingSidebar collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} hasSession={hasSession} />
 
       <div className="ajr-mobile-topbar-wrap fixed inset-x-3 top-3 z-40 lg:hidden">
