@@ -286,9 +286,9 @@ export default function Portfolio() {
                 {projects.length === 1 && <div className="ajr-orbit-side-placeholder ajr-orbit-side-placeholder--right" aria-hidden="true" />}
               </div>
               <div className="ajr-project-orbit-controls">
-                <button type="button" onClick={() => changeActive(-1)} disabled={projects.length < 2} aria-label={t("pubPortfolio.previousProject")}><ArrowLeftCircle aria-hidden /></button>
+                <button type="button" onClick={() => changeActive(-1)} disabled={projects.length < 2} aria-label={t("pubPortfolio.previousProject")}><span className="ajr-project-orbit-control-inner"><ArrowLeftCircle aria-hidden /></span></button>
                 <div className="ajr-project-orbit-count"><strong>{String(activeIndex + 1).padStart(2, "0")}</strong><span>/</span>{String(projects.length).padStart(2, "0")}</div>
-                <button type="button" onClick={() => changeActive(1)} disabled={projects.length < 2} aria-label={t("pubPortfolio.nextProject")}><ArrowRightCircle aria-hidden /></button>
+                <button type="button" onClick={() => changeActive(1)} disabled={projects.length < 2} aria-label={t("pubPortfolio.nextProject")}><span className="ajr-project-orbit-control-inner"><ArrowRightCircle aria-hidden /></span></button>
               </div>
             </section>
           ) : (
