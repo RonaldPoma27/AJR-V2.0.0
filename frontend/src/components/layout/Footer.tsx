@@ -3,7 +3,7 @@ import { Undo2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 /**
- * Footer global (v3.5). Se adapta al layout inmersivo: es una tarjeta glass dentro del área de
+ * Footer global (v3.6 Haniel). Se adapta al layout inmersivo: es una tarjeta glass dentro del área de
  * contenido, no una barra a todo el ancho.
  *
  * Cumplimiento: el enlace "Botón de arrepentimiento" (Res. 424/2020) es SIEMPRE visible y de acceso

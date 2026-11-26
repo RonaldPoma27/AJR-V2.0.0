@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { Menu } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { getToken, useMe } from "@/api/auth";
 import ChatBubble from "@/components/support/ChatBubble";
 import AuroraBackground from "./AuroraBackground";
-import LanguageSwitch from "./LanguageSwitch";
+import PortfolioAtmosphere from "./PortfolioAtmosphere";
+import NavBar from "./NavBar";
 import FloatingSidebar from "./FloatingSidebar";
 import Footer from "./Footer";
 import { SidebarDrawer } from "./Sidebar";
@@ -21,15 +20,14 @@ function readCollapsed(): boolean {
 }
 
 /**
- * Marco inmersivo de todo el sitio (v3.5 Hercules).
+ * Marco inmersivo de todo el sitio (v3.6 Haniel).
  * - Escritorio: Sidebar FLOTANTE colapsable a la izquierda; sin header fijo, el contenido ocupa
  *   toda la pantalla y solo reserva `--rail-w` (ver `.ajr-shell` en index.css).
- * - Móvil/tablet: botón flotante que abre el cajón existente (mismo contenido de navegación).
+ * - Móvil/tablet: navbar compacta con identidad AJR, idioma y acceso al drawer flotante existente.
  * - Cada ruta se remonta con `key` y entra con la animación `ajr-route-in` (respeta reduced-motion).
  * - Con sesión: burbuja de chat de soporte, salvo en /cuenta/soporte (ya es pantalla completa).
  */
 export default function AppLayout() {
-  const { t } = useTranslation();
   const hasSession = Boolean(getToken());
   const { data: me } = useMe();
   const { pathname } = useLocation();
@@ -51,32 +49,23 @@ export default function AppLayout() {
   }, [pathname]);
 
   const showBubble = Boolean(me) && !pathname.startsWith("/cuenta/soporte");
+  const isPortfolioRoute = pathname === "/portfolio" || pathname.startsWith("/portfolio/");
   const isPublicVisualRoute = !pathname.startsWith("/admin") && !pathname.startsWith("/cuenta");
 
   return (
-    <div className="ajr-app-shell ajr-shell relative isolate flex min-h-screen flex-col" data-rail={collapsed ? "collapsed" : "expanded"}>
-      <AuroraBackground />
+    <div className="ajr-app-shell ajr-shell relative isolate flex min-h-screen flex-col" data-rail={collapsed ? "collapsed" : "expanded"} data-portfolio-route={isPortfolioRoute ? "true" : undefined}>
+      {isPortfolioRoute ? <PortfolioAtmosphere /> : <AuroraBackground />}
       <FloatingSidebar collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} hasSession={hasSession} />
 
-      <button
-        id="ajr-sidebar-trigger"
-        type="button"
-        onClick={() => setDrawerOpen(true)}
-        aria-label={t("nav.openMenu")}
-        aria-expanded={drawerOpen}
-        aria-controls="sidebar-drawer"
-        className="ajr-glass fixed left-3 top-3 z-40 inline-flex h-11 w-11 items-center justify-center rounded-2xl text-white lg:hidden"
-      >
-        <Menu className="h-5 w-5" aria-hidden />
-      </button>
-
-      <div className="fixed right-3 top-3 z-40 lg:hidden"><LanguageSwitch /></div>
+      <div className="ajr-mobile-topbar-wrap fixed inset-x-3 top-3 z-40 lg:hidden">
+        <NavBar sidebarOpen={drawerOpen} onToggleSidebar={() => setDrawerOpen((value) => !value)} />
+      </div>
       <div className="ajr-scroll-progress" aria-hidden="true" />
 
-      <div className="ajr-shell-body flex min-w-0 flex-1 flex-col">
+      <div className={`ajr-shell-body relative z-10 flex min-w-0 flex-1 flex-col ${isPortfolioRoute ? "ajr-shell-body--portfolio" : ""}`}>
         <main
           key={pathname}
-          className={`app-main relative flex-1 pt-16 lg:pt-0 ${isPublicVisualRoute ? "ajr-public-route" : ""} ${pathname === "/" ? "ajr-home-route" : "ajr-internal-route"}`}
+          className={`app-main relative flex-1 pt-20 lg:pt-0 ${isPublicVisualRoute ? "ajr-public-route" : ""} ${pathname === "/" ? "ajr-home-route" : "ajr-internal-route"}`}
           data-route={pathname}
         >
           <Outlet />

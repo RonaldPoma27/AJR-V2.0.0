@@ -34,7 +34,7 @@ export default function NavBar({
       </div>
       <Link to="/arrepentimiento" className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-cyan-300/30 bg-cyan-300/10 px-3 text-xs font-semibold text-cyan-100 transition hover:border-cyan-200/50 hover:bg-cyan-300/15" aria-label="Botón de arrepentimiento">
         <FileCheck className="h-4 w-4" aria-hidden="true" />
-        <span>{t("regret.button")}</span>
+        <span>{t("footerNav.regret")}</span>
       </Link>
     </header>
   );
